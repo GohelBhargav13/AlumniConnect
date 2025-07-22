@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+:root {
+    --green: #007bff;
+    --light-green: #E8F8F2;
+    --text-dark: #333;
+    --text-muted: #777;
+    --border: #ccc;
+    --input-bg: #fff;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #e0f7fa, #c5f4fc);
+    margin: 0;
+    padding: 50px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    background-color: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--green);
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+h2 {
+    text-align: center;
+    color: var(--text-dark);
+    font-size: 1.2rem;
+    background-color: var(--light-green);
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+form .form-group {
+    margin-bottom: 18px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+form input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background-color: var(--input-bg);
+    transition: border 0.3s ease;
+}
+
+form input:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 2px rgba(0, 184, 107, 0.15);
+}
+
+.half-width-group {
+    display: flex;
+    gap: 35px;
+}
+
+.half-width-field {
+    flex: 1;
+}
+
+.btn-primary {
+    background-color: var(--green);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #00995a;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.login-link a {
+    color: var(--green);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+
+/* Responsive */
+@media (max-width: 480px) {
+    .half-width-group {
+        flex-direction: column;
+    }
+}
