@@ -24,7 +24,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $user = $result->fetch_assoc();
 
                 if (password_verify($Entered_Password, $user['student_password'])) {
-                    
                     $_SESSION['Enroll_no'] = $user['Enrollment_no'];
                     $_SESSION['student_name'] = $user['student_name'];
                     $_SESSION['user_role'] = $_POST['role'];
