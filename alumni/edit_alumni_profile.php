@@ -91,26 +91,349 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
     <meta charset="UTF-8">
     <title>Edit Profile | AlumniConnect</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../style/edit_alumni_profile.css">
+    <!-- <link rel="stylesheet" href="../style/edit_alumni_profile.css"> -->
+    <!-- <link rel="stylesheet" href="../style/edit_alumni_profile.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* Basic Reset & Body Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+            box-sizing: border-box;
+            display: flex;
+            /* Make body a flex container to house the dashboard */
+            min-height: 100vh;
+            /* Ensure body takes full viewport height */
+        }
+
+        /* ------------------------------------------- */
+        /* New Sidebar & Layout Styles */
+        /* ------------------------------------------- */
+
+        .dashboard-container {
+            display: flex;
+            /* Main container for sidebar and content */
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .content-area {
+            flex: 1;
+            /* Takes up remaining space */
+            padding: 40px;
+            /* Padding around the content */
+            background-color: #f0f2f5;
+            /* Background for the main content area */
+            overflow-y: auto;
+            /* Enable scrolling for content if it overflows */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Center content horizontally within the content area */
+            /* Add min-height to ensure it acts as a scrollable container */
+            min-height: 100vh;
+            /* Ensures it takes full height to allow scrolling within */
+        }
+
+        /* ------------------------------------------- */
+        /* Existing Form Styles (Adjusted for new layout) */
+        /* ------------------------------------------- */
+
+        .dashboard-title {
+            font-size: 2em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-align: center;
+            width: 100%;
+            /* Ensure title takes full width to center effectively */
+        }
+
+        .profile-card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            /* Limits the width of the form container */
+            width: 100%;
+            /* Ensures it fills max-width available */
+            box-sizing: border-box;
+            margin-bottom: 30px;
+            /* --- Key changes for scrollbar and sizing --- */
+            max-height: calc(100vh - 120px);
+            /* Adjust this value as needed. It subtracts space for header/footer/margins. */
+            overflow-y: auto;
+            /* Adds vertical scrollbar if content exceeds max-height */
+            /* --- End key changes --- */
+        }
+
+        .profile-form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="number"],
+        .form-group input[type="url"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-submit {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: block;
+            width: auto;
+            margin: 20px auto 0 auto;
+        }
+
+        .btn-submit:hover {
+            background-color: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Message styling */
+        #message {
+            border: 1px solid;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: block;
+            transition: all 0.3s ease-in-out;
+            text-align: center;
+        }
+
+        #message.success {
+            background-color: #28a745;
+            /* Darker green */
+            border-color: #218838;
+            color: white;
+        }
+
+        #message.error {
+            background-color: #dc3545;
+            /* Darker red */
+            border-color: #c82333;
+            color: white;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+
+            /* Adjust breakpoint for sidebar visibility */
+            .sidebar {
+                width: 200px;
+                /* Slightly smaller sidebar on medium screens */
+                padding: 15px 0;
+            }
+
+            .sidebar-header h2 {
+                font-size: 1.6em;
+            }
+
+            .sidebar-menu a {
+                padding: 10px 15px;
+                font-size: 0.95em;
+            }
+
+            .content-area {
+                padding: 30px 20px;
+            }
+
+            .dashboard-title {
+                font-size: 1.8em;
+                margin-bottom: 15px;
+            }
+
+            .profile-card {
+                max-height: calc(100vh - 100px);
+                /* Adjust max-height for medium screens */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+                /* Stack sidebar and content vertically on small screens */
+            }
+
+            .sidebar {
+                width: 100%;
+                /* Sidebar takes full width */
+                height: auto;
+                /* Height adjusts to content */
+                position: relative;
+                /* No longer sticky */
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                padding: 15px 0;
+                text-align: center;
+            }
+
+            .sidebar-header {
+                margin-bottom: 15px;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                /* Arrange menu items horizontally */
+                flex-wrap: wrap;
+                /* Allow items to wrap */
+                justify-content: center;
+                /* Center menu items */
+                padding: 0 10px;
+            }
+
+            .sidebar-menu li {
+                margin: 5px 10px;
+                /* Add some space between horizontal items */
+            }
+
+            .sidebar-menu a {
+                padding: 8px 12px;
+                font-size: 0.9em;
+                border-left: none;
+                /* Remove left border */
+                border-bottom: 3px solid transparent;
+                /* Use bottom border for active indicator */
+            }
+
+            .sidebar-menu a:hover,
+            .sidebar-menu a.active {
+                border-left-color: transparent;
+                /* Ensure no left border */
+                border-bottom-color: #3498db;
+                /* Apply blue to bottom border */
+                background-color: #34495e;
+            }
+
+            .content-area {
+                padding: 20px 15px;
+                min-height: auto;
+                /* Remove fixed min-height on small screens as sidebar is not fixed */
+            }
+
+
+
+            .profile-card {
+                padding: 20px;
+                max-width: 100%;
+                max-height: calc(100vh - 80px);
+                /* Adjust max-height for small screens */
+            }
+
+            .btn-submit {
+                width: 100%;
+            }
+        }
+
+        @media (max-height: 700px) and (min-width: 769px) {
+
+            /* Adjust for shorter screens (laptops, some tablets) but not mobile */
+            .sidebar {
+                padding: 10px 0;
+            }
+
+            .sidebar-header {
+                margin-bottom: 20px;
+            }
+
+            .sidebar-menu a {
+                padding: 10px 20px;
+            }
+
+            .content-area {
+                padding: 30px;
+            }
+
+            .dashboard-title {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+
+            .profile-card {
+                padding: 25px;
+                max-height: calc(100vh - 100px);
+                /* Adjust max-height for shorter screens */
+            }
+
+            .form-group label {
+                font-size: 0.9em;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 8px 10px;
+                font-size: 0.9em;
+            }
+
+            .form-group textarea {
+                min-height: 60px;
+            }
+
+            .btn-submit {
+                padding: 10px 20px;
+                font-size: 0.95em;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <div class="dashboard-container">
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h2>AlumniConnect</h2>
-            </div>
-            <hr style="border: 1px solid gray; width:100%;" class="p-2 m-2 text-muted">
-            <ul class="sidebar-menu">
-                <li><a href="./alumni_dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="./alumni_create_post.php"><i class="fas fa-briefcase"></i>Create Post</a></li>
-                <li><a href="#"><i class="fas fa-newspaper"></i>Articles</a></li>
-                <li><a href="#"><i class="fas fa-book"></i> Collections</a></li>
-                <li><a href="./edit_alumni_profile.php?edit=<?= $_SESSION['alumni_id'] ?>" class="active"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
-                <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-            </ul>
-        </div>
+        <?php include './sidebar.php' ?>
 
         <div class="content-area">
             <h1 class="dashboard-title">Edit Your Profile</h1>
@@ -146,7 +469,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
                             }, 2 * 1000);
                         </script>
                     <?php endif; ?>
-                    <?php unset($_SESSION['message']); // Clear message after display ?>
+                    <?php unset($_SESSION['message']); // Clear message after display 
+                    ?>
 
                     <div class="form-group">
                         <label for="Enrollment">Enrollment No</label>

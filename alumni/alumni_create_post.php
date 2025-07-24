@@ -76,19 +76,6 @@ if(session_status() === PHP_SESSION_NONE){ session_start(); }
             min-height: 100vh;
         }
 
-        /* --- Sidebar Styling (remains as is) --- */
-        .sidebar {
-            background-color: #23374d;
-            color: #dcdcdc;
-            width: 220px;
-            min-width: 220px;
-            padding: 20px 0;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
-        }
-
         .logo {
             color: white;
             text-align: left;
@@ -347,19 +334,8 @@ if(session_status() === PHP_SESSION_NONE){ session_start(); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="sidebar">
-            <h2 class="logo">AlumniConnect</h2>
-            <br>
-            <ul class="nav-links">
-                <li><a href="./alumni_dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="./alumni_create_post.php"><i class="fas fa-briefcase"></i>Create Post</a></li>
-                <li><a href="./alumni_post_view.php"><i class="fas fa-newspaper"></i> View Posts</a></li>
-                <li><a href="collections.php"><i class="fas fa-folder"></i> Collections</a></li>
-                <li><a href="./edit_alumni_profile.php?edit=<?= $_SESSION['alumni_id'] ?? '' ?>"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
-                <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-            </ul>
-        </div>
+     <?php include './sidebar.php' ?>
+    <div class="container"> 
         <div class="main-content">
             <form action="./alumni_create_post.php" method="POST">
                 <div class="form-header">

@@ -7,8 +7,8 @@ FROM postmaster as p
 JOIN alumnimaster as am ON am.alumni_id = p.created_by";
 $fetched_result = $conn->query($post_fetch);
 
-if (!isset($_SESSION['alumni_id'])){
-    header('Location:./alumni_dashboard.php');
+if (!isset($_SESSION['alumni_id'])) {
+  header('Location:./alumni_dashboard.php');
 }
 
 $alumni_id = $_SESSION['alumni_id']
@@ -16,10 +16,13 @@ $alumni_id = $_SESSION['alumni_id']
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alumni Posts</title>
+   <!-- Bootstrap CDN -->
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
   <style>
     body {
@@ -27,42 +30,6 @@ $alumni_id = $_SESSION['alumni_id']
       font-family: 'Segoe UI', sans-serif;
       background-color: #f4f6f8;
       display: flex;
-    }
-
-    /* Sidebar */
-    .sidebar {
-      height: 100vh;
-      background: #2c3e50;
-      padding-top: 40px;
-      position: fixed;
-      width: 240px;
-      color: white;
-    }
-
-    .sidebar h2 {
-      margin-bottom: 30px;
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .sidebar a {
-      display: flex;
-      align-items: center;
-      padding: 12px 10px;
-      text-decoration: none;
-      color: white;
-      border-radius: 6px;
-      margin-bottom: 10px;
-      transition: 0.2s;
-    }
-
-    .sidebar a:hover, .sidebar a.active {
-      background-color: #34495e;
-    }
-
-    .sidebar i {
-      margin-right: 12px;
-      font-size: 16px;
     }
 
     /* Main Content */
@@ -140,22 +107,15 @@ $alumni_id = $_SESSION['alumni_id']
     }
   </style>
 </head>
+
 <body>
   <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>AlumniConnect</h2>
-    <a href="./alumni_dashboard.php"><i class="bi bi-house-door-fill"></i> Dashboard</a>
-    <a href="./alumni_create_post.php"><i class="bi bi-briefcase-fill"></i> Create Post</a>
-    <a href="./alumni_post_view.php" class="active"><i class="bi bi-journal-richtext"></i> View Posts</a>
-    <a href=""><i class="bi bi-journal-bookmark-fill"></i> Collections</a>
-    <a href="./edit_alumni_profile.php?edit=<?= $alumni_id ?>"><i class="bi bi-person-lines-fill"></i> Edit Profile</a>
-    <a href="../logout.php"><i class="bi bi-box-arrow-left"></i> Logout</a>
-  </div>
+ <?php include './sidebar.php' ?>
 
   <!-- Main Content -->
   <div class="main-content">
     <!-- <a href="./alumni_dashboard.php"><button class="apply-btn" style="margin-bottom: 20px;">Back</button></a> -->
-
+    <h2 style="text-align: center; padding:10px; margin-bottom: 15px; font-size: larger;" class="badge badge-primary">Post View</h2>
     <?php if ($fetched_result->num_rows > 0): ?>
       <?php while ($row = mysqli_fetch_assoc($fetched_result)): ?>
         <div class="post-card">
@@ -183,4 +143,5 @@ $alumni_id = $_SESSION['alumni_id']
     <?php endif; ?>
   </div>
 </body>
+
 </html>
