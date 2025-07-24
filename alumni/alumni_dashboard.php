@@ -214,7 +214,7 @@ $alumni_post_stmt->bind_param('i', $alumni_login_id);
 <body>
 
   <div class="d-flex">
-    
+
     <?php include './sidebar.php' ?>
 
     <div class="main w-100">
@@ -285,8 +285,16 @@ $alumni_post_stmt->bind_param('i', $alumni_login_id);
                     <img src="https://cdn-icons-png.flaticon.com/512/5599/5599681.png" width="50px" height="50px" class="p-2">
                     <div>
                       <h6 class="mb-0">Posts</h6>
-                      <strong>75</strong>
-                      <div class="text-muted small">#Last 7 Days</div>
+                      <?php
+                      $alumni_post_stmt->execute();
+                      $result = $alumni_post_stmt->get_result();
+                      $no_post = $result->num_rows;
+                      if ($no_post > 0) {
+                      ?>
+                        <strong><?= htmlspecialchars($no_post) ?></strong>
+                      <?php } else { ?>
+                        <strong>No post available</strong>
+                      <?php } ?>
                     </div>
                   </div>
                 </div>
