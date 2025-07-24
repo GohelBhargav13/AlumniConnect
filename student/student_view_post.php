@@ -1,28 +1,24 @@
 <?php
 require_once '../utills/db_conn.php';
-if (session_status() === PHP_SESSION_NONE) session_start();
-
-$post_fetch = "SELECT p.*, am.alumni_name
-FROM postmaster as p  
-JOIN alumnimaster as am ON am.alumni_id = p.created_by ORDER BY post_created_at DESC";
-$fetched_result = $conn->query($post_fetch);
-
-if (!isset($_SESSION['alumni_id'])) {
-  header('Location:./alumni_dashboard.php');
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
 }
 
-$alumni_id = $_SESSION['alumni_id']
-?>
+$fetch_all_post = "SELECT p.*, am.alumni_name 
+    FROM postmaster as p 
+    JOIN alumnimaster as am ON am.alumni_id = p.created_by ORDER BY post_created_at DESC";
 
+$result = $conn->query($fetch_all_post);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alumni Posts</title>
-   <!-- Bootstrap CDN -->
- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
   <style>
     body {
@@ -109,15 +105,13 @@ $alumni_id = $_SESSION['alumni_id']
 </head>
 
 <body>
-  <!-- Sidebar -->
- <?php include './sidebar.php' ?>
-
+  <?php include './sidebar.php' ?>
   <!-- Main Content -->
   <div class="main-content">
     <!-- <a href="./alumni_dashboard.php"><button class="apply-btn" style="margin-bottom: 20px;">Back</button></a> -->
     <h2 style="text-align: center; padding:10px; margin-bottom: 15px; font-size: larger;" class="badge badge-primary">Post View</h2>
-    <?php if ($fetched_result->num_rows > 0): ?>
-      <?php while ($row = mysqli_fetch_assoc($fetched_result)): ?>
+    <?php if ($result->num_rows > 0): ?>
+      <?php while ($row = mysqli_fetch_assoc($result)): ?>
         <div class="post-card">
           <h2 class="post-title">🚀 <?= htmlspecialchars($row['post_title']) ?></h2>
           <p class="post-desc"><?= htmlspecialchars($row['post_desc']) ?></p>
@@ -131,11 +125,11 @@ $alumni_id = $_SESSION['alumni_id']
 
           <div class="card-footer">
             <span>Posted on: <?= htmlspecialchars(date('d-m-Y, l', strtotime($row['post_created_at']))) ?></span>
-            <button class="apply-btn">Apply</button>
           </div>
           <div class="card-footer">
             <span>Posted by: <?= htmlspecialchars($row['alumni_name']) ?></span>
           </div>
+          <button class="apply-btn mt-2">Apply</button>
         </div>
       <?php endwhile; ?>
     <?php else: ?>

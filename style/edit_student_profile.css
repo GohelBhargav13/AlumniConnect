@@ -1,6 +1,5 @@
 :root {
   --sidebar-bg: #294460;
-  --sidebar-active: #2563eb;
   --sidebar-text: #f2f6fa;
   --main-bg: #f3f7fa;
   --card-bg: #fff;
@@ -50,7 +49,6 @@ body {
     transition: background 0.2s;
 }
 
-.sidebar nav a.active,
 .sidebar nav a:hover {
     background: var(--accent);
     color: #fff;

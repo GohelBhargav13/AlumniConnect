@@ -15,9 +15,9 @@ try {
         exit();
     }
     $student_id_edit = (int) $_GET['edit'];
-    $fetch_user_data = "SELECT * FROM studentmaster WHERE student_id = ?";
+    $fetch_user_data = "SELECT * FROM studentmaster WHERE Enrollment_no = ?";
     $fetch_user_stmt = $conn->prepare($fetch_user_data);
-    $fetch_user_stmt->bind_param('i', $student_id_edit);
+    $fetch_user_stmt->bind_param('i', $loggedIn_user);
     $fetch_user_stmt->execute();
     $user_data = $fetch_user_stmt->get_result();
     if ($user_data->num_rows === 1) {
@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
 
     if (isset($student_name) || isset($student_email) || isset($student_phoneNo) || isset($student_dep) || isset($student_add_year) || isset($student_pass_year) || isset($student_college) || isset($student_city)) {
         try {
-            $sql_for_update = "UPDATE studentmaster SET student_name=?, student_email=?, student_phone_no=?, student_add_year=?, student_pass_year=?, student_bio=?, student_github=?, student_linkedIn=?, student_city=?, student_department=?, student_college=? WHERE student_id=?";
+            $sql_for_update = "UPDATE studentmaster SET student_name=?, student_email=?, student_phone_no=?, student_add_year=?, student_pass_year=?, student_bio=?, student_github=?, student_linkedIn=?, student_city=?, student_department=?, student_college=? WHERE Enrollment_no =?";
             $sql_for_stmt = $conn->prepare($sql_for_update);
             $sql_for_stmt->bind_param(
                 "ssiiissssssi",
@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
                 $student_city,
                 $student_dep,
                 $student_college,
-                $student_id_edit
+                $loggedIn_user
             );
             $sql_for_stmt->execute();
 
@@ -68,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
                 // exit();
             } else {
                 $_SESSION['message'] = ["success" => false, "mess" => "Error in updating data"];
-                header("Location: edit_student_profile.php?edit=$student_id_edit");
+                header("Location: edit_student_profile.php?edit=$loggedIn_user");
             }
         } catch (Exception $th) {
             $_SESSION['message'] = ["success" => false, "mess" => $th];
@@ -87,31 +87,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
     <title>Edit Profile | AlumniConnect</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../style/edit_student_profile.css">
-    <style>
-
-    </style>
 </head>
 
 <body>
     <div class="dashboard">
-        <aside class="sidebar">
-            <div class="logo">
-                <h2>AlumniConnect</h2>
-            </div>
-
-            <nav>
-                <a href="./student_dashboard.php">Dashboard</a>
-                <a href="projects.php">Projects</a>
-                <a href="articles.php">Articles</a>
-                <a href="collections.php">Collections</a>
-                <a href="./edit_student_profile.php?edit=<?= $student_id_edit ?>" class="active">Edit Profile</a>
-                <a href="../logout.php">Logout</a>
-            </nav>
-        </aside>
+      <?php include './sidebar.php' ?>
         <main class="main-container">
             <h1 class="dashboard-title">Edit Your Profile</h1>
             <div class="profile-card">
-                <form class="profile-form" action="edit_student_profile.php?edit=<?= $student_id_edit ?>" method="POST">
+                <form class="profile-form" action="edit_student_profile.php?edit=<?= $loggedIn_user?>" method="POST">
                     <?php if (isset($_SESSION['message'])): ?>
                         <?php
                         if ($_SESSION['message']['success'] == true){ ?>

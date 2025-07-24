@@ -37,69 +37,27 @@ try {
   <meta charset="UTF-8">
   <title>Minimal Web Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <a href="../style/edit_student_profile.css"></a>
   <style>
-   :root {
-  --sidebar-bg: #294460;
-  --sidebar-active: #2563eb;
-  --sidebar-text: #f2f6fa;
-  --main-bg: #f3f7fa;
-  --card-bg: #fff;
-  --primary: #2563eb;
-  --text-dark: #18344b; 
-  --border: #e0e9f3;
-  --shadow: 0 6px 30px #29446018;
-  --accent: #2563eb;
-  --text-light: #f2f6fa;
-}
-body {
-  margin: 0;
-  background: var(--main-bg);
-  font-family: 'Segoe UI', Arial, sans-serif;
-}
-/* Sidebar */
-.dashboard {
-  display: flex;
-  min-height: 100vh;
-}
-.sidebar {
-    background: var(--sidebar-bg);
-    color: var(--text-light);
-    width: 210px;
-    min-width: 180px;
-    padding: 32px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 34px;
-}
+    :root {
+      --sidebar-bg: #294460;
+      --sidebar-active: #2563eb;
+      --sidebar-text: #f2f6fa;
+      --main-bg: #f3f7fa;
+      --card-bg: #fff;
+      --primary: #2563eb;
+      --text-dark: #18344b;
+      --border: #e0e9f3;
+      --shadow: 0 6px 30px #29446018;
+      --accent: #2563eb;
+      --text-light: #f2f6fa;
+    }
 
-.sidebar h2 {
-    font-size: 1.4em;
-    margin-bottom: 24px;
-    letter-spacing: 1px;
-    color: #fff;
-    font-weight: bold;
-    text-shadow: 0 1px 8px #18344b70;
-}
-
-.sidebar nav a {
-    text-decoration: none;
-    color: var(--text-light);
-    font-size: 1em;
-    padding: 10px 12px;
-    border-radius: 6px;
-    margin-bottom: 4px;
-    display: block;
-    transition: background 0.2s;
-}
-
-.sidebar nav a.active,
-.sidebar nav a:hover {
-    background: var(--accent);
-    color: #fff;
-    box-shadow: 0 1px 6px #18344b22;
-}
-.main-content {
+    body {
+      margin: 0;
+      background: var(--main-bg);
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .main-content {
       flex: 1;
       padding: 40px 36px;
       display: flex;
@@ -129,7 +87,7 @@ body {
       margin-bottom: 6px;
     }
 
- .user-bio {
+    .user-bio {
       color: #607590;
       font-size: 1em;
       margin-bottom: 15px;
@@ -176,7 +134,7 @@ body {
       justify-content: center;
     }
 
- .card {
+    .card {
       background: var(--card-bg);
       border-radius: 12px;
       box-shadow: 0 2px 18px #29446017;
@@ -243,27 +201,12 @@ body {
         padding: 22px 8vw;
       }
     }
-
   </style>
 </head>
 
 <body>
   <div class="dashboard">
-    <aside class="sidebar">
-      <div class="container">
-       <h2>AlumniConnect</h2>
-      <h4 style="text-align: center;">Student Dashboard</h4>
-      </div>
-     
-      <nav>
-        <a href="#" class="active">Dashboard</a>
-        <a href="#">Projects</a>
-        <a href="#">Articles</a>
-        <a href="#">Collections</a>
-        <a href="./edit_student_profile.php?edit=<?= htmlspecialchars($user_data_fetched['student_id']) ?>">Edit Profile</a>
-        <a href="../logout.php">Logout</a>
-      </nav>
-    </aside>
+    <?php include './sidebar.php' ?>
     <main class="main-content">
       <div class="dashboard-title">Welcome to Your Dashboard</div>
       <div class="user-info-container">
