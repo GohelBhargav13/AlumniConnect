@@ -1,49 +1,121 @@
 <?php 
- require_once '../utills/db_conn.php';
-if(session_status() === PHP_SESSION_NONE){ session_start(); } 
 
-    if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])){
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-        if(!isset($_SESSION['alumni_id'])){
-            $_SESSION['message'] = ["sucess" => false, "final_msg" => "alumni session is not set"];
-            exit();
-        }
+require_once '../utills/db_conn.php';
+require '../vendor/autoload.php'; // ✅ Moved to the top
 
-        $alumni_id = (int) $_SESSION['alumni_id'] ??  0;
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+} 
 
-        $post_title = $_POST['title'] ?? '';
-        $post_desc = $_POST['description'] ?? '';
-        $post_location = $_POST['location'] ?? '';
-        $post_roadmap = $_POST['roadmap'] ?? '';
-        $post_skills = $_POST['required_skills'] ?? '';
-        $post_ref_link = $_POST['ref_link'] ?? '';
-        $post_job_type = $_POST['typeofjob'];
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
 
-
-        if(empty($post_title) || empty($post_desc) || empty($post_location) || empty($post_roadmap) || empty($post_skills) || empty($post_ref_link) || empty( $post_job_type)){
-            $_SESSION['message'] = ["sucess" => false, "final_msg" => "All field's are required"];
-            header("Location: alumni_create_post.php");
-        }
-
-        $post_create_query = "INSERT INTO postmaster (post_title,post_desc,post_location,post_ref_link,post_req_skill,post_ded_roadmap,created_by,post_job_type) VALUES(?,?,?,?,?,?,?,?)";
-        $post_stmt = $conn->prepare($post_create_query);
-        $post_stmt->bind_param("ssssssis",$post_title,$post_desc,$post_location,$post_ref_link,$post_skills,$post_roadmap,$alumni_id,$post_job_type);
-       
-        if($post_stmt->execute()){
-             $post_get_id = $post_stmt->insert_id;
-            $_SESSION['post_get_id'] = $post_get_id;
-    
-            $_SESSION['message'] = ["sucess" => true,"final_msg" => "POST CREATED SUCESSFULLY"] ?? '';
-            header("Location: alumni_create_post.php");
-
-        }else{
-            $_SESSION['message'] = ["sucess" => false, "final_msg" => "SOME ERROR IN CREATING POST"] ?? '';
-            exit();
-        }
-
-        $post_stmt->close();
+    if (!isset($_SESSION['alumni_id'])) {
+        $_SESSION['message'] = ["success" => false, "final_msg" => "Alumni session is not set"];
+        header("Location: alumni_create_post.php");
+        exit(); // ✅ Added exit after redirect
     }
 
+    $alumni_id = (int) $_SESSION['alumni_id'];
+
+    $post_title = $_POST['title'] ?? '';
+    $post_desc = $_POST['description'] ?? '';
+    $post_location = $_POST['location'] ?? '';
+    $post_roadmap = $_POST['roadmap'] ?? '';
+    $post_skills = $_POST['required_skills'] ?? '';
+    $post_ref_link = $_POST['ref_link'] ?? '';
+    $post_job_type = $_POST['typeofjob'] ?? '';
+
+    if (empty($post_title) || empty($post_desc) || empty($post_location) || empty($post_roadmap) || empty($post_skills) || empty($post_ref_link) || empty($post_job_type)) {
+        $_SESSION['message'] = ["success" => false, "final_msg" => "All fields are required"];
+        header("Location: alumni_create_post.php");
+        exit(); // ✅ Must stop further execution
+    }
+
+    // Insert post
+    $post_create_query = "INSERT INTO postmaster (post_title,post_desc,post_location,post_ref_link,post_req_skill,post_ded_roadmap,created_by,post_job_type) VALUES(?,?,?,?,?,?,?,?)";
+    $post_stmt = $conn->prepare($post_create_query);
+    $post_stmt->bind_param("ssssssis", $post_title, $post_desc, $post_location, $post_ref_link, $post_skills, $post_roadmap, $alumni_id, $post_job_type);
+
+    if ($post_stmt->execute()) {
+        $post_id = $post_stmt->insert_id;
+
+        // ✅ Fetch post + alumni details
+        $fetch_post_details = "SELECT p.post_title, p.post_desc, a.alumni_name, a.alumni_email 
+                               FROM postmaster p 
+                               JOIN alumnimaster a ON a.alumni_id = p.created_by 
+                               WHERE p.post_id = ?";
+        $stmt = $conn->prepare($fetch_post_details);
+        $stmt->bind_param("i", $post_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $final_post = $result->fetch_assoc();
+
+        // ✅ Fetch all students
+        $select_all_students = "SELECT student_name, student_email FROM studentmaster";
+        $students_result = $conn->query($select_all_students);
+
+        // ✅ Send email to each student
+        while ($student = $students_result->fetch_assoc()) {
+            $mail = new PHPMailer(true);
+            try {
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'gohelbhargav401@gmail.com';
+                $mail->Password = 'aqknaoglmxclkvct'; // ⚠️ App password - secure in .env if possible
+                $mail->SMTPSecure = 'tls';
+                $mail->Port = 587;
+
+                $mail->setFrom($final_post['alumni_email'], 'AlumniConnect');
+                $mail->addAddress($student['student_email'], $student['student_name']);
+
+                $mail->isHTML(true);
+                $mail->Subject = "New Post from {$final_post['alumni_name']} on AlumniConnect";
+               $mail->Body = "
+                    <div style='font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; color: #333; border: 1px solid #ddd; border-radius: 8px;'>
+                        <p style='font-size: 18px; color: #2c3e50;'>Dear <strong>{$student['student_name']}</strong>,</p>
+
+                        <p style='font-size: 16px; color: #16a085; font-weight: bold;'>🎉 New Alumni Post Alert!</p>
+
+                        <div style='margin-top: 10px;'>
+                            <p><strong style='color: #2980b9;'>Title:</strong> {$final_post['post_title']}</p>
+                            <p><strong style='color: #2980b9;'>Description:</strong> {$final_post['post_desc']}</p>
+                            <p><strong style='color: #2980b9;'>Posted by:</strong> {$final_post['alumni_name']}</p>
+                            <p><strong style='color: #2980b9;'>Posted by:</strong> Click Here to show Post -> </p>
+                            <a href='http://localhost/SE_Project/AlumniConnect/student/student_view_post.php' target='_blank'>http://localhost/SE_Project/AlumniConnect/student/student_view_post.php</a>
+                        </div>
+
+                        <hr style='margin: 20px 0;'>
+
+                        <p style='font-size: 14px; color: #7f8c8d;'>This is an automated notification from AlumniConnect platform.</p>
+
+                        <p style='font-size: 14px; margin-top: 10px;'>Best Regards,<br>
+                        <strong style='color: #2c3e50;'>AlumniConnect Team</strong></p>
+                    </div>
+                ";
+
+
+                $mail->send();
+
+            } catch (Exception $e) {
+                error_log("Email failed for {$student['student_email']}: " . $mail->ErrorInfo);
+                // You may optionally skip or collect failed emails
+            }
+        }
+
+        $_SESSION['message'] = ["success" => true, "final_msg" => "Post created and emails sent successfully"];
+        header("Location: alumni_create_post.php");
+        exit();
+
+    } else {
+        $_SESSION['message'] = ["success" => false, "final_msg" => "Error in creating post"];
+        header("Location: alumni_create_post.php");
+        exit();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -347,7 +419,7 @@ if(session_status() === PHP_SESSION_NONE){ session_start(); }
                 <?php if(isset($_SESSION['message'])){ ?>
                     <p id="message" style=" color: white;
                             border: 1px solid;
-                            background-color: <?= $_SESSION['message']['sucess'] ? '#28a745' : '#dc3545' ?>;
+                            background-color: <?= $_SESSION['message']['success'] ? '#28a745' : '#dc3545' ?>;
                             padding: 8px 10px;
                             border-radius: 6px;
                             font-size: 14px;

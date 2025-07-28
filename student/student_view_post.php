@@ -49,8 +49,6 @@ while ($row2 = $search_student_result->fetch_assoc()) {
   $student_linkedIn = $row2['student_linkedIn'] ?? '';
 }
 
-
-
 // Handle Apply POST
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['applybtn'])) {
   $post_id = (int) $_POST['applybtn'];

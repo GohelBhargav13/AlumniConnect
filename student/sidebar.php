@@ -6,7 +6,7 @@
     $errormessage = "Enrollment number is not set";
   }
 
-  $user_enrollment = $_SESSION['Enroll_no'];
+  $user_enrollment = $_SESSION['Enroll_no'] ?? 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
