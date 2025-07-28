@@ -1,5 +1,6 @@
 <?php
 require_once '../utills/db_conn.php';
+
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 $post_fetch = "SELECT p.*, am.alumni_name
