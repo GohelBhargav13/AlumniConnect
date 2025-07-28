@@ -274,8 +274,8 @@ try {
         <div class="card">
           <div class="card-title">LinkedIn</div>
           <div class="card-value">
-            <?php if (!empty($user_data_fetched['student_linkedin'])) { ?>
-              <a href="<?= htmlspecialchars($user_data_fetched['student_linkedin']) ?>" target="_blank"><?= htmlspecialchars($user_data_fetched['student_linkedin']) ?></a>
+            <?php if (!empty($user_data_fetched['student_linkedIn'])) { ?>
+              <a href="<?= htmlspecialchars($user_data_fetched['student_linkedIn']) ?>" target="_blank"><?= htmlspecialchars($user_data_fetched['student_linkedIn']) ?></a>
             <?php } else { ?>
               <div class="card-value">#LINKEDINLink</div>
             <?php  } ?>

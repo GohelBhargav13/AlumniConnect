@@ -3,7 +3,7 @@ require_once '../utills/db_conn.php';
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-$post_fetch = "SELECT p.*, am.alumni_name
+$post_fetch = "SELECT p.*, am.alumni_name 
 FROM postmaster as p  
 JOIN alumnimaster as am ON am.alumni_id = p.created_by ORDER BY post_created_at DESC";
 $fetched_result = $conn->query($post_fetch);
@@ -12,7 +12,25 @@ if (!isset($_SESSION['alumni_id'])) {
   header('Location:./alumni_dashboard.php');
 }
 
-$alumni_id = $_SESSION['alumni_id']
+$alumni_id = $_SESSION['alumni_id'];
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['applybtn'])) {
+
+  //Insert into applystudentmaster
+
+  $insert_apply_sql = "INSERT INTO applystudentmaster (student_id,post_id) VALUES (?,?)";
+  $insert_apply_stmt = $conn->prepare($insert_apply_sql);
+  $insert_apply_stmt->bind_param("ii", $student_id, $post_get_id);
+
+  if ($insert_apply_stmt->execute()) {
+    $_SESSION['message'] = ['success' => true, "final_msg" => "Applied Successfully"];
+    header('Location:alumni_post_view.php');
+  } else {
+    $_SESSION['message'] = ["success" => false, "final_msg" => "Something went wrong"];
+  }
+
+  $insert_apply_stmt->close();
+}
 ?>
 
 <!DOCTYPE html>
@@ -22,8 +40,8 @@ $alumni_id = $_SESSION['alumni_id']
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alumni Posts-View | AlumniConnect</title>
-   <!-- Bootstrap CDN -->
- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> 
+  <!-- Bootstrap CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
   <style>
     body {
@@ -111,38 +129,40 @@ $alumni_id = $_SESSION['alumni_id']
 
 <body>
   <!-- Sidebar -->
- <?php include './sidebar.php' ?>
+  <?php include './sidebar.php' ?>
 
   <!-- Main Content -->
   <div class="main-content">
     <!-- <a href="./alumni_dashboard.php"><button class="apply-btn" style="margin-bottom: 20px;">Back</button></a> -->
     <h2 style="text-align: center; padding:10px; margin-bottom: 15px; font-size: larger;" class="badge badge-primary">Post View</h2>
-    <?php if ($fetched_result->num_rows > 0): ?>
-      <?php while ($row = mysqli_fetch_assoc($fetched_result)): ?>
-        <div class="post-card">
-          <h2 class="post-title">🚀 <?= htmlspecialchars($row['post_title']) ?></h2>
-          <p class="post-desc"><?= htmlspecialchars($row['post_desc']) ?></p>
+    <form action="./alumni_post_view.php" method="post">
+      <?php if ($fetched_result->num_rows > 0): ?>
+        <?php while ($row = mysqli_fetch_assoc($fetched_result)): ?>
+          <div class="post-card">
+            <h2 class="post-title">🚀 <?= htmlspecialchars($row['post_title']) ?></h2>
+            <p class="post-desc"><?= htmlspecialchars($row['post_desc']) ?></p>
 
-          <div class="post-info-grid">
-            <div><strong>📍 Location:</strong> <?= htmlspecialchars($row['post_location']) ?></div>
-            <div><strong>🛠 Skills:</strong> <?= htmlspecialchars($row['post_req_skill']) ?></div>
-            <div><strong>🗺 Roadmap:</strong> <?= htmlspecialchars($row['post_ded_roadmap']) ?></div>
-            <div><strong>📅 Type:</strong> <?= htmlspecialchars($row['post_job_type']) ?></div>
-          </div>
+            <div class="post-info-grid">
+              <div><strong>📍 Location:</strong> <?= htmlspecialchars($row['post_location']) ?></div>
+              <div><strong>🛠 Skills:</strong> <?= htmlspecialchars($row['post_req_skill']) ?></div>
+              <div><strong>🗺 Roadmap:</strong> <?= htmlspecialchars($row['post_ded_roadmap']) ?></div>
+              <div><strong>📅 Type:</strong> <?= htmlspecialchars($row['post_job_type']) ?></div>
+            </div>
 
-          <div class="card-footer">
-            <span>Posted on: <?= htmlspecialchars(date('d-m-Y, l', strtotime($row['post_created_at']))) ?></span>
-            <button class="apply-btn">Apply</button>
+            <div class="card-footer">
+              <span>Posted on: <?= htmlspecialchars(date('d-m-Y, l', strtotime($row['post_created_at']))) ?></span>
+              <!-- <button class="apply-btn" name="applybtn" id="applybtn">Apply</button> -->
+            </div>
+            <div class="card-footer">
+              <span>Posted by: <?= htmlspecialchars($row['alumni_name']) ?></span>
+            </div>
           </div>
-          <div class="card-footer">
-            <span>Posted by: <?= htmlspecialchars($row['alumni_name']) ?></span>
-          </div>
-        </div>
-      <?php endwhile; ?>
-    <?php else: ?>
-      <div class="no-post">No Post Available</div>
-    <?php endif; ?>
+        <?php endwhile; ?>
+      <?php else: ?>
+        <div class="no-post">No Post Available</div>
+      <?php endif; ?>
   </div>
+  </form>
 </body>
 
 </html>

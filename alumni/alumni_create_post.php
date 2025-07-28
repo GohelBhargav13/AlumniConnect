@@ -28,8 +28,11 @@ if(session_status() === PHP_SESSION_NONE){ session_start(); }
         $post_create_query = "INSERT INTO postmaster (post_title,post_desc,post_location,post_ref_link,post_req_skill,post_ded_roadmap,created_by,post_job_type) VALUES(?,?,?,?,?,?,?,?)";
         $post_stmt = $conn->prepare($post_create_query);
         $post_stmt->bind_param("ssssssis",$post_title,$post_desc,$post_location,$post_ref_link,$post_skills,$post_roadmap,$alumni_id,$post_job_type);
-
+       
         if($post_stmt->execute()){
+             $post_get_id = $post_stmt->insert_id;
+            $_SESSION['post_get_id'] = $post_get_id;
+    
             $_SESSION['message'] = ["sucess" => true,"final_msg" => "POST CREATED SUCESSFULLY"] ?? '';
             header("Location: alumni_create_post.php");
 

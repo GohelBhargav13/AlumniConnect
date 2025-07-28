@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
         $register_new_alumni = "INSERT INTO alumnimaster (Enrollment_no,alumni_name,alumni_email,alumni_phone_no,alumni_add_year,alumni_pass_year,alumni_password,alumni_company_name) VALUES (?,?,?,?,?,?,?,?)";
         $register_new_stmt = $conn->prepare($register_new_alumni);
         $register_new_stmt->bind_param('issiiiss', $alumni_enrollment, $alumni_name, $alumni_email, $alumni_phoneNo, $alumni_admissionYear, $alumni_passoutYear, $hashed_password,$company_name);
+        $alumni_id = $register_new_stmt->insert_id;
 
         if ($register_new_stmt->execute()) {
             $_SESSION['message'] = ['sucess' => true, 'mess' => 'Registration Sucessfully'];

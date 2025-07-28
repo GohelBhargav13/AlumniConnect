@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $user_role = $_POST["role"];
 
         if ($user_role == "student") {
-            $exist_user = "SELECT * FROM studentMaster WHERE Enrollment_no = ? ";
+            $exist_user = "SELECT * FROM studentmaster WHERE Enrollment_no = ? ";
             $exist_user_stmt = $conn->prepare($exist_user);
             $exist_user_stmt->bind_param("i", $Entered_Enrollment);
 
@@ -25,6 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 if (password_verify($Entered_Password, $user['student_password'])) {
                     $_SESSION['Enroll_no'] = $user['Enrollment_no'];
+                    $_SESSION['student_id'] = $user['student_id'];
                     $_SESSION['student_name'] = $user['student_name'];
                     $_SESSION['user_role'] = $_POST['role'];
                     header("Location: ./student/student_dashboard.php");

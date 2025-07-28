@@ -38,9 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
         $register_new_student = "INSERT INTO studentmaster (Enrollment_no,student_name,student_email,student_phone_no,student_add_year,student_pass_year,student_password) VALUES (?,?,?,?,?,?,?)";
         $register_new_stmt = $conn->prepare($register_new_student);
         $register_new_stmt->bind_param('issiiis', $student_enrollment, $student_name, $student_email, $student_phoneNo, $student_admissionYear, $student_passoutYear, $hashed_password);
-
+    
         if ($register_new_stmt->execute()) {
             $_SESSION['message'] = ['sucess' => true, 'mess' => 'Registration Sucessfully'];
+            $student_id = $register_new_stmt->insert_id;
+            $_SESSION['student_get_id'] = $student_id;
         } else {
             $_SESSION['message'] = ['sucess' => false, 'mess' => 'Registartion Error'];
         }

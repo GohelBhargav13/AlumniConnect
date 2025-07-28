@@ -1,11 +1,12 @@
 <?php 
-
+  if(session_status() === PHP_SESSION_NONE){
+    session_start();
+  }
   if(!isset($_SESSION['Enroll_no'])){
     $errormessage = "Enrollment number is not set";
   }
 
   $user_enrollment = $_SESSION['Enroll_no'];
-
 ?>
 <!DOCTYPE html>
 <html lang="en">

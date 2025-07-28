@@ -348,9 +348,9 @@ $alumni_post_stmt->bind_param('i', $alumni_login_id);
             <!-- LinkedIn -->
             <div class="col-md-6 mb-3">
               <div class="card p-3 h-100">
-                <h6 class="text-info">LinkedIn</h6>
-                <?php if (!empty($user_data_fetched['alumni_linkedin'])): ?>
-                  <a href="<?= htmlspecialchars($user_data_fetched['alumni_linkedin']) ?>" target="_blank"><?= htmlspecialchars($user_data_fetched['alumni_linkedin']) ?></a>
+                <h6 class="text-info" style="margin-top: 8px;">LinkedIn</h6>
+                <?php if (!empty($user_data_fetched['alumni_linkedIn'])): ?>
+                  <a href="<?= htmlspecialchars($user_data_fetched['alumni_linkedIn']) ?>" target="_blank" style="margin-top: 12px;"><?= htmlspecialchars($user_data_fetched['alumni_linkedIn']) ?></a>
                 <?php else: ?>
                   <p class="text-muted">#NoLinkedInLink</p>
                 <?php endif; ?>
