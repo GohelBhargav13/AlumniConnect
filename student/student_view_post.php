@@ -14,7 +14,7 @@ if(!isset($_SESSION['Enroll_no'])){
 }
 
 // Fetch all posts
-$fetch_all_post = "SELECT p.*, am.alumni_name,am.alumni_email 
+$fetch_all_post = "SELECT p.*, am.alumni_name,am.alumni_email,am.alumni_id 
     FROM postmaster as p 
     JOIN alumnimaster as am ON am.alumni_id = p.created_by 
     ORDER BY post_created_at DESC";
@@ -295,7 +295,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['applybtn'])) {
             <div class="card-footer">
               <input type="hidden" name="alumnihidden" value="<?= htmlspecialchars($row['alumni_name']) ?>">
               <input type="hidden" name="alumniemailhidden" value="<?= htmlspecialchars($row['alumni_email']) ?>">
-              <span>Posted by: <?= htmlspecialchars($row['alumni_name']) ?></span>
+              <span>Posted by: <a href="./show_alumni_profile_stu.php?alumni_id=<?= urlencode(htmlspecialchars($row['alumni_id'])) ?>" style="text-decoration: none;"><?= htmlspecialchars($row['alumni_name']) ?></a></span>
             </div>
             <?php if (in_array($row['post_id'], $applied_post_ids)): ?>
               <p class="text-success">✅ Already Applied</p>
