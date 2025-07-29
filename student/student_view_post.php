@@ -8,6 +8,11 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
+if(!isset($_SESSION['Enroll_no'])){
+  header("Location: ../login.php");
+  exit();
+}
+
 // Fetch all posts
 $fetch_all_post = "SELECT p.*, am.alumni_name,am.alumni_email 
     FROM postmaster as p 

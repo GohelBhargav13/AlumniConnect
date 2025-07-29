@@ -10,6 +10,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 } 
 
+if(!isset($_SESSION['Enroll_no_alumni'])){
+    header("Location: ../login.php");
+    exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
 
     if (!isset($_SESSION['alumni_id'])) {
@@ -84,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
                             <p><strong style='color: #2980b9;'>Title:</strong> {$final_post['post_title']}</p>
                             <p><strong style='color: #2980b9;'>Description:</strong> {$final_post['post_desc']}</p>
                             <p><strong style='color: #2980b9;'>Posted by:</strong> {$final_post['alumni_name']}</p>
-                            <p><strong style='color: #2980b9;'>Posted by:</strong> Click Here to show Post -> </p>
+                            <p><strong style='color: #2980b9;'>Posted on:</strong> Click Here to show Post -> </p>
                             <a href='http://localhost/SE_Project/AlumniConnect/student/student_view_post.php' target='_blank'>http://localhost/SE_Project/AlumniConnect/student/student_view_post.php</a>
                         </div>
 

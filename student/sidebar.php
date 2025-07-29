@@ -12,7 +12,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Student Dashboard</title>
+  <title>Student Dashboard | Alumni Connect</title>
   <style>
     /* General Reset */
     * {
@@ -103,7 +103,7 @@
     <nav>
       <a href="./student_dashboard.php">Dashboard</a>
       <a href="./student_view_post.php">Post View</a>
-      <a href="#">Articles</a>
+      <a href="./student_applied_post.php">Applied job</a>
       <a href="#">Collections</a>
       <a href="./edit_student_profile.php?edit=<?= htmlspecialchars($user_enrollment) ?>">Edit Profile</a>
       <a href="../logout.php">Logout</a>
