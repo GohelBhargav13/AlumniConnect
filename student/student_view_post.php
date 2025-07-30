@@ -295,7 +295,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['applybtn'])) {
             <div class="card-footer">
               <input type="hidden" name="alumnihidden" value="<?= htmlspecialchars($row['alumni_name']) ?>">
               <input type="hidden" name="alumniemailhidden" value="<?= htmlspecialchars($row['alumni_email']) ?>">
-              <span>Posted by: <a href="./show_alumni_profile_stu.php?alumni_id=<?= urlencode(htmlspecialchars($row['alumni_id'])) ?>" style="text-decoration: none;"><?= htmlspecialchars($row['alumni_name']) ?></a></span>
+              <span>Posted by: <a href="./show_alumni_profile_stu.php?alumni_id=<?= urlencode(htmlspecialchars($row['alumni_id'])) ?>" style="text-decoration: none; color: black;"><?= htmlspecialchars($row['alumni_name']) ?></a></span>
             </div>
             <?php if (in_array($row['post_id'], $applied_post_ids)): ?>
               <p class="text-success">✅ Already Applied</p>
