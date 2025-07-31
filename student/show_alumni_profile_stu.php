@@ -87,8 +87,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['connect_req'])) {
             // Content
             $mail->isHTML(true);
             $mail->Subject = 'Connection Request via AlumniConnect';
-            $mail->Body = "<p>Hello <b>{$alumni_details['alumni_name']}</b>,</p>
-                           <p>You have received a connection request from <b>{$student_details['student_name']}</b>.</p>";
+            $mail->Body = '
+<table width="100%" cellpadding="0" cellspacing="0" style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+  <tr>
+    <td>
+      <table cellpadding="0" cellspacing="0" width="600" align="center" style="background-color: #ffffff; border-radius: 6px; padding: 20px; border: 1px solid #ddd;">
+        <tr>
+          <td style="text-align: center; padding-bottom: 20px;">
+            <h2 style="color: #333333; font-size: 24px;">📩 Connection Request</h2>
+          </td>
+        </tr>
+        <tr>
+          <td style="color: #333333; font-size: 16px; line-height: 1.5;">
+            <p>Hello <b style="color: #0073e6;">' . $alumni_details['alumni_name'] . '</b>,</p>
+            <p>You have received a connection request from <b style="color: #28a745;">' . $student_details['student_name'] . '</b>.</p>
+            <p style="margin-top: 20px;">Please log in to your account to view and respond to this request.</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-top: 30px; text-align: center;">
+            <a href="http://localhost/SE_Project/AlumniConnect/alumni/alumni_dashboard.php" style="background-color: #007bff; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">View Request</a>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-top: 30px; font-size: 12px; color: #999999; text-align: center;">
+            <p>This is an automated message. Please do not reply directly to this email.</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>';
+
             $mail->AltBody = "Connection request from {$student_details['student_name']}.";
 
             if ($mail->send()) {
@@ -128,7 +158,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['connect_req'])) {
 
     <div class="container" style="text-align: center;">
         <?php if (isset($_SESSION['message'])): ?>
-            <p><?= htmlspecialchars($_SESSION['message']['final_msg']); ?></p>
+            <p id="message"><?= htmlspecialchars($_SESSION['message']['final_msg']); ?></p>
+            <script>
+                const message = document.getElementById('message');
+                setTimeout(() => {
+                    message.style.display = 'none';
+                    message.removeAttribute("style");
+                }, 2 * 1000)
+            </script>
         <?php endif; ?>
 
         <form action="./show_alumni_profile_stu.php?alumni_id=<?= urldecode($alumni_id_get) ?>" method="post">
@@ -150,7 +187,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['connect_req'])) {
             <?php } elseif ($final_status === 'accepted') { ?>
                 <p>Friends</p>
             <?php } else { ?>
-                <p>Connect</p>
+                <button name="connect_req">connect</button>
             <?php } ?>
 
         </form>

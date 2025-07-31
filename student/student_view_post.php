@@ -96,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['applybtn'])) {
   $mail->isSMTP();
   $mail->Host = 'smtp.gmail.com'; // Your SMTP server
   $mail->SMTPAuth = true;
-  $mail->Username = 'gohelbhargav401@gmail.com  '; // Your Mailtrap username
+  $mail->Username = 'gohelbhargav401@gmail.com'; // Your Mailtrap username
   $mail->Password = 'aqknaoglmxclkvct'; // Your Mailtrap password
   $mail->SMTPSecure = 'tls';
   $mail->Port = 587;
