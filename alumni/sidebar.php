@@ -71,7 +71,7 @@ $alumni_id = $_SESSION['alumni_id'];
   </style>
 </head>
 
-<body>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5;">
   <div class="p-2 m-2">
     <?php if (!empty($errormessage)) { ?>
       <p><?= htmlspecialchars($errormessage) ?></p>
@@ -83,7 +83,8 @@ $alumni_id = $_SESSION['alumni_id'];
     <a href="./alumni_dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a>
     <a href="./alumni_create_post.php"><i class="fas fa-briefcase"></i> Create Post</a>
     <a href="./alumni_post_view.php"><i class="fas fa-newspaper"></i> View Posts</a>
-    <a href="./alumni_new_request.php"><i class="fas fa-book"></i> New Connection</a>
+    <a href="./alumni_new_request.php"><i class="fa-solid fa-bell"></i> New Connection</a>
+     <a href="./show_friends.php"><i class="fa-solid fa-user-group"></i></i> Friends </a>
     <a href="./edit_alumni_profile.php?edit=<?= htmlspecialchars($alumni_id) ?>"><i class="fas fa-user-edit"></i> Edit Profile</a>
     <a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>

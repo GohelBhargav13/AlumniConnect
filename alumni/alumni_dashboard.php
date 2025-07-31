@@ -38,13 +38,6 @@ try {
 $alumni_posts = "SELECT * FROM postmaster WHERE created_by = ?";
 $alumni_post_stmt = $conn->prepare($alumni_posts);
 $alumni_post_stmt->bind_param('i', $alumni_login_id);
-
-$connection_request = "SELECT s.student_name,s.student_department,s.student_college, co.conn_id,co.connection_status 
-  FROM studentmaster s JOIN connectionmaster co ON s.student_id = co.sender_id WHERE receiver_id = ? AND connection_status = 'pending' ";
-
-$connection_request_stmt = $conn->prepare($connection_request);
-$connection_request_stmt->bind_param("i", $alumni_login_id);
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -401,20 +394,6 @@ $connection_request_stmt->bind_param("i", $alumni_login_id);
         <p id="post" style="display: none;">Nothing Posted By User</p>
       <?php  } ?>
       <!-- End your code here -->
-
-      <?php
-      $connection_request_stmt->execute();
-      $result = $connection_request_stmt->get_result();
-
-      if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-      ?>
-          <p>student name : <?= htmlspecialchars($row['student_name']) ?></p>
-        <?php }
-      } else { ?>
-        <p>No connection request</p>
-      <?php } ?>
-
     </div>
 
   </div>
