@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -8,9 +8,9 @@ require '../vendor/autoload.php'; // ✅ Moved to the top
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-} 
+}
 
-if(!isset($_SESSION['Enroll_no_alumni'])){
+if (!isset($_SESSION['Enroll_no_alumni'])) {
     header("Location: ../login.php");
     exit();
 }
@@ -79,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
 
                 $mail->isHTML(true);
                 $mail->Subject = "New Post from {$final_post['alumni_name']} on AlumniConnect";
-               $mail->Body = "
+                $mail->Body = "
                     <div style='font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; color: #333; border: 1px solid #ddd; border-radius: 8px;'>
                         <p style='font-size: 18px; color: #2c3e50;'>Dear <strong>{$student['student_name']}</strong>,</p>
 
@@ -104,7 +104,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
 
 
                 $mail->send();
-
             } catch (Exception $e) {
                 error_log("Email failed for {$student['student_email']}: " . $mail->ErrorInfo);
                 // You may optionally skip or collect failed emails
@@ -114,7 +113,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
         $_SESSION['message'] = ["success" => true, "final_msg" => "Post created and emails sent successfully"];
         header("Location: alumni_create_post.php");
         exit();
-
     } else {
         $_SESSION['message'] = ["success" => false, "final_msg" => "Error in creating post"];
         header("Location: alumni_create_post.php");
@@ -124,6 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -137,19 +136,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
             margin: 0;
             padding: 0;
             background-color: #f0f2f5;
-            display: flex; /* Keep flex for the overall layout */
-            justify-content: flex-start; /* Align content to start to allow sidebar to sit left */
-            align-items: flex-start; /* Align content to start to keep sidebar at top */
+            display: flex;
+            /* Keep flex for the overall layout */
+            justify-content: flex-start;
+            /* Align content to start to allow sidebar to sit left */
+            align-items: flex-start;
+            /* Align content to start to keep sidebar at top */
             min-height: 100vh;
             color: #333;
             box-sizing: border-box;
+            height: auto;
+            min-height: 100%;
+            overflow-y: auto;
+            /* show vertical scrollbar */
         }
 
         .container {
             display: flex;
-            width: 100%; /* Take full width of body */
-            max-width: none; /* No max-width on the container itself */
-            background-color: #f0f2f5; /* Background for the overall area */
+            width: 100%;
+            /* Take full width of body */
+            max-width: none;
+            /* No max-width on the container itself */
+            background-color: #f0f2f5;
+            /* Background for the overall area */
             border-radius: 0;
             overflow: hidden;
             box-shadow: none;
@@ -203,24 +212,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
 
         /* Main Content & Form Styling adjustments */
         .main-content {
-            flex: 1; /* Allows main content to take remaining space */
-            display: flex; /* Use flexbox to center its child (the form) */
-            justify-content: center; /* Center form horizontally */
-            align-items: center; /* Center form vertically */
-            padding: 20px; /* Padding around the centered form */
+            flex: 1;
+            /* Allows main content to take remaining space */
+            display: flex;
+            /* Use flexbox to center its child (the form) */
+            justify-content: center;
+            /* Center form horizontally */
+            align-items: center;
+            /* Center form vertically */
+            padding: 20px;
+            /* Padding around the centered form */
             box-sizing: border-box;
-            background-color: #f0f2f5; /* Match body background */
-            overflow-y: auto; /* Allow scrolling if content is too long */
+            background-color: #f0f2f5;
+            /* Match body background */
+            overflow-y: auto;
+            /* Allow scrolling if content is too long */
+            max-height: none;
+            /* remove any height restriction */
         }
 
         form {
-            background-color: #ffffff; /* White background for the form itself */
-            padding: 30px; /* Padding inside the form */
+            background-color: #ffffff;
+            padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Shadow for the form */
-            max-width: 500px; /* **This makes the form smaller** */
-            width: 100%; /* Ensures it takes 100% of its max-width */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
             box-sizing: border-box;
+
+            /* ✅ Scrollbar settings */
+            max-height: 90vh;
+            /* fits within the viewport */
+            overflow-y: auto;
+            /* adds scrollbar when content exceeds height */
         }
 
         .form-header {
@@ -305,14 +329,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .container {
-                flex-direction: column; /* Stack sidebar and main content vertically */
+                flex-direction: column;
+                /* Stack sidebar and main content vertically */
             }
 
             .sidebar {
                 height: auto;
                 width: 100%;
                 padding: 16px 0;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
                 flex-direction: row;
                 justify-content: space-around;
                 align-items: center;
@@ -345,6 +370,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
                 border-bottom: 2px solid transparent;
                 border-radius: 5px;
             }
+
             .sidebar .nav-links a i {
                 margin-right: 0;
                 margin-bottom: 5px;
@@ -360,12 +386,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
             }
 
             .main-content {
-                padding: 15px; /* Adjust padding for smaller screens */
+                padding: 15px;
+                /* Adjust padding for smaller screens */
             }
 
             form {
-                max-width: 100%; /* Form takes full width on small screens */
-                padding: 20px; /* Smaller padding for form on mobile */
+                max-width: 100%;
+                /* Form takes full width on small screens */
+                padding: 20px;
+                /* Smaller padding for form on mobile */
             }
 
             .form-header h2 {
@@ -393,35 +422,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
             button[type="submit"] {
                 padding: 10px 15px;
                 font-size: 0.95em;
-                width: 100%; /* Full width button on mobile */
-                align-self: center; /* Center button on mobile */
+                width: 100%;
+                /* Full width button on mobile */
+                align-self: center;
+                /* Center button on mobile */
             }
         }
 
         /* Adjustments for shorter screens (laptops, some tablets) only for wider layouts */
         @media (max-height: 700px) and (min-width: 769px) {
             .main-content {
-                padding: 15px; /* Less padding to fit on shorter screens */
+                padding: 15px;
+                /* Less padding to fit on shorter screens */
             }
+
             form {
-                max-width: 450px; /* Make form even smaller on shorter wider screens */
-                padding: 25px; /* Adjust form padding */
+                max-width: 450px;
+                /* Make form even smaller on shorter wider screens */
+                padding: 25px;
+                /* Adjust form padding */
             }
+
             .field-row textarea {
                 min-height: 60px;
             }
         }
     </style>
 </head>
+
 <body>
-     <?php include './sidebar.php' ?>
-    <div class="container"> 
+    <?php include './sidebar.php' ?>
+    <div class="container">
         <div class="main-content">
             <form action="./alumni_create_post.php" method="POST">
                 <div class="form-header">
                     <h2>Alumni Post</h2>
                 </div>
-                <?php if(isset($_SESSION['message'])){ ?>
+                <?php if (isset($_SESSION['message'])) { ?>
                     <p id="message" style=" color: white;
                             border: 1px solid;
                             background-color: <?= $_SESSION['message']['success'] ? '#28a745' : '#dc3545' ?>;
@@ -433,15 +470,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
                             display: block;
                             transition: all 0.3s ease-in-out;
                             text-align: center;"><?= htmlspecialchars($_SESSION['message']['final_msg'] ?? '') ?></p>
-                    <?php } ?>
-                    <script>
-                        const message = document.getElementById("message");
-                        setTimeout(() => {
-                           message.style.display = 'none';
-                           message.style.backgroundColor = '';
-                        },2 * 1000)
-                    </script>
-                    <?php unset($_SESSION['message']) ?>
+                <?php } ?>
+                <script>
+                    const message = document.getElementById("message");
+                    setTimeout(() => {
+                        message.style.display = 'none';
+                        message.style.backgroundColor = '';
+                    }, 2 * 1000)
+                </script>
+                <?php unset($_SESSION['message']) ?>
                 <div class="form-fields">
                     <div class="field-row">
                         <label for="post-title">Title</label>
@@ -456,7 +493,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
                         <label for="post-location">Location</label>
                         <input type="text" id="post-location" name="location" placeholder="e.g., San Francisco, Remote" required>
                     </div>
-                      <div class="field-row">
+                    <div class="field-row">
                         <label for="post-location">Reference Link</label>
                         <input type="text" id="post-location" name="ref_link" placeholder="e.g., San Francisco, Remote" required>
                     </div>
@@ -464,16 +501,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
                         <label for="post-desc">Description</label>
                         <textarea id="post-desc" name="description" placeholder="Detailed description." rows="4" required></textarea>
                     </div>
-                     <div class="field-row">
+                    <div class="field-row">
                         <label for="post-desc">Type</label>
-                       <select name="typeofjob" id="typeofjob">
+                        <select name="typeofjob" id="typeofjob">
                             <option value="">SELECT TYPE</option>
                             <option value="Internship">Internship</option>
                             <option value="Job">Job</option>
                             <option value="Part-time">Part-time</option>
-                       </select>
+                        </select>
                     </div>
-                    
+
                     <div class="field-row">
                         <label for="post-roadmap">Roadmap (Optional)</label>
                         <textarea id="post-roadmap" name="roadmap" placeholder="Outline steps or a plan." rows="2"></textarea>
@@ -484,4 +521,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
         </div>
     </div>
 </body>
+
 </html>

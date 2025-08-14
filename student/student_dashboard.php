@@ -57,28 +57,34 @@ try {
       background: var(--main-bg);
       font-family: 'Segoe UI', Arial, sans-serif;
     }
+
     .main-content {
       flex: 1;
-      padding: 40px 36px;
+      padding: 70px 0px 0px 100px;
       display: flex;
       flex-direction: column;
       gap: 24px;
       align-items: center;
+
     }
 
     .user-info-container {
       background: var(--card-bg);
       box-shadow: 0 3px 18px #29446013;
       border-radius: 14px;
-      padding: 36px 38px 22px 38px;
-      max-width: 470px;
+      padding: 40px 50px;
+      /* Bigger padding for spacious look */
+      max-width: 730px;
+      /* Increased width */
       width: 100%;
       margin-bottom: 32px;
       display: flex;
       flex-direction: column;
       align-items: center;
       border: 1px solid var(--border-light);
+      box-sizing: border-box;
     }
+
 
     .user-name {
       font-size: 1.4em;
@@ -139,13 +145,23 @@ try {
       border-radius: 12px;
       box-shadow: 0 2px 18px #29446017;
       padding: 30px 32px;
-      flex: 1 0 185px;
-      min-width: 250px;
-      max-width: 220px;
+      flex: 1 1 300px;
+      /* Allow equal growth & shrink */
+      min-width: 300px;
+      /* Bigger minimum size */
+      max-width: 360px;
+      /* Allow consistent max size */
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      box-sizing: border-box;
     }
+
+    /* Make all cards same height */
+    .cards {
+      align-items: stretch;
+    }
+
 
     .card-title {
       color: var(--accent);

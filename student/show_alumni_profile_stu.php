@@ -106,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['connect_req'])) {
         </tr>
         <tr>
           <td style="padding-top: 30px; text-align: center;">
-            <a href="../alumni/alumni_dashboard.php" style="background-color: #007bff; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">View Request</a>
+            <a href="http://localhost/SE_Project/AlumniConnect/alumni/alumni_dashboard.php" style="background-color: #007bff; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">View Request</a>
           </td>
         </tr>
         <tr>
