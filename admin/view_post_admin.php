@@ -1,3 +1,14 @@
+<?php 
+    include '../utills/db_conn.php';
+
+// Fetch all posts
+$fetch_all_post = "SELECT p.*, am.alumni_name,am.alumni_email,am.alumni_id 
+    FROM postmaster as p 
+    JOIN alumnimaster as am ON am.alumni_id = p.created_by 
+    ORDER BY post_created_at DESC";
+$result = $conn->query($fetch_all_post);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,21 +29,21 @@
             
             <!-- Posts container -->
             <div style="display: flex; flex-direction: column; gap: 20px;">
+                <?php 
+                    if($result):
+                        while($row = $result->fetch_assoc()):
+                ?>
                 <!-- Post Item 1 -->
                 <div style="background-color: #161b22; padding: 20px; border-radius: 8px; border: 1px solid #30363d;">
-                    <h2 style="font-size: 20px; margin-top: 0; margin-bottom: 10px;">Post Title 1</h2>
-                    <p style="font-size: 16px; margin: 0;">This is a brief description or snippet of the first post. It provides a summary of the content to the user.</p>
+                    <h2 style="font-size: 20px; margin-top: 0; margin-bottom: 10px;"><?= htmlspecialchars($row['post_title']) ?></h2>
+                    <p style="font-size: 16px; margin: 5px;"><?= htmlspecialchars($row['post_desc']) ?></p>
+                    <p style="font-size: 16px; margin: 5px;"><b>Location</b> : <?= htmlspecialchars($row['post_location']) ?></p>
+                    <p style="font-size: 16px; margin: 5px;"><b>Required Skills</b> : <?= htmlspecialchars($row['post_req_skill']) ?></p>
+                    <p style="font-size: 16px; margin: 5px;"><b>Type </b> : <?= htmlspecialchars($row['post_job_type']) ?></p>
+                    <p style="font-size: 18px; margin: 5px;"><b>Posted By</b> : <?= htmlspecialchars($row['alumni_name']) ?></p>
+                    <p style="font-size: 16px; margin: 5px;"><b>Ref Link </b> : <a href="<?= htmlspecialchars($row['post_ref_link']) ?>" style="text-decoration: none; color: white;" > <?= htmlspecialchars($row['post_ref_link']) ?></a></p>
                 </div>
-                <!-- Post Item 2 -->
-                <div style="background-color: #161b22; padding: 20px; border-radius: 8px; border: 1px solid #30363d;">
-                    <h2 style="font-size: 20px; margin-top: 0; margin-bottom: 10px;">Post Title 2</h2>
-                    <p style="font-size: 16px; margin: 0;">This is a brief description or snippet of the second post. It provides a summary of the content to the user.</p>
-                </div>
-                <!-- Post Item 3 (You can add more as needed) -->
-                <div style="background-color: #161b22; padding: 20px; border-radius: 8px; border: 1px solid #30363d;">
-                    <h2 style="font-size: 20px; margin-top: 0; margin-bottom: 10px;">Post Title 3</h2>
-                    <p style="font-size: 16px; margin: 0;">This is a brief description or snippet of the third post. It provides a summary of the content to the user.</p>
-                </div>
+                <?php endwhile; endif; ?>
             </div>
         </div>
     </div>

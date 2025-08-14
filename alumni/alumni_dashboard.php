@@ -226,7 +226,7 @@ $alumni_post_stmt->bind_param('i', $alumni_login_id);
           <!-- Left side: Profile card -->
           <div class="col-lg-5">
             <div class="card text-center p-4 h-100">
-              <div class="avatar"><?= strtoupper(substr($user_data_fetched['alumni_name'] ?? 'A', 0, 1)) ?></div>
+             <div class="avatar"><?= strtoupper(substr($user_data_fetched['alumni_name'] ?? 'A', 0, 1)) ?></div>
               <h5 class="mt-3"><?= htmlspecialchars($user_data_fetched['alumni_name']) ?></h5>
               <p class="mb-1"><strong>College:</strong> <?= htmlspecialchars($user_data_fetched['alumni_college']) ?></p>
               <p class="mb-1"><strong>Department:</strong> <?= htmlspecialchars($user_data_fetched['alumni_department']) ?></p>

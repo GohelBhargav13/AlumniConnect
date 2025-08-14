@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $user_role = $_POST["role"];
 
         if ($user_role == "student") {
-            $exist_user = "SELECT * FROM studentmaster WHERE Enrollment_no = ? ";
+            $exist_user = "SELECT * FROM studentmaster WHERE Enrollment_no = ? AND req_status = 'accepted' ";
             $exist_user_stmt = $conn->prepare($exist_user);
             $exist_user_stmt->bind_param("i", $Entered_Enrollment);
 
