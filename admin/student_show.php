@@ -56,7 +56,7 @@ $data_res = $conn->query($fetch_student_data);
                             <p style="margin: 5px; font-size: 16px;"><b>Passout Year </b>: <?= htmlspecialchars($row['student_pass_year']) ?></p>
                             <p style="margin: 5px; font-size: 16px;"><b>College </b>: <?= htmlspecialchars($row['student_college']) ?></p>
                             <p style="margin: 5px; font-size: 16px;"><b>Department </b>: <?= htmlspecialchars($row['student_department']) ?></p>
-                            <p style="margin: 5px; font-size: 16px;"><b>LinkedIn </b>: <a href="<?= htmlspecialchars($row['student_linkedIn']) ?>" style="text-decoration: none; color: white;"> <?= htmlspecialchars($row['student_linkedIn']) ?></a></p>
+                            <p style="margin: 5px; font-size: 16px;"><b>LinkedIn </b>: <a href="<?= htmlspecialchars($row['student_linkedIn']) ?>" style="text-decoration: none; color: white;" target="_blank" > <?= htmlspecialchars($row['student_linkedIn']) ?></a></p>
                         </div>
                 <?php endwhile;
                 endif; ?>

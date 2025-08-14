@@ -41,7 +41,7 @@ $result = $conn->query($fetch_all_post);
                     <p style="font-size: 16px; margin: 5px;"><b>Required Skills</b> : <?= htmlspecialchars($row['post_req_skill']) ?></p>
                     <p style="font-size: 16px; margin: 5px;"><b>Type </b> : <?= htmlspecialchars($row['post_job_type']) ?></p>
                     <p style="font-size: 18px; margin: 5px;"><b>Posted By</b> : <?= htmlspecialchars($row['alumni_name']) ?></p>
-                    <p style="font-size: 16px; margin: 5px;"><b>Ref Link </b> : <a href="<?= htmlspecialchars($row['post_ref_link']) ?>" style="text-decoration: none; color: white;" > <?= htmlspecialchars($row['post_ref_link']) ?></a></p>
+                    <p style="font-size: 16px; margin: 5px;"><b>Ref Link </b> : <a href="<?= htmlspecialchars($row['post_ref_link']) ?>" style="text-decoration: none; color: white;" target="_blank" > <?= htmlspecialchars($row['post_ref_link']) ?></a></p>
                 </div>
                 <?php endwhile; endif; ?>
             </div>

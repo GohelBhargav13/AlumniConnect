@@ -54,7 +54,7 @@
                     <p style="margin: 5px; font-size: 16px;"><b>Company </b>: <?= htmlspecialchars($row['alumni_company_name']) ?></p>
                     <p style="margin: 5px; font-size: 16px;"><b>BIO </b>: <?= htmlspecialchars($row['alumni_bio']) ?></p>
                     <p style="margin: 5px; font-size: 16px;"><b>College </b>: <?= htmlspecialchars($row['alumni_college']) ?></p>
-                    <p style="margin: 5px; font-size: 16px;"><b>LinkedIn </b>: <a href="<?= htmlspecialchars($row['alumni_linkedIn']) ?>" style="text-decoration: none; color:white;" > <?= htmlspecialchars($row['alumni_linkedIn']) ?></a></p>
+                    <p style="margin: 5px; font-size: 16px;"><b>LinkedIn </b>: <a href="<?= htmlspecialchars($row['alumni_linkedIn']) ?>" style="text-decoration: none; color:white;" target="_blank" > <?= htmlspecialchars($row['alumni_linkedIn']) ?></a></p>
                 </div>
                 <?php endwhile; 
                     endif;

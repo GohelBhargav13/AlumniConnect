@@ -79,6 +79,7 @@ $alumni_id = $_SESSION['alumni_id'];
   </div>
   <div class="sidebar">
     <h4 class="text-center">AlumniConnect</h4>
+    <p class="text-center">Alumni Dashboard</p>
     <hr class="text-white">
     <a href="./alumni_dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a>
     <a href="./alumni_create_post.php"><i class="fas fa-briefcase"></i> Create Post</a>

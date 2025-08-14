@@ -4,7 +4,7 @@ include "../utills/db_conn.php";
 $total_analystics = "SELECT 
                         (SELECT COUNT(*) FROM alumnimaster) AS alumni_count,
                         (SELECT COUNT(*) FROM postmaster) AS post_count,
-                        (SELECT COUNT(*) FROM studentmaster) AS student_count;";
+                        (SELECT COUNT(*) FROM studentmaster WHERE req_status = 'accepted') AS student_count;";
 
 $total_analystics_res = $conn->query($total_analystics);
 if ($total_analystics_res) {
