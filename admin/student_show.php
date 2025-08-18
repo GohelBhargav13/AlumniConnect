@@ -54,9 +54,9 @@ $data_res = $conn->query($fetch_student_data);
                             <div class="avatar"><?= strtoupper(substr($row['student_name'] ?? 'A', 0, 1)) ?></div>
                             <h2 style="font-size: 20px; margin-top: 0; margin-bottom: 5px;"><?= htmlspecialchars($row['student_name']) ?></h2>
                             <p style="margin: 5px; font-size: 16px;"><b>Passout Year </b>: <?= htmlspecialchars($row['student_pass_year']) ?></p>
-                            <p style="margin: 5px; font-size: 16px;"><b>College </b>: <?= htmlspecialchars($row['student_college']) ?></p>
-                            <p style="margin: 5px; font-size: 16px;"><b>Department </b>: <?= htmlspecialchars($row['student_department']) ?></p>
-                            <p style="margin: 5px; font-size: 16px;"><b>LinkedIn </b>: <a href="<?= htmlspecialchars($row['student_linkedIn']) ?>" style="text-decoration: none; color: white;" target="_blank" > <?= htmlspecialchars($row['student_linkedIn']) ?></a></p>
+                            <p style="margin: 5px; font-size: 16px;"><b>College </b>: <?= htmlspecialchars($row['student_college'] ?? NULL) ?></p>
+                            <p style="margin: 5px; font-size: 16px;"><b>Department </b>: <?= htmlspecialchars($row['student_department'] ?? "N/A") ?></p>
+                            <p style="margin: 5px; font-size: 16px;"><b>LinkedIn </b>: <a href="<?= isset($row['student_linkedIn']) ? htmlspecialchars($row['student_linkedIn']) : htmlspecialchars("NULL") ?>" style="text-decoration: none; color: white;" target="_blank" > <?= htmlspecialchars($row['student_linkedIn']) ?></a></p>
                         </div>
                 <?php endwhile;
                 endif; ?>
