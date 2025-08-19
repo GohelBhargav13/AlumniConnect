@@ -1,7 +1,7 @@
 <?php
 include '../utills/db_conn.php';
 //fetch alumni details 
-$fetch_student_data = "SELECT * FROM studentmaster";
+$fetch_student_data = "SELECT * FROM studentmaster WHERE req_status = 'accepted'";
 $data_res = $conn->query($fetch_student_data);
 
 ?>

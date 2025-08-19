@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
     $student_passoutYear = (int) $_POST['passOutYear'] ?? 0;
     $student_password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirmPassword'] ?? '';
+    $student_department = $_POST['department'] ?? '';
     $idCardPath = null;
 
     try {
@@ -63,11 +64,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
 
         // insert into db (added ID_Card column)
         $register_new_student = "INSERT INTO studentmaster 
-            (Enrollment_no, student_name, student_email, student_phone_no, student_add_year, student_pass_year, student_password, ID_Card) 
-            VALUES (?,?,?,?,?,?,?,?)";
+            (Enrollment_no, student_name, student_email, student_phone_no, student_add_year, student_pass_year, student_password, ID_Card,student_department) 
+            VALUES (?,?,?,?,?,?,?,?,?)";
         $register_new_stmt = $conn->prepare($register_new_student);
         $register_new_stmt->bind_param(
-            'issiiiss',
+            'issiiisss',
             $student_enrollment,
             $student_name,
             $student_email,
@@ -75,7 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
             $student_admissionYear,
             $student_passoutYear,
             $hashed_password,
-            $idCardPath
+            $idCardPath,
+            $student_department
         );
 
         if ($register_new_stmt->execute()) {
@@ -107,18 +109,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
     <link rel="stylesheet" href="../style/register.css">
 </head>
 
-<body>
+<body style="margin-top: 170px;">
     <div class="container">
         <div class="illustration-section">
             <img src="path/to/your/illustration.svg" alt="Illustration of person working">
         </div>
         <div class="form-section">
             <div class="registration-card">
-                <div class="logo">
-                    <img src="path/to/your/unicorn-icon.png" alt="UI Unicorn Logo">
-                    <span>UI Unicorn</span>
-                </div>
-                <h2>Join UI Unicorn</h2>
+                <h2>Student Registration</h2>
                 <?php if (isset($_SESSION['message'])): ?>
                     <p id="message" class="msg" style="text-align: center; margin-top: 10px;"><?= htmlspecialchars($_SESSION['message']['mess']) ?></p>
                     <script>
@@ -148,6 +146,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
                     <div class="form-group">
                         <label for="idCard">Upload ID Card</label>
                         <input type="file" name="idCard" id="idCard" accept="image/*,application/pdf" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="post-desc">Type</label>
+                        <select name="department" id="department">
+                            <option value="">SELECT Department</option>
+                            <option value="Computer Engineering">Computer Engineeering</option>
+                            <option value="Information Technology">Infromation Technology</option>
+                        </select>
                     </div>
 
                     <div class="form-group half-width-group">
