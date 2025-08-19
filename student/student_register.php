@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
 
         // handle file upload
         if (isset($_FILES['idCard']) && $_FILES['idCard']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = '../uploads/idcards/';
+            $uploadDir = '../uploads/idcards/student/';
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }

@@ -8,7 +8,7 @@ $total_analystics = "SELECT
 
 $total_analystics_res = $conn->query($total_analystics);
 if ($total_analystics_res) {
-    $final_analystics =  $total_analystics_res->fetch_assoc();
+    $final_analystics2 =  $total_analystics_res->fetch_assoc();
 }
 
 ?>
@@ -37,17 +37,17 @@ if ($total_analystics_res) {
                 <!-- Alumni Card -->
                 <div style="flex: 1; background-color: #161b22; padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #30363d;">
                     <h2 style="margin: 0; font-size: 18px;">No. of Alumni</h2>
-                    <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics['alumni_count']) ?></p>
+                    <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics2['alumni_count']) ?? 0 ?></p>
                 </div>
                 <!-- Student Card -->
                 <div style="flex: 1; background-color: #161b22; padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #30363d;">
                     <h2 style="margin: 0; font-size: 18px;">No. of Student</h2>
-                    <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics['student_count']) ?></p>
+                    <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics2['student_count']) ?></p>
                 </div>
                 <!-- Post Card -->
                 <div style="flex: 1; background-color: #161b22; padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #30363d;">
                     <h2 style="margin: 0; font-size: 18px;">No. of Post</h2>
-                    <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics['post_count']) ?></p>
+                    <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics2['post_count']) ?></p>
                 </div>
             </div>
         </div>

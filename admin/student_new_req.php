@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $id_card_file = $file_row['ID_Card'];
 
 
-            $file_path = "../uploads/idcards/" . $id_card_file;
+            $file_path = "../uploads/idcards/student/" . $id_card_file;
 
             //  Delete the student record
             $update_status = "DELETE FROM studentmaster WHERE student_id = ?";
@@ -84,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student New Requests</title>
+    <title>Student New Requests | Admin Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Responsive design rules and modal styles that cannot be moved inline */

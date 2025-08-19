@@ -5,14 +5,14 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 //fetch the student data for the new request
-$select_new_req = $conn->query("SELECT student_id,student_name,Enrollment_no,student_add_year,student_pass_year,ID_Card,student_department FROM studentmaster WHERE req_status = 'pending'");
+$select_new_req = $conn->query("SELECT alumni_id,alumni_name,Enrollment_no,alumni_add_year,alumni_pass_year,ID_Card,alumni_department FROM alumnimaster WHERE req_status = 'pending'");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['act_btn'])) {
-        $student_id = $_POST['student_id'] ?? " ";
+        $student_id = $_POST['alumni_id'] ?? " ";
 
         //UPDATE THE STATUS FROM "pending" TO "accepted"
-        $update_status = "UPDATE studentmaster SET req_status = 'accepted' WHERE student_id = ?";
+        $update_status = "UPDATE alumnimaster SET req_status = 'accepted' WHERE alumni_id = ?";
         $update_status_stmt = $conn->prepare($update_status);
         $update_status_stmt->bind_param("i", $student_id);
 
@@ -23,10 +23,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
     if (isset($_POST['rej_btn'])) {
-        $student_id = $_POST['student_id'] ?? " ";
+        $student_id = $_POST['alumni_id'] ?? " ";
 
         //fetch data 
-        $get_file = "SELECT ID_Card FROM studentmaster WHERE student_id = ?";
+        $get_file = "SELECT ID_Card FROM alumnimaster WHERE alumni_id = ?";
         $get_file_stmt = $conn->prepare($get_file);
         $get_file_stmt->bind_param("i", $student_id);
         $get_file_stmt->execute();
@@ -37,10 +37,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $id_card_file = $file_row['ID_Card'];
 
 
-            $file_path = "../uploads/idcards/" . $id_card_file;
+            $file_path = "../uploads/idcards/alumni/" . $id_card_file;
 
             //  Delete the student record
-            $update_status = "DELETE FROM studentmaster WHERE student_id = ?";
+            $update_status = "DELETE FROM alumnimaster WHERE alumni_id = ?";
             $update_status_stmt = $conn->prepare($update_status);
             $update_status_stmt->bind_param("i", $student_id);
 
@@ -72,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     $update_status_stmt->close();
-    header("Location:student_new_req.php");
+    header("Location:alumni_new_req.php");
     exit();
 }
 
@@ -84,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student New Requests</title>
+    <title>Student New Requests | Admin Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Responsive design rules and modal styles that cannot be moved inline */
@@ -217,7 +217,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!-- Main Content -->
         <main class="main-content" style="flex-grow: 1; padding: 20px; box-sizing: border-box; background-color: #0d1117; overflow-y: auto;">
             <header class="header" style="text-align: center; margin-bottom: 40px; border-bottom: 1px solid #30363d; padding-bottom: 20px;">
-                <h1 style="margin: 0; font-weight: 600; color: #f0f0f0; font-size: 24px;">New Student Requests</h1>
+                <h1 style="margin: 0; font-weight: 600; color: #f0f0f0; font-size: 24px;">New Alumni Requests</h1>
             </header>
             <div class="request-card" style="background-color: #161b22; border-radius: 8px; padding: 20px; border: 1px solid #30363d; margin: 0 20px;">
                 <?php if (isset($_SESSION['message'])): ?>
@@ -241,7 +241,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <table class="request-table" style="width: 100%; border-collapse: collapse; margin-top: 1.5rem;">
                     <thead>
                         <tr>
-                            <th style="background-color: #30363d; padding: 1rem 0.75rem; text-align: center; font-weight: 600; border-bottom: 2px solid #555; white-space: nowrap;">Student Name</th>
+                            <th style="background-color: #30363d; padding: 1rem 0.75rem; text-align: center; font-weight: 600; border-bottom: 2px solid #555; white-space: nowrap;">Alumni Name</th>
                             <th style="background-color: #30363d; padding: 1rem 0.75rem; text-align: center; font-weight: 600; border-bottom: 2px solid #555; white-space: nowrap;">Enrollment</th>
                             <th style="background-color: #30363d; padding: 1rem 0.75rem; text-align: center; font-weight: 600; border-bottom: 2px solid #555; white-space: nowrap;">Department</th>
                             <th style="background-color: #30363d; padding: 1rem 0.75rem; text-align: center; font-weight: 600; border-bottom: 2px solid #555; white-space: nowrap;">Admission Year</th>
@@ -258,18 +258,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         ?>
                                 <tr style="border-bottom: 1px solid #30363d;">
-                                    <td data-label="Student Name" style="padding: 1rem 0.75rem; vertical-align: middle;"><?= htmlspecialchars($row['student_name']) ?></td>
+                                    <td data-label="Student Name" style="padding: 1rem 0.75rem; vertical-align: middle;"><?= htmlspecialchars($row['alumni_name']) ?></td>
                                     <td data-label="Enrollment" style="padding: 1rem 0.75rem; vertical-align: middle;"><?= htmlspecialchars($row['Enrollment_no']) ?></td>
-                                    <td data-label="Department" style="padding: 1rem 0.75rem; vertical-align: middle;"><?= htmlspecialchars($row['student_department']) ?></td>
-                                    <td data-label="Admission Year" style="padding: 1rem 0.75rem; vertical-align: middle;"><?= htmlspecialchars($row['student_add_year']) ?></td>
-                                    <td data-label="Passout Year" style="padding: 1rem 0.75rem; vertical-align: middle;"><?= htmlspecialchars($row['student_pass_year']) ?></td>
+                                    <td data-label="Department" style="padding: 1rem 0.75rem; vertical-align: middle;"><?= htmlspecialchars($row['alumni_department']) ?></td>
+                                    <td data-label="Admission Year" style="padding: 1rem 0.75rem; vertical-align: middle;"><?= htmlspecialchars($row['alumni_add_year']) ?></td>
+                                    <td data-label="Passout Year" style="padding: 1rem 0.75rem; vertical-align: middle;"><?= htmlspecialchars($row['alumni_pass_year']) ?></td>
                                     <td data-label="I-Card" style="padding: 1rem 0.75rem; vertical-align: middle;">
-                                        <a href="javascript:void(0);" onclick="showICard('../uploads/idcards/<?= htmlspecialchars($row['ID_Card']) ?>')" style="color: #4CAF50; text-decoration: none; font-weight: 500;">I-Card</a>
+                                        <a href="javascript:void(0);" onclick="showICard('../uploads/idcards/alumni/<?= htmlspecialchars($row['ID_Card']) ?>')" style="color: #4CAF50; text-decoration: none; font-weight: 500;">I-Card</a>
                                     </td>
                                     <td data-label="Status" style="padding: 1rem 0.75rem; vertical-align: middle;">
                                         <div class="button-container" style="display: flex; gap: 1rem;">
-                                            <form action="./student_new_req.php" method="post">
-                                                <input type="hidden" name="student_id" value='<?= htmlspecialchars($row['student_id']) ?>'>
+                                            <form action="./alumni_new_req.php" method="post">
+                                                <input type="hidden" name="alumni_id" value='<?= htmlspecialchars($row['alumni_id']) ?>'>
                                                 <button class="action-btn accept-btn" type="submit" style="margin-bottom: 4px; padding: 0.5rem 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; background-color: #4CAF50; color: #fff;" name="act_btn">Accept</button>
                                                 <button class="action-btn reject-btn" type="submit" style="padding: 0.5rem 1rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; background-color: #f44336; color: #fff;" name="rej_btn">Reject</button>
                                             </form>
