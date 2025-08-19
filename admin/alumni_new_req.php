@@ -3,6 +3,10 @@ require "../utills/db_conn.php";
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: ./admin_login.php");
+    exit();
+}
 
 //fetch the student data for the new request
 $select_new_req = $conn->query("SELECT alumni_id,alumni_name,Enrollment_no,alumni_add_year,alumni_pass_year,ID_Card,alumni_department FROM alumnimaster WHERE req_status = 'pending'");

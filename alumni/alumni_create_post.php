@@ -511,6 +511,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
                         </select>
                     </div>
 
+                    
                     <div class="field-row">
                         <label for="post-roadmap">Roadmap (Optional)</label>
                         <textarea id="post-roadmap" name="roadmap" placeholder="Outline steps or a plan." rows="2"></textarea>

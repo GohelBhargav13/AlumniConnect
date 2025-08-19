@@ -1,5 +1,11 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) session_start();
 include '../utills/db_conn.php';
+
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: ./admin_login.php");
+    exit();
+}
 //fetch alumni details 
 $fetch_student_data = "SELECT * FROM studentmaster WHERE req_status = 'accepted'";
 $data_res = $conn->query($fetch_student_data);
@@ -56,7 +62,7 @@ $data_res = $conn->query($fetch_student_data);
                             <p style="margin: 5px; font-size: 16px;"><b>Passout Year </b>: <?= htmlspecialchars($row['student_pass_year']) ?></p>
                             <p style="margin: 5px; font-size: 16px;"><b>College </b>: <?= htmlspecialchars($row['student_college'] ?? NULL) ?></p>
                             <p style="margin: 5px; font-size: 16px;"><b>Department </b>: <?= htmlspecialchars($row['student_department'] ?? "N/A") ?></p>
-                            <p style="margin: 5px; font-size: 16px;"><b>LinkedIn </b>: <a href="<?= isset($row['student_linkedIn']) ? htmlspecialchars($row['student_linkedIn']) : htmlspecialchars("NULL") ?>" style="text-decoration: none; color: white;" target="_blank" > <?= htmlspecialchars($row['student_linkedIn']) ?></a></p>
+                            <p style="margin: 5px; font-size: 16px;"><b>LinkedIn </b>: <a href="<?= isset($row['student_linkedIn']) ? htmlspecialchars($row['student_linkedIn']) : htmlspecialchars("NULL") ?>" style="text-decoration: none; color: white;" target="_blank"> <?= htmlspecialchars($row['student_linkedIn']) ?></a></p>
                         </div>
                 <?php endwhile;
                 endif; ?>

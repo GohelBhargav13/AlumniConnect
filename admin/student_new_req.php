@@ -4,6 +4,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: ./admin_login.php");
+    exit();
+}
+
 //fetch the student data for the new request
 $select_new_req = $conn->query("SELECT student_id,student_name,Enrollment_no,student_add_year,student_pass_year,ID_Card,student_department FROM studentmaster WHERE req_status = 'pending'");
 

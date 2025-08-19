@@ -16,6 +16,7 @@ $fetch_friends = "SELECT s.*, c.conn_id
     FROM studentmaster s  
     JOIN connectionmaster c ON c.sender_id = s.student_id 
     WHERE receiver_id = ? AND connection_status = 'accepted'";
+    
 
 $fetch_friends_stmt = $conn->prepare($fetch_friends);
 $fetch_friends_stmt->bind_param("i", $alumni_id);

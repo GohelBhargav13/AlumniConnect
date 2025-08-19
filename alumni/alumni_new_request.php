@@ -6,6 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (!isset($_SESSION['alumni_id'])) {
+    
     header("Location: alumni_dashboard.php");
 }
 

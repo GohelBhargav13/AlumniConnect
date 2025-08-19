@@ -1,5 +1,11 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) session_start();
 include "../utills/db_conn.php";
+
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: ./admin_login.php");
+    exit();
+}
 
 $total_analystics = "SELECT 
                         (SELECT COUNT(*) FROM alumnimaster) AS alumni_count,
@@ -31,7 +37,7 @@ if ($total_analystics_res) {
         <!-- Main Content Area -->
         <div style="flex-grow: 1; padding: 20px; box-sizing: border-box; background-color: #0d1117;">
             <h1 style="text-align: center; font-size: 24px; margin-bottom: 40px; border-bottom: 1px solid #30363d; padding-bottom: 20px;">Admin Panel</h1>
-
+            <h1 style="margin: 25px 5px;">Welcome <b><?= htmlspecialchars($_SESSION['admin_name']) ?></b> !</h1>
             <!-- Cards container -->
             <div style="display: flex; justify-content: space-around; gap: 20px;">
                 <!-- Alumni Card -->
