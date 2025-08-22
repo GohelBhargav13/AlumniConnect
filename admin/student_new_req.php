@@ -269,7 +269,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <td data-label="Admission Year" style="padding: 1rem 0.75rem; vertical-align: middle;"><?= htmlspecialchars($row['student_add_year']) ?></td>
                                     <td data-label="Passout Year" style="padding: 1rem 0.75rem; vertical-align: middle;"><?= htmlspecialchars($row['student_pass_year']) ?></td>
                                     <td data-label="I-Card" style="padding: 1rem 0.75rem; vertical-align: middle;">
-                                        <a href="javascript:void(0);" onclick="showICard('../uploads/idcards/<?= htmlspecialchars($row['ID_Card']) ?>')" style="color: #4CAF50; text-decoration: none; font-weight: 500;">I-Card</a>
+                                        <a href="javascript:void(0);" onclick="showICard('../uploads/idcards/student/<?= htmlspecialchars($row['ID_Card']) ?>')" style="color: #4CAF50; text-decoration: none; font-weight: 500;">I-Card</a>
                                     </td>
                                     <td data-label="Status" style="padding: 1rem 0.75rem; vertical-align: middle;">
                                         <div class="button-container" style="display: flex; gap: 1rem;">

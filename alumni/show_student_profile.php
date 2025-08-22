@@ -67,6 +67,10 @@ if (!$student) {
               <td style="padding: 8px 0; color: #555; font-weight: bold;">City:</td>
               <td style="padding: 8px 0; color: #333;"><?= htmlspecialchars($student['student_city'] ?? 'N/A') ?></td>
             </tr>
+             <tr>
+              <td style="padding: 8px 0; color: #555; font-weight: bold;">College:</td>
+              <td style="padding: 8px 0; color: #333;"><?= htmlspecialchars($student['student_college'] ?? 'N/A') ?></td>
+            </tr>
           </table>
         </div>
 
