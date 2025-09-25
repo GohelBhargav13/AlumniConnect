@@ -25,6 +25,7 @@ if ($total_analystics_res) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlumniConnect | Admin Panel</title>
+    <link rel="icon" type="image/x-icon" href="../uploads/website_images/favicon.png">
 </head>
 
 <body style="margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: #0d1117; color: white;">
