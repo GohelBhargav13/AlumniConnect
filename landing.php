@@ -1,397 +1,530 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth antialiased">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AlumniConnect – Bridge Alumni & Students</title>
-  <meta name="description" content="AlumniConnect connects alumni and students for opportunities, mentorship, and career growth." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
-          colors: {
-            brand: {
-              50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81'
-            },
-            accent: {
-              50:'#f0fdf4',100:'#dcfce7',200:'#bbf7d0',300:'#86efac',400:'#4ade80',500:'#22c55e',600:'#16a34a',700:'#15803d',800:'#166534',900:'#14532d'
-            }
-          },
-          boxShadow: {
-            'glow': '0 0 40px rgba(99,102,241,0.35)'
-          },
-          animation: {
-            'fade-in-up':'fadeInUp 0.6s ease both'
-          },
-          keyframes: {
-            fadeInUp: {
-              '0%':{opacity:0,transform:'translateY(20px)'},
-              '100%':{opacity:1,transform:'translateY(0)'}
-            }
-          }
-        }
-      }
-    }
-  </script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GEC Modasa Alumni Portal</title>
   <style>
-    :root { color-scheme: light dark; }
-    html { scroll-padding-top: 5rem; }
+    :root {
+      --navy: #1b3a4b;
+      --navy-dark: #122733;
+      --teal: #2f7a68;
+      --teal-dark: #235d51;
+      --bg: #f6f7f5;
+      --card-bg: #ffffff;
+      --text: #2b2f31;
+      --muted: #667079;
+      --border: #e0e3df;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    h1, h2, h3 {
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    img { max-width: 100%; display: block; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid var(--teal);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+
+    /* ---------- Header / Navbar ---------- */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Georgia, serif;
+      font-weight: 700;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 16px;
+      color: var(--navy);
+    }
+
+    .brand-text span {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    nav.main-nav {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+
+    nav.main-nav a {
+      font-size: 14.5px;
+      color: var(--text);
+      padding: 6px 2px;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    nav.main-nav a:hover {
+      color: var(--teal-dark);
+      border-bottom-color: var(--teal);
+    }
+
+    .auth-links {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-outline {
+      border-color: var(--navy);
+      color: var(--navy);
+      background: transparent;
+    }
+    .btn-outline:hover { background: var(--navy); color: #fff; }
+
+    .btn-solid {
+      background: var(--teal);
+      color: #fff;
+    }
+    .btn-solid:hover { background: var(--teal-dark); }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 7px 10px;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--navy);
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      background: linear-gradient(160deg, var(--navy) 0%, var(--navy-dark) 100%);
+      color: #fff;
+      padding: 70px 20px 90px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      color: #fff;
+      font-size: 2.3rem;
+      max-width: 700px;
+      margin: 0 auto 16px;
+    }
+
+    .hero p {
+      color: #cfd9dc;
+      max-width: 560px;
+      margin: 0 auto 30px;
+      font-size: 1.02rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-lg { padding: 12px 26px; font-size: 15px; }
+
+    .btn-white {
+      background: #fff;
+      color: var(--navy);
+    }
+    .btn-white:hover { background: #e7ece9; }
+
+    .btn-ghost {
+      border: 1.5px solid rgba(255,255,255,0.6);
+      color: #fff;
+      background: transparent;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.12); }
+
+    /* ---------- Steps ---------- */
+    .steps-section {
+      padding: 64px 20px;
+    }
+
+    .section-heading {
+      text-align: center;
+      max-width: 560px;
+      margin: 0 auto 44px;
+    }
+
+    .section-heading h2 { font-size: 1.7rem; margin-bottom: 10px; }
+    .section-heading p { color: var(--muted); font-size: 0.98rem; }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .step {
+      text-align: center;
+      padding: 0 10px;
+    }
+
+    .step-number {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin: 0 auto 16px;
+      font-family: Georgia, serif;
+    }
+
+    .step h3 { font-size: 1.05rem; margin-bottom: 8px; }
+    .step p { color: var(--muted); font-size: 0.92rem; }
+
+    /* ---------- Quick access cards ---------- */
+    .quick-access {
+      background: #fff;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 64px 20px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 26px 22px;
+      transition: box-shadow 0.15s ease, transform 0.15s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 6px 18px rgba(27,58,75,0.09);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 6px;
+      background: #e8f1ee;
+      color: var(--teal-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+
+    .card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 14px; }
+    .card a { color: var(--teal-dark); font-size: 0.88rem; font-weight: 600; }
+    .card a:hover { text-decoration: underline; }
+
+    /* ---------- About strip ---------- */
+    .about-strip {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .about-strip .container { max-width: 720px; }
+
+    .about-strip h2 { font-size: 1.5rem; margin-bottom: 14px; }
+    .about-strip p { color: var(--muted); font-size: 0.98rem; }
+
+    /* ---------- Footer ---------- */
+    footer {
+      background: var(--navy-dark);
+      color: #cfd9dc;
+      padding: 46px 20px 22px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .footer-grid h4 {
+      color: #fff;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+      font-family: Georgia, serif;
+    }
+
+    .footer-grid ul li { margin-bottom: 8px; }
+    .footer-grid ul li a { font-size: 0.88rem; color: #b9c4c8; }
+    .footer-grid ul li a:hover { color: #fff; }
+
+    .footer-about p { font-size: 0.88rem; color: #b9c4c8; max-width: 320px; }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.12);
+      padding-top: 18px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: #93a0a5;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 860px) {
+      .steps, .cards { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      nav.main-nav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding: 6px 20px 14px;
+      }
+      nav.main-nav.open { display: flex; }
+      nav.main-nav a {
+        width: 100%;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .auth-links { display: none; }
+      .auth-links.open {
+        display: flex;
+        position: absolute;
+        top: calc(100% + 190px);
+        left: 20px;
+        right: 20px;
+      }
+      .menu-toggle { display: inline-block; }
+      .hero h1 { font-size: 1.7rem; }
+    }
   </style>
 </head>
-<body class="bg-white text-slate-800 dark:bg-slate-900 dark:text-slate-100 font-sans">
-  <!-- Skip to content -->
-  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 bg-brand-600 text-white px-4 py-2 rounded-md">Skip to content</a>
+<body>
 
-  <!-- Top Banner (Optional Announcement) -->
-  <div id="top-banner" class="hidden lg:block bg-brand-600 text-white text-center text-sm py-2">🎉 Join the Beta Version     – Alumni & Students sign up today!</div>
+<header>
+  <div class="navbar">
+    <a href="#home" class="brand">
+      <span class="brand-badge">GEC</span>
+      <span class="brand-text">
+        <strong>GEC Modasa Alumni Portal</strong>
+        <span>Government Engineering College, Modasa</span>
+      </span>
+    </a>
 
-  <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur border-b border-slate-200 dark:border-slate-700">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600 text-white font-bold text-xl">AC</span>
-        <span class="hidden sm:inline font-bold tracking-tight">AlumniConnect</span>
+    <nav class="main-nav" id="mainNav">
+      <a href="#home">Home</a>
+      <a href="#directory">Directory</a>
+      <a href="#opportunities">Opportunities</a>
+      <a href="#events">Events</a>
+      <a href="#announcements">Announcements</a>
+    </nav>
+
+    <div class="auth-links" id="authLinks">
+      <a href="./login.php" class="btn btn-outline">Login</a>
+      <a href="./register.php" class="btn btn-solid">Register</a>
+    </div>
+
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
+  </div>
+</header>
+
+<section class="hero" id="home">
+  <h1>Stay connected with GEC Modasa, long after graduation.</h1>
+  <p>One simple place for alumni and the college to stay in touch — find batchmates, share opportunities, and keep up with campus events.</p>
+  <div class="hero-actions">
+    <a href="./register.php" class="btn btn-white btn-lg">Register as Alumni</a>
+    <a href="./login.php" class="btn btn-ghost btn-lg">Login</a>
+  </div>
+</section>
+
+<section class="steps-section">
+  <div class="container">
+    <div class="section-heading">
+      <h2>How the portal works</h2>
+      <p>A straightforward process, built for alumni who studied at GEC Modasa.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Register with your college email</h3>
+        <p>If your details were already shared by the college office, registering only takes a minute.</p>
       </div>
-      <nav aria-label="Primary" class="hidden md:flex md:items-center md:gap-8 text-sm font-medium">
-        <a href="#how-it-works" class="hover:text-brand-600">How it Works</a>
-        <a href="#features" class="hover:text-brand-600">Features</a>
-        <a href="#testimonials" class="hover:text-brand-600">Success</a>    
-      </nav>
-      <div class="flex items-center gap-2">
-        <button id="darkModeToggle" class="p-2 rounded-md border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800" aria-pressed="false" aria-label="Toggle dark mode">
-          <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 hidden"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-          <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
-        <a href="./login.php" class="hidden sm:inline-block rounded-md border border-brand-600 px-3 py-1.5 text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-600/20">Login</a>
-        <a href="#cta-section" class="hidden sm:inline-block rounded-md bg-brand-600 px-3 py-1.5 text-white shadow hover:bg-brand-700">Get Started</a>
-        <button id="mobileMenuBtn" class="md:hidden p-2 rounded-md border border-slate-300 dark:border-slate-600" aria-expanded="false" aria-controls="mobileMenu">
-          <span class="sr-only">Open menu</span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
-        </button>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Complete your profile</h3>
+        <p>Add your current company, city, and LinkedIn so batchmates and juniors can find you.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Stay in the loop</h3>
+        <p>Browse the alumni directory, post opportunities, and check college events anytime.</p>
       </div>
     </div>
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="md:hidden hidden border-t border-slate-200 dark:border-slate-700">
-      <nav aria-label="Mobile" class="px-4 py-4 flex flex-col gap-3 text-sm">
-        <a href="#how-it-works" class="hover:text-brand-600">How it Works</a>
-        <a href="#features" class="hover:text-brand-600">Features</a>
-        <a href="#testimonials" class="hover:text-brand-600">Success Stories</a>
-        <div class="pt-3 flex gap-2">
-          <a href="/login" class="flex-1 rounded-md border border-brand-600 px-4 py-2 text-center text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-600/20">Login</a>
-          <a href="#cta-section" class="flex-1 rounded-md bg-brand-600 px-4 py-2 text-center text-white shadow hover:bg-brand-700">Get Started</a>
-        </div>
-      </nav>
+  </div>
+</section>
+
+<section class="quick-access">
+  <div class="container">
+    <div class="section-heading">
+      <h2>What you can do here</h2>
+      <p>A few simple tools — nothing more than the college actually needs.</p>
     </div>
-  </header>
+    <div class="cards">
 
-  <main id="main" class="relative">
-    <!-- Hero Split Audience -->
-    <section id="hero" class="relative">
-      <div class="grid grid-cols-1 lg:grid-cols-2 min-h-[75vh]">
-        <!-- Alumni Panel -->
-        <div class="relative group overflow-hidden bg-gradient-to-br from-brand-600 to-brand-800 text-white flex items-center justify-center p-12 sm:p-16">
-          <div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=1200&q=60')] bg-cover bg-center group-hover:opacity-30 transition-opacity"></div>
-          <div class="relative max-w-md text-center space-y-6 animate-fade-in-up">
-            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">I'm an Alumni</h1>
-            <p class="text-brand-50 text-base sm:text-lg">Share opportunities, mentor students, and stay connected with your campus community.</p>
-            <div class="flex flex-col sm:flex-row gap-3 justify-center">
-              <a href="./alumni/alumni_register.php" class="rounded-md bg-white text-brand-700 px-6 py-3 font-semibold shadow hover:bg-brand-50">Join as Alumni</a>
-              <a href="./login.php" class="rounded-md border border-white/60 px-6 py-3 font-semibold hover:bg-white/10">Alumni Login</a>
-            </div>
-          </div>
-        </div>
-        <!-- Student Panel -->
-        <div class="relative group overflow-hidden bg-gradient-to-br from-accent-500 to-accent-700 text-white flex items-center justify-center p-12 sm:p-16">
-          <div class="absolute inset-0 opacity-25 bg-[url('https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=1200&q=60')] bg-cover bg-center group-hover:opacity-35 transition-opacity"></div>
-          <div class="relative max-w-md text-center space-y-6 animate-fade-in-up">
-            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">I'm a Student</h2>
-            <p class="text-accent-50 text-base sm:text-lg">Discover internships, get career guidance, and build meaningful alumni connections.</p>
-            <div class="flex flex-col sm:flex-row gap-3 justify-center">
-              <a href="./student/student_register.php" class="rounded-md bg-white text-accent-700 px-6 py-3 font-semibold shadow hover:bg-accent-50">Join as Student</a>
-              <a href="./login.php" class="rounded-md border border-white/60 px-6 py-3 font-semibold hover:bg-white/10">Student Login</a>
-            </div>
-          </div>
-        </div>
+      <div class="card" id="directory">
+        <div class="card-icon">&#9906;</div>
+        <h3>Alumni Directory</h3>
+        <p>Search fellow alumni by batch, branch, or city, and reconnect with old classmates.</p>
+        <a href="./directory.php">Browse directory &rarr;</a>
       </div>
-    </section>
 
-    <!-- Social Proof / Stats -->
-    <section id="stats" class="py-20 bg-slate-50 dark:bg-slate-800">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-2xl sm:text-3xl font-bold mb-10">Growing Community</h2>
-        <dl class="grid grid-cols-2 sm:grid-cols-4 gap-8">
-          <div class="flex flex-col">
-            <dt class="text-sm text-slate-500 dark:text-slate-400">Alumni Engaged</dt>
-            <dd class="text-3xl font-extrabold text-brand-600 dark:text-brand-400" data-count="4500">4.5K+</dd>
-          </div>
-          <div class="flex flex-col">
-            <dt class="text-sm text-slate-500 dark:text-slate-400">Students Registered</dt>
-            <dd class="text-3xl font-extrabold text-accent-600 dark:text-accent-400" data-count="22000">22K+</dd>
-          </div>
-          <div class="flex flex-col">
-            <dt class="text-sm text-slate-500 dark:text-slate-400">Opportunities Posted</dt>
-            <dd class="text-3xl font-extrabold text-brand-600 dark:text-brand-400" data-count="1200">1.2K+</dd>
-          </div>
-          <div class="flex flex-col">
-            <dt class="text-sm text-slate-500 dark:text-slate-400">Mentorship Matches</dt>
-            <dd class="text-3xl font-extrabold text-accent-600 dark:text-accent-400" data-count="980">980+</dd>
-          </div>
-        </dl>
+      <div class="card" id="opportunities">
+        <div class="card-icon">&#128188;</div>
+        <h3>Job &amp; Internship Board</h3>
+        <p>Alumni share openings at their companies. Students can view every listing — no login needed.</p>
+        <a href="./opportunities.php">View opportunities &rarr;</a>
       </div>
-    </section>
 
-    <!-- How It Works -->
-    <section id="how-it-works" class="py-24">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="max-w-2xl mx-auto text-center mb-16">
-          <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">How AlumniConnect Works</h2>
-          <p class="mt-4 text-lg text-slate-600 dark:text-slate-300">Simple steps to create real outcomes—jobs, internships, mentoring, and lifelong connections.</p>
-        </div>
-        <ol class="grid gap-12 sm:grid-cols-3">
-          <li class="relative flex flex-col items-center text-center">
-            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-white text-xl font-bold shadow">1</span>
-            <h3 class="mt-6 text-xl font-semibold">Create a Profile</h3>
-            <p class="mt-2 text-slate-600 dark:text-slate-300">Alumni showcase experience; students highlight interests, skills & goals.</p>
-          </li>
-          <li class="relative flex flex-col items-center text-center">
-            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-white text-xl font-bold shadow">2</span>
-            <h3 class="mt-6 text-xl font-semibold">Post or Apply</h3>
-            <p class="mt-2 text-slate-600 dark:text-slate-300">Alumni post opportunities or mentorship slots. Students browse & apply.</p>
-          </li>
-          <li class="relative flex flex-col items-center text-center">
-            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-white text-xl font-bold shadow">3</span>
-            <h3 class="mt-6 text-xl font-semibold">Connect & Grow</h3>
-            <p class="mt-2 text-slate-600 dark:text-slate-300">Messaging, scheduling & feedback tools help both sides collaborate.</p>
-          </li>
-        </ol>
+      <div class="card" id="events">
+        <div class="card-icon">&#128197;</div>
+        <h3>Events &amp; Announcements</h3>
+        <p>Reunions, guest lectures, and official notices from the college, posted by the admin office.</p>
+        <a href="./events.php">See what's coming up &rarr;</a>
       </div>
-    </section>
 
-    <!-- Feature Highlights -->
-    <section id="features" class="py-24 bg-slate-50 dark:bg-slate-800">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto text-center mb-16">
-          <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Everything You Need to Build Lifelong Connections</h2>
-          <p class="mt-4 text-lg text-slate-600 dark:text-slate-300">Tools for alumni engagement, student success, and career-ready mentorship.</p>
-        </div>
-        <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          <!-- Feature Card -->
-          <div class="p-8 rounded-2xl bg-white dark:bg-slate-900 shadow hover:shadow-glow transition-shadow">
-            <div class="h-10 w-10 rounded-full bg-brand-100 dark:bg-brand-600/20 flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M7 10v12"/><path d="M15 5v17"/><path d="M11 2v20"/></svg>
-            </div>
-            <h3 class="font-semibold text-lg mb-2">Opportunity Board</h3>
-            <p class="text-slate-600 dark:text-slate-300 text-sm">Post jobs, internships, projects, events & campus visits with rich details & deadlines.</p>
-          </div>
-          <!-- Feature Card -->
-          <div class="p-8 rounded-2xl bg-white dark:bg-slate-900 shadow hover:shadow-glow transition-shadow">
-            <div class="h-10 w-10 rounded-full bg-brand-100 dark:bg-brand-600/20 flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-            </div>
-            <h3 class="font-semibold text-lg mb-2">Student Applications</h3>
-            <p class="text-slate-600 dark:text-slate-300 text-sm">Students apply with one click; alumni review profiles, resumes & messages.</p>
-          </div>
-          <!-- Feature Card -->
-          <div class="p-8 rounded-2xl bg-white dark:bg-slate-900 shadow hover:shadow-glow transition-shadow">
-            <div class="h-10 w-10 rounded-full bg-brand-100 dark:bg-brand-600/20 flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16h6M21 16V8a2 2 0 00-2-2h-4l-2-2H9L7 6H3a2 2 0 00-2 2v8" /></svg>
-            </div>
-            <h3 class="font-semibold text-lg mb-2">Connection Requests</h3>
-            <p class="text-slate-600 dark:text-slate-300 text-sm">Students request mentorship; alumni accept & start private chats.</p>
-          </div>
-          <!-- Feature Card -->
-          <div class="p-8 rounded-2xl bg-white dark:bg-slate-900 shadow hover:shadow-glow transition-shadow">
-            <div class="h-10 w-10 rounded-full bg-brand-100 dark:bg-brand-600/20 flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5V4H2v16h5"/><rect width="10" height="12" x="7" y="8" rx="2" ry="2"/></svg>
-            </div>
-            <h3 class="font-semibold text-lg mb-2">In-App Messaging</h3>
-            <p class="text-slate-600 dark:text-slate-300 text-sm">Secure message threads with attachments, meeting links & follow-up reminders.</p>
-          </div>
-          <!-- Feature Card -->
-          <div class="p-8 rounded-2xl bg-white dark:bg-slate-900 shadow hover:shadow-glow transition-shadow">
-            <div class="h-10 w-10 rounded-full bg-brand-100 dark:bg-brand-600/20 flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-            </div>
-            <h3 class="font-semibold text-lg mb-2">Verified Users</h3>
-            <p class="text-slate-600 dark:text-slate-300 text-sm">Institution-linked email or admin approval keeps the community trusted.</p>
-          </div>
-          <!-- Feature Card -->
-          <div class="p-8 rounded-2xl bg-white dark:bg-slate-900 shadow hover:shadow-glow transition-shadow">
-            <div class="h-10 w-10 rounded-full bg-brand-100 dark:bg-brand-600/20 flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 13l3 3l7-7"/></svg>
-            </div>
-            <h3 class="font-semibold text-lg mb-2">Analytics & Engagement</h3>
-            <p class="text-slate-600 dark:text-slate-300 text-sm">Track signups, post views, applications & mentorship activity with admin dashboards.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <!-- Featured Opportunities (sample cards) -->
+<section class="about-strip" id="announcements">
+  <div class="container">
+    <h2>Built for GEC Modasa, kept simple on purpose</h2>
+    <p>This portal exists for one reason: to keep alumni connected with the college and with each other. No clutter, no unnecessary features — just a directory, a place to share opportunities, and a way to stay informed about what's happening on campus.</p>
+  </div>
+</section>
 
-    <!-- Testimonials / Success Stories -->
-    <section id="testimonials" class="py-24 bg-slate-50 dark:bg-slate-800">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="max-w-2xl mx-auto text-center mb-16">
-          <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Real Outcomes from Real Connections</h2>
-          <p class="mt-4 text-lg text-slate-600 dark:text-slate-300">Students land roles. Alumni give back. Communities grow stronger.</p>
-        </div>
-        <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          <!-- Testimonial Card -->
-          <figure class="p-8 rounded-2xl bg-white dark:bg-slate-900 shadow border border-slate-200 dark:border-slate-700">
-            <blockquote class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">“I posted a small React internship and got 50+ qualified applicants within a week. We hired two, both now full time!”</blockquote>
-            <figcaption class="mt-6 flex items-center gap-4">
-              <img src="https://i.pravatar.cc/64?img=12" alt="Priya Shah" class="h-12 w-12 rounded-full ring-2 ring-brand-600" />
-              <div>
-                <div class="font-semibold">Priya Shah</div>
-                <div class="text-xs text-slate-500 dark:text-slate-400">Founder, StartupX · B.Tech '21</div>
-              </div>
-            </figcaption>
-          </figure>
-          <!-- Testimonial Card -->
-          <figure class="p-8 rounded-2xl bg-white dark:bg-slate-900 shadow border border-slate-200 dark:border-slate-700">
-            <blockquote class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">“Connecting with alumni helped me understand real-world security roles. My mentor guided my resume and I got my first SOC internship.”</blockquote>
-            <figcaption class="mt-6 flex items-center gap-4">
-              <img src="https://i.pravatar.cc/64?img=24" alt="Aman Gupta" class="h-12 w-12 rounded-full ring-2 ring-brand-600" />
-              <div>
-                <div class="font-semibold">Aman Gupta</div>
-                <div class="text-xs text-slate-500 dark:text-slate-400">3rd Yr CSE Student</div>
-              </div>
-            </figcaption>
-          </figure>
-          <!-- Testimonial Card -->
-          <figure class="p-8 rounded-2xl bg-white dark:bg-slate-900 shadow border border-slate-200 dark:border-slate-700">
-            <blockquote class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">“Admin analytics show which departments are most active. It helped us plan targeted outreach.”</blockquote>
-            <figcaption class="mt-6 flex items-center gap-4">
-              <img src="https://i.pravatar.cc/64?img=52" alt="Faculty Coordinator" class="h-12 w-12 rounded-full ring-2 ring-brand-600" />
-              <div>
-                <div class="font-semibold">Prof. K. Iyer</div>
-                <div class="text-xs text-slate-500 dark:text-slate-400">Faculty Alumni Coordinator</div>
-              </div>
-            </figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <!-- Call to Action -->
-    <section id="cta-section" class="py-32 relative overflow-hidden">
-      <div class="absolute inset-0 -z-10 bg-gradient-to-r from-brand-600 via-brand-700 to-brand-800"></div>
-      <div class="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center text-white">
-        <h2 class="text-4xl font-extrabold tracking-tight">Ready to Get Started?</h2>
-        <p class="mt-4 text-lg text-brand-100">Join thousands of alumni & students building meaningful career connections.</p>
-        <div class="mt-8 flex flex-col sm:flex-row sm:justify-center gap-4">
-          <a href="./alumni/alumni_register.php" class="rounded-md bg-white text-brand-700 px-8 py-4 font-semibold shadow hover:bg-brand-50">Join as Alumni</a>
-          <a href="./student/student_register.php" class="rounded-md bg-brand-900/40 ring-1 ring-inset ring-white/40 px-8 py-4 font-semibold hover:bg-brand-900/60">Join as Student</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-  </main>
-
-  <!-- Footer -->
-  <footer class="bg-slate-900 text-slate-300">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 text-sm">
-      <div>
-        <div class="flex items-center gap-2 mb-4">
-          <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-brand-600 text-white font-bold text-xl">AC</span>
-          <span class="font-bold">AlumniConnect</span>
-        </div>
-        <p class="text-slate-400 max-w-xs">Building meaningful bridges between alumni & students for career growth and lifelong community.</p>
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-about">
+        <h4>GEC Modasa Alumni Portal</h4>
+        <p>An official initiative to help alumni of Government Engineering College, Modasa stay connected with their alma mater and each other.</p>
       </div>
       <div>
-        <h4 class="font-semibold mb-3 text-white">Platform</h4>
-        <ul class="space-y-2">
-          <li><a class="hover:text-white" href="#features">Features</a></li>
-          <li><a class="hover:text-white" href="#opportunities">Opportunities</a></li>
-          <li><a class="hover:text-white" href="#testimonials">Success Stories</a></li>
-          <li><a class="hover:text-white" href="#faq">FAQ</a></li>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#directory">Directory</a></li>
+          <li><a href="#opportunities">Opportunities</a></li>
+          <li><a href="#events">Events</a></li>
         </ul>
       </div>
       <div>
-        <h4 class="font-semibold mb-3 text-white">For Users</h4>
-        <ul class="space-y-2">
-          <li><a class="hover:text-white" href="./alumni/alumni_register.php">Alumni Signup</a></li>
-          <li><a class="hover:text-white" href="./student/student_register.php">Student Signup</a></li>
-          <li><a class="hover:text-white" href="./login.php">Login</a></li>
-          <li><a class="hover:text-white" href="/support">Support</a></li>
+        <h4>Account</h4>
+        <ul>
+          <li><a href="./login.php">Login</a></li>
+          <li><a href="./register.php">Register</a></li>
+          <li><a href="./admin/login.php">Admin Login</a></li>
         </ul>
       </div>
-      <div>
-      </div>
     </div>
-    <div class="border-t border-slate-700 py-6 text-center text-xs text-slate-500">© <span id="year"></span> AlumniConnect. All rights reserved.</div>
-  </footer>
+    <div class="footer-bottom">
+      &copy; <span id="year"></span> Government Engineering College, Modasa. All rights reserved.
+    </div>
+  </div>
+</footer>
 
-  <!-- Scripts -->
-  <script>
-    // Dark Mode Toggle
-    const darkToggle = document.getElementById('darkModeToggle');
-    const iconSun = document.getElementById('icon-sun');
-    const iconMoon = document.getElementById('icon-moon');
-    const storedTheme = localStorage.getItem('ac-theme');
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
 
-    function setTheme(mode){
-      if(mode==='dark'){
-        document.documentElement.classList.add('dark');
-        iconSun.classList.remove('hidden');
-        iconMoon.classList.add('hidden');
-        darkToggle.setAttribute('aria-pressed','true');
-      }else{
-        document.documentElement.classList.remove('dark');
-        iconSun.classList.add('hidden');
-        iconMoon.classList.remove('hidden');
-        darkToggle.setAttribute('aria-pressed','false');
-      }
-      localStorage.setItem('ac-theme',mode);
-    }
+  const menuToggle = document.getElementById('menuToggle');
+  const mainNav = document.getElementById('mainNav');
+  const authLinks = document.getElementById('authLinks');
 
-    // Initialize
-    if(storedTheme){
-      setTheme(storedTheme);
-    }else{
-      setTheme(prefersDark?'dark':'light');
-    }
+  menuToggle.addEventListener('click', () => {
+    const isOpen = mainNav.classList.toggle('open');
+    authLinks.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+</script>
 
-    darkToggle.addEventListener('click',()=>{
-      const isDark = document.documentElement.classList.contains('dark');
-      setTheme(isDark?'light':'dark');
-    });
-
-    // Mobile Menu Toggle
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    mobileMenuBtn.addEventListener('click',()=>{
-      const expanded = mobileMenuBtn.getAttribute('aria-expanded')==='true';
-      mobileMenuBtn.setAttribute('aria-expanded', String(!expanded));
-      mobileMenu.classList.toggle('hidden');
-    });
-
-    // Current Year in Footer
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Optional animated counters (basic)
-    // document.querySelectorAll('[data-count]').forEach(el=>{
-    //   const target = Number(el.dataset.count);
-    //   let cur = 0;
-    //   const step = Math.ceil(target/60);
-    //   const timer = setInterval(()=>{
-    //     cur += step;
-    //     if(cur >= target){
-    //       cur = target;
-    //       clearInterval(timer);
-    //     }
-    //     el.textContent = cur.toLocaleString();
-    //   },16);
-    // });
-  </script>
 </body>
 </html>

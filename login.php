@@ -7,66 +7,39 @@ if (session_status() === PHP_SESSION_NONE) {
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (isset($_POST['click_btn'])) {
-        $Entered_Enrollment = $_POST["Enrollment"] ?? 0;
-        $Entered_Password = $_POST["password"] ?? '';
-        $user_role = $_POST["role"];
+        $alumni_email = $_POST["email"] ?? 0;
+        $alumni_password = $_POST["password"] ?? '';
+        $is_registered = 1; // Set to 1 for registered alumni
 
-        if ($user_role == "student") {
-            $exist_user = "SELECT * FROM studentmaster WHERE Enrollment_no = ? AND req_status = 'accepted' ";
-            $exist_user_stmt = $conn->prepare($exist_user);
-            $exist_user_stmt->bind_param("i", $Entered_Enrollment);
+        $exist_user = "SELECT * FROM alumni_student_master WHERE email = ? AND is_registered = ?";
+        $exist_user_stmt = $conn->prepare($exist_user);
+        $exist_user_stmt->bind_param("si", $alumni_email, $is_registered);
+        $exist_user_stmt->execute();
 
-            $exist_user_stmt->execute();
+        $result = $exist_user_stmt->get_result();
+        if ($result->num_rows === 1) {
+            $user = $result->fetch_assoc();
 
-            $result = $exist_user_stmt->get_result();
-
-            if ($result->num_rows === 1) {
-                $user = $result->fetch_assoc();
-
-                if (password_verify($Entered_Password, $user['student_password'])) {
-                    $_SESSION['Enroll_no'] = $user['Enrollment_no'];
-                    $_SESSION['student_id'] = $user['student_id'];
-                    $_SESSION['student_name'] = $user['student_name'];
-                    $_SESSION['user_role'] = $_POST['role'];
-                    header("Location: ./student/student_dashboard.php");
-                    exit;
-                } else {
-                    $_SESSION['message'] = ["sucess" => false, "error_msg" => "Invalid Credential"];
-                }
+            if (password_verify($alumni_password, $user['password_hash'])) {
+                $_SESSION['alumni_id'] = $user['alumni_id'];
+                $_SESSION['Enroll_no_alumni'] = $user['Enrollment_No'];
+                $_SESSION['alumni_name'] = $user['alumni_name'];
+                $_SESSION['user_role'] = $_POST['role'];
+                header("Location: ./alumni/alumni_dashboard.php");
             } else {
-                $_SESSION['message'] = ["sucess" => false, "error_msg" => 'Student not found'];
+                $message = "Invalid credentials.";
+                header("Location: ./login.php?error=" . urlencode($message));
+                exit();
             }
         } else {
-
-            if ($user_role == 'alumni') {
-                $exist_user = "SELECT * FROM alumnimaster WHERE Enrollment_no = ? ";
-                $exist_user_stmt = $conn->prepare($exist_user);
-                $exist_user_stmt->bind_param("i", $Entered_Enrollment);
-
-                $exist_user_stmt->execute();
-
-                $result = $exist_user_stmt->get_result();
-
-                if ($result->num_rows === 1) {
-                    $user = $result->fetch_assoc();
-
-                    if (password_verify($Entered_Password, $user['alumni_password'])) {
-                        $_SESSION['alumni_id'] = $user['alumni_id'];
-                        $_SESSION['Enroll_no_alumni'] = $user['Enrollment_No'];
-                        $_SESSION['alumni_name'] = $user['alumni_name'];
-                        $_SESSION['user_role'] = $_POST['role'];
-                        header("Location: ./alumni/alumni_dashboard.php");
-                        exit;
-                    } else {
-                        $_SESSION['message'] = ["sucess" => false, "error_msg" => "Invalid Credential"];
-                    }
-                } else {
-                    $_SESSION['message'] = ["sucess" => false, "error_msg" => 'Alumni not found'];
-                }
-            } else {
-                $_SESSION['message'] = ['sucess' => false, 'mess' => 'Data is not found'];
-            }
+            $message = "Alumni not found.";
+            header("Location: ./login.php?error=" . urlencode($message));
+            exit();
         }
+    } else {
+        $message = "Invalid request.";
+        header("Location: ./login.php?error=" . urlencode($message));
+        exit();
     }
 }
 ?>
@@ -102,16 +75,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         .container {
             display: flex;
             width: 100%;
-            max-width: 1200px;
             height: 95vh;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
         .background-section {
             flex: 1.2;
-            background: url('./uploads/website_images/login_image.jpg') no-repeat center center / cover;
             border-top-left-radius: 20px;
             border-bottom-left-radius: 20px;
             width: 50px;
@@ -122,7 +92,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         .login-section {
             flex: 1;
-            background: linear-gradient(135deg, #e0f7fa, #ffffff);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -388,21 +357,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <body>
     <div class="container">
-        <div class="background-section">
-        </div>
         <div class="login-section">
             <div class="login-card">
                 <div class="logo">
-                    <img src="./uploads/website_images/download.png" alt="UI Unicorn Logo"> <span>UI Unicorn</span>
+                    <span>AlumniConnect</span>
                 </div>
                 <h2>Nice to see you again</h2>
 
                 <form action="./login.php" method="POST">
                     <div class="form-group">
-                        <?php if (isset($_SESSION['message'])) : ?>
-                            <?php if ($_SESSION['message']['sucess'] == false) { ?>
-                                <p id="message" class="msg" style="
-                                    color: red;
+                        <?php if (isset($_GET['error']) || isset($_GET['success'])): ?>
+                            <p id="message" class="msg" style="
+                                    color: <?= isset($_GET['error']) ? 'red' : 'green' ?>;
                                     background-color: #fdecea;
                                     border: 1px solid #f5c6cb;
                                     padding: 8px 10px;
@@ -413,35 +379,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                     display: block;
                                     transition: all 0.3s ease-in-out;
                                 ">
-                                    <?= htmlspecialchars($_SESSION['message']['error_msg']) ?></p>
-                            <?php } ?>
-                            <script>
-                                setTimeout(() => {
-                                    let mess = document.getElementById('message');
-                                    if (mess) mess.style.display = 'none';
-                                }, 2 * 1000);
-                            </script>
-                            <?php unset($_SESSION['message']) ?>
+                                <?= isset($_GET['error']) ? htmlspecialchars($_GET['error']) : (isset($_GET['success']) ? htmlspecialchars($_GET['success']) : '') ?>
+                            </p>
                         <?php endif; ?>
-                        <p id="message" class="msg"></p>
-                        <p id="message" class="msg"></p>
-                        <label for="email">Login</label>
-                        <input type="number" id="Enrollment" name="Enrollment" placeholder="Enter Enrollment">
+                        <script>
+                            setTimeout(() => {
+                                let mess = document.getElementById('message');
+                                if (mess) mess.style.display = 'none';
+                            }, 2 * 1000);
+                        </script>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Enter Email" maxlength="50">
                     </div>
                     <div class="form-group password-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" name="password" placeholder="Enter password" maxlength="10">
+                        <input type="password" id="password" name="password" placeholder="Enter password" maxlength="8">
                         <p id="strength_password"></p>
                     </div>
-                    <div class="form-group select-wrapper">
-                        <label for="role">Roles</label>
-                        <select name="role" id="role">
-                            <option value="">Select Role</option>
-                            <option value="student">student</option>
-                            <option value="alumni">alumni</option>
-                        </select>
-                    </div>
-
 
                     <div class="options">
                         <div class="remember-me">
@@ -455,16 +409,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </form>
 
                 <div class="signup-link">
-                    <span>Don't have an account? <a href="./student/student_register.php">Sign up now</a></span>
+                    <span>Don't have an account? <a href="./alumni/alumni_register.php">Sign up now</a></span>
                 </div>
             </div>
         </div>
     </div>
     <script>
         const message = document.getElementById("message");
-        const Enrollment = document.getElementById("Enrollment");
+        const email = document.getElementById("email");
         const password = document.getElementById("password");
-        const userRole = document.getElementById("role");
 
         document.getElementById("click_btn").addEventListener("click", (e) => {
 
@@ -487,19 +440,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }, 2 * 1000);
             }
 
-            let Enrollment_value = Enrollment.value;
+            let email_value = email.value;
             let password_value = password.value;
-            let userRole_value = userRole.value;
 
-            if (!Enrollment_value || !password_value || userRole_value == "") {
+            if (!email_value || !password_value) {
                 e.preventDefault();
                 messageDisplay("All fields are required");
                 return;
             }
 
-            if (Enrollment_value.length != 12) {
+            if (email_value.length > 50) {
                 e.preventDefault();
-                messageDisplay("Enrollment must be 12 number");
+                messageDisplay("Email must be at most 50 characters");
                 return;
             }
 

@@ -4,7 +4,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require_once '../utills/db_conn.php';
-require '../vendor/autoload.php'; // ✅ Moved to the top
+require '../vendor/autoload.php'; //  Moved to the top
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
     if ($post_stmt->execute()) {
         $post_id = $post_stmt->insert_id;
 
-        // ✅ Fetch post + alumni details
+        //  Fetch post + alumni details
         $fetch_post_details = "SELECT p.post_title, p.post_desc, a.alumni_name, a.alumni_email 
                                FROM postmaster p 
                                JOIN alumnimaster a ON a.alumni_id = p.created_by 
@@ -58,11 +58,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
         $result = $stmt->get_result();
         $final_post = $result->fetch_assoc();
 
-        // ✅ Fetch all students
+        //  Fetch all students ( Here is the N + 1 query, first fetch the all students email and then sending a mail to each student in loop this N + 1 problem) 
         $select_all_students = "SELECT student_name, student_email FROM studentmaster";
         $students_result = $conn->query($select_all_students);
 
-        // ✅ Send email to each student
+        //  Send email to each student
         while ($student = $students_result->fetch_assoc()) {
             $mail = new PHPMailer(true);
             try {

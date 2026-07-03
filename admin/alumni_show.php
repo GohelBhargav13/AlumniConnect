@@ -8,7 +8,7 @@ if (!isset($_SESSION['admin_id'])) {
 }
 //fetch alumni details 
 $fetch_alumni_data = "SELECT * FROM alumnimaster";
-$data_res = $conn->query($fetch_alumni_data);
+$data_res = isset($conn) ? $conn->query($fetch_alumni_data) : null;
 
 ?>
 <!DOCTYPE html>

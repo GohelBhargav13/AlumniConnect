@@ -11,11 +11,13 @@ if (!isset($_GET['student_id'])) {
 
 $student_id = $_GET['student_id'];
 
-$stmt = $conn->prepare("SELECT * FROM studentmaster WHERE student_id = ?");
-$stmt->bind_param("i", $student_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$student = $result->fetch_assoc();
+$stmt = isset($conn) ? $conn->prepare("SELECT * FROM studentmaster WHERE student_id = ?") : null;
+if ($stmt) {
+    $stmt->bind_param("i", $student_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $student = $result->fetch_assoc();
+}
 
 if (!$student) {
     echo "Student not found.";
@@ -59,10 +61,10 @@ if (!$student) {
               <td style="padding: 8px 0; color: #555; font-weight: bold;">Email:</td>
               <td style="padding: 8px 0; color: #333;"><?= htmlspecialchars($student['student_email']) ?></td>
             </tr>
-            <tr>
+            <!-- <tr>
               <td style="padding: 8px 0; color: #555; font-weight: bold;">Phone:</td>
               <td style="padding: 8px 0; color: #333;"><?= htmlspecialchars($student['student_phone_no']) ?></td>
-            </tr>
+            </tr> -->
             <tr>
               <td style="padding: 8px 0; color: #555; font-weight: bold;">City:</td>
               <td style="padding: 8px 0; color: #333;"><?= htmlspecialchars($student['student_city'] ?? 'N/A') ?></td>

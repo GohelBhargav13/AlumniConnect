@@ -6,11 +6,17 @@ if (!isset($_SESSION['admin_id'])) {
     header("Location: ./admin_login.php");
     exit();
 }
+if (!isset($conn)) {
+    die("Database connection not established.");
+}
 //fetch alumni details 
 $fetch_student_data = "SELECT * FROM studentmaster WHERE req_status = 'accepted'";
-$data_res = $conn->query($fetch_student_data);
+$data_res = null;
+if (isset($conn)) {
+    $data_res = $conn->query($fetch_student_data);
+}               
 
-?>
+?>  
 <!DOCTYPE html>
 <html lang="en">
 

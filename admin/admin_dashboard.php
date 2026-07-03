@@ -1,16 +1,19 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-include "../utills/db_conn.php";
 
 if (!isset($_SESSION['admin_id'])) {
     header("Location: ./admin_login.php");
     exit();
+    }
+    
+require '../utills/db_conn.php';
+if (!isset($conn)) {
+    die("Database connection not established.");
 }
 
 $total_analystics = "SELECT 
-                        (SELECT COUNT(*) FROM alumnimaster) AS alumni_count,
-                        (SELECT COUNT(*) FROM postmaster) AS post_count,
-                        (SELECT COUNT(*) FROM studentmaster WHERE req_status = 'accepted') AS student_count;";
+                        (SELECT COUNT(alumni_id) FROM alumni_student_master where is_registered = 1) AS alumni_count,
+                        (SELECT COUNT(*) FROM postmaster) AS post_count";
 
 $total_analystics_res = $conn->query($total_analystics);
 if ($total_analystics_res) {
@@ -45,11 +48,6 @@ if ($total_analystics_res) {
                 <div style="flex: 1; background-color: #161b22; padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #30363d;">
                     <h2 style="margin: 0; font-size: 18px;">No. of Alumni</h2>
                     <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics2['alumni_count']) ?? 0 ?></p>
-                </div>
-                <!-- Student Card -->
-                <div style="flex: 1; background-color: #161b22; padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #30363d;">
-                    <h2 style="margin: 0; font-size: 18px;">No. of Student</h2>
-                    <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics2['student_count']) ?></p>
                 </div>
                 <!-- Post Card -->
                 <div style="flex: 1; background-color: #161b22; padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #30363d;">

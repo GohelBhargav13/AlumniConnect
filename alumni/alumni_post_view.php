@@ -1,12 +1,12 @@
 <?php
-require_once '../utills/db_conn.php';
+include '../utills/db_conn.php';
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 $post_fetch = "SELECT p.*, am.alumni_name 
 FROM postmaster as p  
 JOIN alumnimaster as am ON am.alumni_id = p.created_by ORDER BY post_created_at DESC";
-$fetched_result = $conn->query($post_fetch);
+$fetched_result =  isset($conn) ? $conn->query($post_fetch) : null;
 
 if (!isset($_SESSION['alumni_id'])) {
   header('Location:./alumni_dashboard.php');
@@ -19,8 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['applybtn'])) {
   //Insert into applystudentmaster
 
   $insert_apply_sql = "INSERT INTO applystudentmaster (student_id,post_id) VALUES (?,?)";
-  $insert_apply_stmt = $conn->prepare($insert_apply_sql);
-  $insert_apply_stmt->bind_param("ii", $student_id, $post_get_id);
+  $insert_apply_stmt = isset($conn) ? $conn->prepare($insert_apply_sql) : null;
+  $insert_apply_stmt->bind_param("ii", $student_id ?? "", $post_get_id ?? 0);
 
   if ($insert_apply_stmt->execute()) {
     $_SESSION['message'] = ['success' => true, "final_msg" => "Applied Successfully"];
