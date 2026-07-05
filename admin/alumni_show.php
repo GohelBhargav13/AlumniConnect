@@ -7,7 +7,7 @@ if (!isset($_SESSION['admin_id'])) {
     exit();
 }
 //fetch alumni details 
-$fetch_alumni_data = "SELECT * FROM alumnimaster";
+$fetch_alumni_data = "SELECT * FROM alumni_student_master WHERE is_registered = 1";
 $data_res = isset($conn) ? $conn->query($fetch_alumni_data) : null;
 
 ?>

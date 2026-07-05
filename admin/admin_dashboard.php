@@ -4,8 +4,8 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 if (!isset($_SESSION['admin_id'])) {
     header("Location: ./admin_login.php");
     exit();
-    }
-    
+}
+
 require '../utills/db_conn.php';
 if (!isset($conn)) {
     die("Database connection not established.");
@@ -13,7 +13,9 @@ if (!isset($conn)) {
 
 $total_analystics = "SELECT 
                         (SELECT COUNT(alumni_id) FROM alumni_student_master where is_registered = 1) AS alumni_count,
-                        (SELECT COUNT(*) FROM postmaster) AS post_count";
+                        (SELECT COUNT(event_id) FROM event_master) AS total_events,
+                        (SELECT COUNT(anno_id) FROM announcement_master) AS total_announcement
+                        ";
 
 $total_analystics_res = $conn->query($total_analystics);
 if ($total_analystics_res) {
@@ -49,10 +51,16 @@ if ($total_analystics_res) {
                     <h2 style="margin: 0; font-size: 18px;">No. of Alumni</h2>
                     <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics2['alumni_count']) ?? 0 ?></p>
                 </div>
-                <!-- Post Card -->
+
+                <!-- Event card -->
                 <div style="flex: 1; background-color: #161b22; padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #30363d;">
-                    <h2 style="margin: 0; font-size: 18px;">No. of Post</h2>
-                    <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics2['post_count']) ?></p>
+                    <h2 style="margin: 0; font-size: 18px;">No. of Events</h2>
+                    <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics2['total_events']) ?? 0 ?></p>
+                </div>
+                <!-- Announcement card -->
+                <div style="flex: 1; background-color: #161b22; padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #30363d;">
+                    <h2 style="margin: 0; font-size: 18px;">No. of Announcement</h2>
+                    <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics2['total_announcement']) ?? 0 ?></p>
                 </div>
             </div>
         </div>
