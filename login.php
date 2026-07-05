@@ -1,48 +1,37 @@
 <?php
 require './utills/db_conn.php';
-ob_start();
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if (session_status() === PHP_SESSION_NONE) session_start();
 
-    if (isset($_POST['click_btn'])) {
-        $alumni_email = $_POST["email"] ?? 0;
-        $alumni_password = $_POST["password"] ?? '';
-        $is_registered = 1; // Set to 1 for registered alumni
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['click_btn'])) {
 
-        $exist_user = "SELECT * FROM alumni_student_master WHERE email = ? AND is_registered = ?";
-        $exist_user_stmt = $conn->prepare($exist_user);
-        $exist_user_stmt->bind_param("si", $alumni_email, $is_registered);
-        $exist_user_stmt->execute();
+    $email = filter_var($_POST["email"] ?? '', FILTER_SANITIZE_EMAIL);
+    $password = $_POST["password"] ?? '';
 
-        $result = $exist_user_stmt->get_result();
-        if ($result->num_rows === 1) {
-            $user = $result->fetch_assoc();
+    // Prepared Statement
+    $stmt = $conn->prepare("SELECT alumni_id, enrollment_No, password_hash FROM alumni_student_master WHERE email = ? AND is_registered = 1");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-            if (password_verify($alumni_password, $user['password_hash'])) {
-                $_SESSION['alumni_id'] = $user['alumni_id'];
-                $_SESSION['Enroll_no_alumni'] = $user['Enrollment_No'];
-                $_SESSION['alumni_name'] = $user['alumni_name'];
-                $_SESSION['user_role'] = $_POST['role'];
-                header("Location: ./alumni/alumni_dashboard.php");
-            } else {
-                $message = "Invalid credentials.";
-                header("Location: ./login.php?error=" . urlencode($message));
-                exit();
-            }
-        } else {
-            $message = "Alumni not found.";
-            header("Location: ./login.php?error=" . urlencode($message));
+    if ($user = $result->fetch_assoc()) {
+        if (password_verify($password, $user['password_hash'])) {
+
+            // Regenerate ID to prevent Session Fixation
+            session_regenerate_id(true);
+            $_SESSION['alumni_id'] = $user['alumni_id'];
+            $_SESSION['Enroll_no_alumni'] = $user['enrollment_No'];
+            $_SESSION['email'] = $email;
+            $_SESSION["alumni_passout_year"] = $user["passout_year"];
+            header("Location: ./alumni/landing.php");
             exit();
         }
-    } else {
-        $message = "Invalid request.";
-        header("Location: ./login.php?error=" . urlencode($message));
-        exit();
     }
+
+    header("Location: ./login.php?error=" . urlencode("Invalid email or password."));
+    exit();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -50,7 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
@@ -63,18 +53,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         body {
             font-family: 'Poppins', sans-serif;
-            margin: 0;
+            background-color: var(--light-gray);
+            overflow: hidden;
+            padding: 50px 20px;
+        }
+
+        .main {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background-color: var(--light-gray);
-            overflow: hidden;
         }
 
         .container {
-            display: flex;
-            width: 100%;
+            width: 600px;
             height: 95vh;
             border-radius: 20px;
             overflow: hidden;
@@ -108,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             width: 100%;
-            max-width: 380px;
+            max-width: 600px;
             text-align: center;
             z-index: 1;
         }
@@ -356,64 +347,71 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 
 <body>
-    <div class="container">
-        <div class="login-section">
-            <div class="login-card">
-                <div class="logo">
-                    <span>AlumniConnect</span>
-                </div>
-                <h2>Nice to see you again</h2>
+    <div>
+        <button class="btn btn-success"><a href="./alumni/landing.php" class="text-white" style="text-decoration: none;">Back</a></button>
+    </div>
 
-                <form action="./login.php" method="POST">
-                    <div class="form-group">
-                        <?php if (isset($_GET['error']) || isset($_GET['success'])): ?>
-                            <p id="message" class="msg" style="
-                                    color: <?= isset($_GET['error']) ? 'red' : 'green' ?>;
-                                    background-color: #fdecea;
-                                    border: 1px solid #f5c6cb;
-                                    padding: 8px 10px;
-                                    border-radius: 6px;
-                                    font-size: 14px;
-                                    font-weight: 500;
-                                    margin-bottom: 10px;
-                                    display: block;
-                                    transition: all 0.3s ease-in-out;
-                                ">
-                                <?= isset($_GET['error']) ? htmlspecialchars($_GET['error']) : (isset($_GET['success']) ? htmlspecialchars($_GET['success']) : '') ?>
-                            </p>
-                        <?php endif; ?>
-                        <script>
-                            setTimeout(() => {
-                                let mess = document.getElementById('message');
-                                if (mess) mess.style.display = 'none';
-                            }, 2 * 1000);
-                        </script>
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" placeholder="Enter Email" maxlength="50">
+    <div class="main">
+        <div class="container">
+            <div class="login-section">
+                <div class="login-card">
+                    <div class="logo">
+                        <span>AlumniConnect</span>
                     </div>
-                    <div class="form-group password-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" placeholder="Enter password" maxlength="8">
-                        <p id="strength_password"></p>
-                    </div>
+                    <h2>Nice to see you again</h2>
 
-                    <div class="options">
-                        <div class="remember-me">
-                            <input type="checkbox" id="remember">
-                            <label for="remember">Remember me</label>
+                    <form action="./login.php" method="POST">
+                        <div class="form-group">
+                            <?php if (isset($_GET['error']) || isset($_GET['success'])): ?>
+                                <p id="message" class="msg" style="
+                                        color: <?= isset($_GET['error']) ? 'red' : 'green' ?>;
+                                        background-color: #fdecea;
+                                        border: 1px solid #f5c6cb;
+                                        padding: 8px 10px;
+                                        border-radius: 6px;
+                                        font-size: 14px;
+                                        font-weight: 500;
+                                        margin-bottom: 10px;
+                                        display: block;
+                                        transition: all 0.3s ease-in-out;
+                                    ">
+                                    <?= isset($_GET['error']) ? htmlspecialchars($_GET['error']) : (isset($_GET['success']) ? htmlspecialchars($_GET['success']) : '') ?>
+                                </p>
+                            <?php endif; ?>
+                            <script>
+                                setTimeout(() => {
+                                    let mess = document.getElementById('message');
+                                    if (mess) mess.style.display = 'none';
+                                }, 2 * 1000);
+                            </script>
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="Enter Email" maxlength="50">
                         </div>
-                        <a href="#" class="forgot-password">Forgot password?</a>
+                        <div class="form-group password-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" placeholder="Enter password" maxlength="8">
+                            <p id="strength_password"></p>
+                        </div>
+
+                        <div class="options">
+                            <div class="remember-me">
+                                <input type="checkbox" id="remember">
+                                <label for="remember">Remember me</label>
+                            </div>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="click_btn" name="click_btn" style="margin-bottom: 13px;">Sign In</button>
+                    </form>
+
+                    <div class="signup-link">
+                        <span>Don't have an account? <a href="./alumni/alumni_register.php">Sign up now</a></span>
                     </div>
-
-                    <button type="submit" class="btn-primary" id="click_btn" name="click_btn" style="margin-bottom: 13px;">Sign In</button>
-                </form>
-
-                <div class="signup-link">
-                    <span>Don't have an account? <a href="./alumni/alumni_register.php">Sign up now</a></span>
                 </div>
             </div>
         </div>
     </div>
+
     <script>
         const message = document.getElementById("message");
         const email = document.getElementById("email");
