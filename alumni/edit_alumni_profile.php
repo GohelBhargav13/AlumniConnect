@@ -6,86 +6,84 @@ if (!isset($_SESSION['Enroll_no_alumni'])) {
     header('Location: ../login.php');
     exit();
 }
-$user_data_fetched = [];
-$loggedIn_user = $_SESSION['Enroll_no_alumni'];
 
-try {
-    if (!isset($_GET['edit'])) {
-        $_SESSION['message'] = ['success' => false, 'err_message' => 'Alumni not found'];
-        exit();
-    }
-
-    $alumni_id_edit = (int) $_GET['edit'];
-    $fetch_user_data = "SELECT * FROM alumnimaster WHERE alumni_id = ?";
-    $fetch_user_stmt = $conn->prepare($fetch_user_data);
-    $fetch_user_stmt->bind_param('i', $alumni_id_edit);
-    $fetch_user_stmt->execute();
-    $user_data = $fetch_user_stmt->get_result();
-    if ($user_data->num_rows === 1) {
-        $user_data_fetched = $user_data->fetch_assoc();
-    }
-    $fetch_user_stmt->close();
-} catch (Exception $th) {
-    echo "<script>alert('Data not found of the user: " . htmlspecialchars($th->getMessage()) . "')</script>"; // Use getMessage()
+if (!isset($conn)) {
+    die("Database connection not established.");
 }
 
+$alumni_id_edit = filter_input(INPUT_GET, 'edit', FILTER_VALIDATE_INT);
+if (!$alumni_id_edit) {
+    $_SESSION['message'] = ['success' => false, 'mess' => 'Invalid Request'];
+    header('Location: ./edit_alumni_profile.php?edit=' . $alumni_id_edit); // Redirect to a safe page
+    exit();
+}
+
+// 1. Fetch User Data
+$user_data_fetched = [];
+$stmt = $conn->prepare("SELECT am.*, ap.* FROM alumni_student_master AS am 
+                        LEFT JOIN alumni_profile AS ap ON am.alumni_id = ap.alumni_id 
+                        WHERE am.alumni_id = ? AND (am.email = ? OR am.enrollment_no = ?)");
+$stmt->bind_param("iss", $alumni_id_edit, $_SESSION['alumni_email'], $_SESSION['Enroll_no_alumni']);
+$stmt->execute();
+$user_data_fetched = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+
+if (!$user_data_fetched) {
+    $_SESSION['message'] = ['success' => false, 'mess' => 'Unauthorized or Alumni not found'];
+    header('Location: ./edit_alumni_profile.php?edit=' . $alumni_id_edit);
+    exit();
+}
+
+
+// calculate the addmission year feature
+$start_year = 2000;
+$passout_year = $user_data_fetched["passout_year"];
+$addmission_year = $passout_year - 3;
+$addmission_year_range = range($start_year, $addmission_year);
+
+// 2. Handle POST Request
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
 
-    $alumni_name = $_POST['name'] ?? '';
-    $alumni_email = $_POST['email'] ?? '';
-    $alumni_phoneNo = $_POST['phone_no'] ?? 0;
-    $alumni_dep = $_POST['department'] ?? '';
-    $alumni_add_year = $_POST['admission_year'] ?? 0;
-    $alumni_pass_year = $_POST['passout_year'] ?? 0;
-    $alumni_college = $_POST['college'] ?? '';
-    $alumni_city = $_POST['city'] ?? '';
-    $alumni_github_link = $_POST['github'] ?? '';
-    $alumni_linkedIn_link = $_POST['linkedin'] ?? '';
-    $alumni_bio = $_POST['bio'] ?? '';
+    // Sanitize Inputs
+    $data = [
+        'phone' => filter_input(INPUT_POST, 'phone_no', FILTER_SANITIZE_SPECIAL_CHARS),
+        'batch' => filter_input(INPUT_POST, 'admission_year', FILTER_SANITIZE_NUMBER_INT),
+        'city'  => filter_input(INPUT_POST, 'city', FILTER_SANITIZE_SPECIAL_CHARS),
+        'github' => filter_input(INPUT_POST, 'github', FILTER_VALIDATE_URL),
+        'linked' => filter_input(INPUT_POST, 'linkedin', FILTER_VALIDATE_URL),
+        'comp'  => filter_input(INPUT_POST, 'company', FILTER_SANITIZE_SPECIAL_CHARS),
+        'desig' => filter_input(INPUT_POST, 'designation', FILTER_SANITIZE_SPECIAL_CHARS),
+        'addr'  => filter_input(INPUT_POST, 'address', FILTER_SANITIZE_SPECIAL_CHARS)
+    ];
 
-    if (!empty($alumni_name) || !empty($alumni_email) || !empty($alumni_phoneNo) || !empty($alumni_dep) || !empty($alumni_add_year) || !empty($alumni_pass_year) || !empty($alumni_college) || !empty($alumni_city)) { // Use !empty for better validation
-        try {
-            $sql_for_update = "UPDATE alumnimaster SET alumni_name=?, alumni_email=?, alumni_phone_no=?, alumni_add_year=?, alumni_pass_year=?, alumni_bio=?, alumni_githublink=?, alumni_linkedIn=?, alumni_city=?, alumni_department=?, alumni_college=? WHERE alumni_id=?";
-            $sql_for_stmt = $conn->prepare($sql_for_update);
-            $sql_for_stmt->bind_param(
-                "ssiiissssssi",
-                $alumni_name,
-                $alumni_email,
-                $alumni_phoneNo,
-                $alumni_add_year,
-                $alumni_pass_year,
-                $alumni_bio,
-                $alumni_github_link,
-                $alumni_linkedIn_link,
-                $alumni_city,
-                $alumni_dep,
-                $alumni_college,
-                $alumni_id_edit
-            );
-            $sql_for_stmt->execute();
 
-            if ($sql_for_stmt->affected_rows === 1) {
-                $_SESSION['message'] = ["success" => true, "mess" => htmlspecialchars($alumni_name) . " Details Updated"];
-            } else {
-                $_SESSION['message'] = ["success" => false, "mess" => "Error in updating data or no changes made."]; // More descriptive message
-            }
-            // Redirect after successful update or no changes to prevent form resubmission
-            header("Location: ./edit_alumni_profile.php?edit=" . $alumni_id_edit);
-            exit();
-        } catch (Exception $th) {
-            $_SESSION['message'] = ["success" => false, "mess" => "Database error: " . htmlspecialchars($th->getMessage())];
-            header("Location: ./edit_alumni_profile.php?edit=" . $alumni_id_edit);
-            exit();
-        }
+    // Atomic Update using UPSERT (MySQL specific)
+    $upsert_sql = "INSERT INTO alumni_profile 
+                   (alumni_id, alumni_phone_no, alumni_address, alumni_batch, alumni_company, alumni_designation, alumni_city, alumni_github_link, alumni_linkedin_link) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                   ON DUPLICATE KEY UPDATE 
+                   alumni_phone_no=VALUES(alumni_phone_no), alumni_address=VALUES(alumni_address), 
+                   alumni_batch=VALUES(alumni_batch), alumni_company=VALUES(alumni_company), 
+                   alumni_designation=VALUES(alumni_designation), alumni_city=VALUES(alumni_city), 
+                   alumni_github_link=VALUES(alumni_github_link), alumni_linkedin_link=VALUES(alumni_linkedin_link)";
+
+    $stmt = $conn->prepare($upsert_sql);
+    $stmt->bind_param("issssssss", $alumni_id_edit, $data['phone'], $data['addr'], $data['batch'], $data['comp'], $data['desig'], $data['city'], $data['github'], $data['linked']);
+
+    if ($stmt->execute()) {
+        $_SESSION['message'] = ["success" => true, "mess" => "Profile updated successfully."];
     } else {
-        $_SESSION['message'] = ["success" => false, "mess" => "Please fill all required fields"];
-        header("Location: ./edit_alumni_profile.php?edit=" . $alumni_id_edit); // Redirect back to the form with message
-        exit();
+        error_log("Database Update Error: " . $stmt->error); // Log error server-side
+        $_SESSION['message'] = ["success" => false, "mess" => "An error occurred. Please try again."];
     }
+
+    header("Location: ./edit_alumni_profile.php?edit=" . $alumni_id_edit);
+    exit();
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Alumni Edit Profile | AlumniConnect</title>
@@ -473,56 +471,66 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
 
                     <div class="form-group">
                         <label for="Enrollment">Enrollment No</label>
-                        <input type="text" id="Enrollment" name="Enrollment" value="<?= htmlspecialchars($user_data_fetched['Enrollment_No'] ?? '') ?>" disabled>
+                        <input type="text" id="Enrollment" name="Enrollment" value="<?= htmlspecialchars($user_data_fetched['enrollment_no'] ?? '') ?>" disabled>
                     </div>
                     <div class="form-group">
                         <label for="name">Full Name</label>
-                        <input type="text" id="name" name="name" value="<?= htmlspecialchars($user_data_fetched['alumni_name'] ?? '') ?>">
+                        <input type="text" id="name" name="name" value="<?= htmlspecialchars($user_data_fetched['alumni_name'] ?? '') ?>" disabled>
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" value="<?= htmlspecialchars($user_data_fetched['alumni_email'] ?? '') ?>">
+                        <input type="email" id="email" name="email" value="<?= htmlspecialchars($user_data_fetched['email'] ?? '') ?>" disabled>
                     </div>
                     <div class="form-group">
                         <label for="phone_no">Phone Number</label>
-                        <input type="tel" id="phone_no" name="phone_no" value="<?= htmlspecialchars($user_data_fetched['alumni_phone_no'] ?? '') ?>">
+                        <input type="tel" id="phone_no" name="phone_no" min="10" max="10" value="<?= htmlspecialchars($user_data_fetched['alumni_phone_no'] ?? '') ?>">
                     </div>
                     <div class="form-group">
                         <label for="department">Department</label>
-                        <select name="department" id="department">
-                            <option value="Computer Engineering" <?= (isset($user_data_fetched['alumni_department']) && $user_data_fetched['alumni_department'] == "Computer Engineering") ? "selected" : "" ?>>Computer Engineering</option>
-                            <option value="Information Technology" <?= (isset($user_data_fetched['alumni_department']) && $user_data_fetched['alumni_department'] == "Information Technology") ? "selected" : "" ?>>Information Technology</option>
+                        <select name="department" id="department" disabled>
+                            <option value=""><?= htmlspecialchars($user_data_fetched['branch'] ?? '') ?></option>
+
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="admission_year">Admission Year</label>
-                        <input type="number" id="admission_year" name="admission_year" min="1980" max="2099" value="<?= htmlspecialchars($user_data_fetched['alumni_add_year'] ?? '') ?>">
+                        <?php if (!isset($user_data_fetched["alumni_batch"])){ ?>
+                        <select name="admission_year" id="admission_year" style="width: 100%; padding: 12px 16px; border: 1px solid #4B5563; border-radius: 8px; outline: none; transition: all 0.2s ease-in-out; color: black;" required>
+                                <?php foreach ($addmission_year_range as $year): ?>
+                                    <option value="<?= $year  ?>"><?= $year ?></option>
+                                <?php endforeach; ?>
+                            <?php } else{ ?>
+                                <input type="text" value="<?= $user_data_fetched["alumni_batch"] ?>" disabled>
+                            <?php } ?>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="passout_year">Passout Year</label>
-                        <input type="number" id="passout_year" name="passout_year" min="1980" max="2099" value="<?= htmlspecialchars($user_data_fetched['alumni_pass_year'] ?? '') ?>">
-                    </div>
-                    <div class="form-group">
-                        <label for="college">College Name</label>
-                        <select name="college" id="college">
-                            <option value="GEC MODASA" <?= (isset($user_data_fetched['alumni_college']) && $user_data_fetched['alumni_college'] == "GEC MODASA") ? "selected" : "" ?>>GEC MODASA</option>
-                        </select>
+                        <input type="number" id="passout_year" name="passout_year" min="1980" max="2099" value="<?= htmlspecialchars($user_data_fetched['passout_year'] ?? '') ?>" disabled>
                     </div>
                     <div class="form-group">
                         <label for="city">City</label>
                         <input type="text" id="city" name="city" value="<?= htmlspecialchars($user_data_fetched['alumni_city'] ?? '') ?>">
                     </div>
                     <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea id="address" name="address" cols="5" rows="3"><?= htmlspecialchars($user_data_fetched['alumni_address'] ?? '') ?></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Current Company</label>
+                        <input type="text" id="company" name="company" value="<?= htmlspecialchars($user_data_fetched['alumni_company'] ?? '') ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="designation">Designation</label>
+                        <input type="text" id="designation" name="designation" value="<?= htmlspecialchars($user_data_fetched['alumni_designation'] ?? '') ?>">
+                    </div>
+                    <div class="form-group">
                         <label for="github">GitHub Link</label>
-                        <input type="url" id="github" name="github" value="<?= htmlspecialchars($user_data_fetched['alumni_githublink'] ?? '') ?>">
+                        <input type="url" id="github" name="github" value="<?= htmlspecialchars($user_data_fetched['alumni_github_link'] ?? '') ?>">
                     </div>
                     <div class="form-group">
                         <label for="linkedin">LinkedIn Link</label>
-                        <input type="url" id="linkedin" name="linkedin" value="<?= htmlspecialchars($user_data_fetched['alumni_linkedIn'] ?? '') ?>">
-                    </div>
-                    <div class="form-group">
-                        <label for="bio">Bio</label>
-                        <textarea id="bio" name="bio" rows="3" placeholder="Write a short bio..."><?= htmlspecialchars($user_data_fetched['alumni_bio'] ?? '') ?></textarea>
+                        <input type="url" id="linkedin" name="linkedin" value="<?= htmlspecialchars($user_data_fetched['alumni_linkedin_link'] ?? '') ?>">
                     </div>
                     <button type="submit" class="btn-submit" name="save_profile_btn">Save Profile</button>
                 </form>

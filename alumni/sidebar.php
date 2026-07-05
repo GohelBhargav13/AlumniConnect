@@ -51,7 +51,7 @@ $alumni_id = $_SESSION['alumni_id'];
       padding: 12px 20px;
       text-decoration: none;
       transition: 0.3s;
-      font-weight:600;
+      font-weight: 600;
     }
 
     .sidebar a:hover,
@@ -80,13 +80,10 @@ $alumni_id = $_SESSION['alumni_id'];
     <h4 class="text-center">AlumniConnect</h4>
     <p class="text-center">Alumni Dashboard</p>
     <hr class="text-white">
-    <a href="./alumni_dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="./landing.php"><i class="fas fa-home"></i>Home</a>
+    <a href="./alumni_dashboard.php"><i class="fa-solid fa-circle-info"></i> Dashboard</a>
     <a href="./alumni_create_post.php"><i class="fas fa-briefcase"></i> Create Post</a>
-    <a href="./alumni_post_view.php"><i class="fas fa-newspaper"></i> View Posts</a>
-    <a href="./alumni_new_request.php"><i class="fa-solid fa-bell"></i> New Connection</a>
-     <a href="./show_friends.php"><i class="fa-solid fa-user-group"></i></i> Friends </a>
     <a href="./edit_alumni_profile.php?edit=<?= htmlspecialchars($alumni_id) ?>"><i class="fas fa-user-edit"></i> Edit Profile</a>
-    <a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>
 </body>
 

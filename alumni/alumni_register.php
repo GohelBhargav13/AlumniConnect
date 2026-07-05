@@ -66,8 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
                     $hashed_password,
                     $alumni_email,
                     $alumni_passoutYear
-                );
-                echo $register_new_stmt; // Debugging line to check for errors            
+                );        
                 if ($register_new_stmt->execute()) {
                     $message = "Registration successful. You can now log in.";
                     header("Location: ../login.php?success=" . urlencode($message));
@@ -96,182 +95,193 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alumni Register | AlumniConnect</title>
-    
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CSS for the whole page -->
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 
         :root {
-        --green: #007bff;
-        --light-green: #e8f8f2;
-        --text-dark: #333;
-        --text-muted: #777;
-        --border: #ccc;
-        --input-bg: #fff;
+            --green: #007bff;
+            --light-green: #e8f8f2;
+            --text-dark: #333;
+            --text-muted: #777;
+            --border: #ccc;
+            --input-bg: #fff;
         }
 
         body {
-        font-family: "Poppins", sans-serif;
-        margin: 0;
-        padding: 50px 20px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+            font-family: "Poppins", sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 50px 20px;
+        }
+
+        .main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .container {
-        width: 100%;
-        max-width: 600px;
-        background-color: #fff;
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 30px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 600px;
+            justify-content: center;
+            background-color: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
         }
 
         .logo {
-        text-align: center;
-        margin-bottom: 20px;
-        color: var(--green);
-        font-size: 1.6rem;
-        font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--green);
+            font-size: 1.6rem;
+            font-weight: 600;
         }
 
         h2 {
-        text-align: center;
-        color: var(--text-dark);
-        font-size: 1.2rem;
-        background-color: var(--light-green);
-        padding: 10px;
-        border-radius: 6px;
-        margin-bottom: 30px;
-        font-weight: 500;
+            text-align: center;
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            background-color: var(--light-green);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            font-weight: 500;
         }
 
         form .form-group {
-        margin-bottom: 18px;
+            margin-bottom: 18px;
         }
 
         form label {
-        display: block;
-        margin-bottom: 5px;
-        font-size: 0.9rem;
-        color: var(--text-muted);
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
         }
 
         form input {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        font-size: 0.95rem;
-        background-color: var(--input-bg);
-        transition: border 0.3s ease;
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background-color: var(--input-bg);
+            transition: border 0.3s ease;
         }
 
         form input:focus {
-        outline: none;
-        border-color: var(--green);
-        box-shadow: 0 0 0 2px rgba(0, 184, 107, 0.15);
+            outline: none;
+            border-color: var(--green);
+            box-shadow: 0 0 0 2px rgba(0, 184, 107, 0.15);
         }
 
         .half-width-group {
-        display: flex;
-        gap: 35px;
+            display: flex;
+            gap: 35px;
         }
 
         .half-width-field {
-        flex: 1;
+            flex: 1;
         }
 
         .btn-primary {
-        background-color: var(--green);
-        color: #fff;
-        border: none;
-        padding: 12px;
-        width: 100%;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background 0.3s;
+            background-color: var(--green);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
         }
 
         .btn-primary:hover {
-        background-color: #00995a;
+            background-color: #00995a;
         }
 
         .login-link {
-        text-align: center;
-        margin-top: 15px;
-        font-size: 0.9rem;
-        color: var(--text-muted);
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
         }
 
         .login-link a {
-        color: var(--green);
-        text-decoration: none;
-        font-weight: 600;
+            color: var(--green);
+            text-decoration: none;
+            font-weight: 600;
         }
 
         .login-link a:hover {
-        text-decoration: underline;
+            text-decoration: underline;
         }
 
         /* Responsive */
         @media (max-width: 480px) {
-        .half-width-group {
-            flex-direction: column;
+            .half-width-group {
+                flex-direction: column;
+            }
         }
-        }
-
     </style>
-
 </head>
 
 <body>
-    <div class="container" style="padding: 20px;">
-        <h2>Alumni Registration</h2>
-        <?php if (isset($_GET['error']) || isset($_GET['success']) || isset($_GET['info'])): ?>
-            <p id="message" class="msg" style="color: <?= (isset($_GET['error']) ? 'red' : (isset($_GET['success']) ? 'green' : 'blue')) ?>"><?= (isset($_GET['error']) ? htmlspecialchars($_GET['error']) : (isset($_GET['success']) ? htmlspecialchars($_GET['success']) : htmlspecialchars($_GET["info"]))) ?></p>
-            <script>
-                const mess = document.getElementById('message');
-                setTimeout(() => {
-                    mess.style.display = 'none'
-                }, 2000)
-            </script>
-        <?php endif ?>
-
-        <form action="alumni_register.php" method="POST">
-            <div class="form-group" style="width: 95%;">
-                <label for="email">Email.</label>
-                <input type="email" name="email" id="email" style="width: 100%; padding: 12px 16px; border: 1px solid #4B5563; border-radius: 8px; outline: none; transition: all 0.2s ease-in-out; color: black" required>
-            </div>
-            <div class="form-group" style="width: 100%;">
-                <label for="passOutYear">Pass Out Year</label>
-                <select name="passOutYear" id="passOutYear" style="width: 100%; padding: 12px 16px; border: 1px solid #4B5563; border-radius: 8px; outline: none; transition: all 0.2s ease-in-out; color: black;" required>
-                    <?php foreach ($passoutYears as $year): ?>
-                        <option value="<?= $year  ?>"><?= $year ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="form-group" style="width: 95%;">
-                <label for="password">Password</label>
-                <input type="password" name="password" id="password" style="width: 100%; padding: 12px 16px; border: 1px solid #4B5563; border-radius: 8px; outline: none; transition: all 0.2s ease-in-out; color: black" required>
-            </div>
-            <div class="form-group" style="width: 95%;">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" name="confirmPassword" id="confirmPassword" style="width: 100%; padding: 12px 16px; border: 1px solid #4B5563; border-radius: 8px; outline: none; transition: all 0.2s ease-in-out; color: black;" required>
-            </div>
-
-            <button class="btn-primary" type="submit" name="register_click_btn">Register Now</button>
-        </form>
-
-        <div class="login-link">
-            Already have an account? <a href="../login.php">Sign in here</a>
-        </div>
+    <div>
+        <button class="btn btn-success"><a href="./landing.php" class="text-white" style="text-decoration: none;">Back</a></button>
     </div>
 
+    <div class="main">
+        <div class="container" style="padding: 20px;">
+            <h2>Alumni Registration</h2>
+            <?php if (isset($_GET['error']) || isset($_GET['success']) || isset($_GET['info'])): ?>
+                <p id="message" class="msg" style="color: <?= (isset($_GET['error']) ? 'red' : (isset($_GET['success']) ? 'green' : 'blue')) ?>"><?= (isset($_GET['error']) ? htmlspecialchars($_GET['error']) : (isset($_GET['success']) ? htmlspecialchars($_GET['success']) : htmlspecialchars($_GET["info"]))) ?></p>
+                <script>
+                    const mess = document.getElementById('message');
+                    setTimeout(() => {
+                        mess.style.display = 'none'
+                    }, 2000)
+                </script>
+            <?php endif ?>
+
+            <form action="alumni_register.php" method="POST">
+                <div class="form-group" style="width: 95%;">
+                    <label for="email">Email.</label>
+                    <input type="email" name="email" id="email" style="width: 100%; padding: 12px 16px; border: 1px solid #4B5563; border-radius: 8px; outline: none; transition: all 0.2s ease-in-out; color: black" required>
+                </div>
+                <div class="form-group" style="width: 95%;">
+                    <label for="passOutYear">Pass Out Year</label>
+                    <select name="passOutYear" id="passOutYear" style="width: 100%; padding: 12px 16px; border: 1px solid #4B5563; border-radius: 8px; outline: none; transition: all 0.2s ease-in-out; color: black;" required>
+                        <?php foreach ($passoutYears as $year): ?>
+                            <option value="<?= $year  ?>"><?= $year ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="form-group" style="width: 95%;">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" style="width: 100%; padding: 12px 16px; border: 1px solid #4B5563; border-radius: 8px; outline: none; transition: all 0.2s ease-in-out; color: black" required>
+                </div>
+                <div class="form-group" style="width: 95%;">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" name="confirmPassword" id="confirmPassword" style="width: 100%; padding: 12px 16px; border: 1px solid #4B5563; border-radius: 8px; outline: none; transition: all 0.2s ease-in-out; color: black;" required>
+                </div>
+
+                <button class="btn-primary" type="submit" name="register_click_btn">Register Now</button>
+            </form>
+
+            <div class="login-link">
+                Already have an account? <a href="../login.php">Sign in here</a>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
