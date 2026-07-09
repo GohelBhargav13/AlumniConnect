@@ -31,36 +31,131 @@ if ($total_analystics_res) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlumniConnect | Admin Panel</title>
     <link rel="icon" type="image/x-icon" href="../uploads/website_images/favicon.png">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #e7e7e7;
+            color: #2b2f31;
+        }
+
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+            border: 1px solid #d6e2ef;
+            border-radius: 10px;
+            margin: 20px;
+            overflow: hidden;
+        }
+
+        .admin-main {
+            flex-grow: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #e7e7e7;
+        }
+
+        .admin-title {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #d6e2ef;
+            padding-bottom: 20px;
+            color: #2E75B6;
+        }
+
+        .admin-welcome {
+            margin: 25px 5px;
+            color: #2E75B6;
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 220px;
+            background-color: #f4f8fc;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #d6e2ef;
+        }
+
+        .stat-card h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #1F5A94;
+        }
+
+        .stat-card p {
+            font-size: 36px;
+            margin-top: 10px;
+            color: #2E75B6;
+            font-weight: 700;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 860px) {
+            .cards-container {
+                flex-direction: column;
+            }
+
+            .stat-card {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .admin-wrapper {
+                margin: 8px;
+                flex-direction: column;
+            }
+
+            .admin-title {
+                font-size: 20px;
+            }
+
+            .stat-card p {
+                font-size: 28px;
+            }
+        }
+    </style>
 </head>
 
-<body style="margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: #0d1117; color: white;">
+<body>
 
     <!-- Main container for the entire admin panel -->
-    <div style="display: flex; height: 100vh; overflow: hidden; border: 1px solid #30363d; border-radius: 10px; margin: 20px;">
+    <div class="admin-wrapper">
 
         <?php include "./sidebar.php" ?>
 
         <!-- Main Content Area -->
-        <div style="flex-grow: 1; padding: 20px; box-sizing: border-box; background-color: #0d1117;">
-            <h1 style="text-align: center; font-size: 24px; margin-bottom: 40px; border-bottom: 1px solid #30363d; padding-bottom: 20px;">Admin Panel</h1>
-            <h1 style="margin: 25px 5px;">Welcome <b><?= htmlspecialchars($_SESSION['admin_name']) ?></b> !</h1>
+        <div class="admin-main">
+            <h1 class="admin-title">Admin Panel</h1>
+            <h1 class="admin-welcome">Welcome <b><?= htmlspecialchars($_SESSION['admin_name']) ?></b> !</h1>
             <!-- Cards container -->
-            <div style="display: flex; justify-content: space-around; gap: 20px;">
+            <div class="cards-container">
                 <!-- Alumni Card -->
-                <div style="flex: 1; background-color: #161b22; padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #30363d;">
-                    <h2 style="margin: 0; font-size: 18px;">No. of Alumni</h2>
-                    <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics2['alumni_count']) ?? 0 ?></p>
+                <div class="stat-card">
+                    <h2>No. of Alumni</h2>
+                    <p><?= htmlspecialchars($final_analystics2['alumni_count']) ?? 0 ?></p>
                 </div>
 
                 <!-- Event card -->
-                <div style="flex: 1; background-color: #161b22; padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #30363d;">
-                    <h2 style="margin: 0; font-size: 18px;">No. of Events</h2>
-                    <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics2['total_events']) ?? 0 ?></p>
+                <div class="stat-card">
+                    <h2>No. of Events</h2>
+                    <p><?= htmlspecialchars($final_analystics2['total_events']) ?? 0 ?></p>
                 </div>
                 <!-- Announcement card -->
-                <div style="flex: 1; background-color: #161b22; padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #30363d;">
-                    <h2 style="margin: 0; font-size: 18px;">No. of Announcement</h2>
-                    <p style="font-size: 36px; margin-top: 10px;"><?= htmlspecialchars($final_analystics2['total_announcement']) ?? 0 ?></p>
+                <div class="stat-card">
+                    <h2>No. of Announcement</h2>
+                    <p><?= htmlspecialchars($final_analystics2['total_announcement']) ?? 0 ?></p>
                 </div>
             </div>
         </div>

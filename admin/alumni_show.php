@@ -6,9 +6,77 @@ if (!isset($_SESSION['admin_id'])) {
     header("Location: ./admin_login.php");
     exit();
 }
+
+if (!isset($conn)) {
+    die("Database is not connected successfully");
+}
+
+// fetch the batches of the each student
+$years_query = "SELECT DISTINCT passout_year FROM alumni_student_master ORDER BY passout_year DESC";
+$branches_query = "SELECT DISTINCT TRIM(branch) AS branch FROM alumni_student_master ORDER BY branch";
+
+$years_res = $conn->query($years_query);
+$years = [];
+if ($years_res) {
+    while ($row = $years_res->fetch_assoc()) {
+        $years[] = $row['passout_year'];
+    }
+}
+
+$branches_res = $conn->query($branches_query);
+$branches = [];
+if ($branches_res) {
+    while ($row = $branches_res->fetch_assoc()) {
+        $branches[] = $row['branch'];
+    }
+}
+
 //fetch alumni details 
-$fetch_alumni_data = "SELECT * FROM alumni_student_master WHERE is_registered = 1";
+$fetch_alumni_data = "SELECT am.*, ap.* FROM alumni_student_master AS am 
+                      JOIN alumni_profile AS ap ON ap.alumni_id = am.alumni_id 
+                      WHERE am.is_registered = 1
+                      ";
 $data_res = isset($conn) ? $conn->query($fetch_alumni_data) : null;
+
+$selected_year = $_GET["fyear"] ?? 'all';
+$branch = $_GET["branch"] ?? 'all';
+
+// full filter logic for both of the options
+if ($selected_year !== 'all' && !empty($selected_year) && $branch !== 'all' && !empty($branch)) {
+    $find_query = "SELECT am.*, ap.* FROM alumni_student_master AS am 
+                    JOIN alumni_profile AS ap ON ap.alumni_id = am.alumni_id 
+                    WHERE am.is_registered = 1 AND passout_year = ? AND TRIM(branch) = ?
+                    ORDER BY am.updated_at DESC";
+    $find_stmt = $conn->prepare($find_query);
+    $find_stmt->bind_param("is", $selected_year, $branch);
+    $find_stmt->execute();
+    $data_res = $find_stmt->get_result();
+} elseif (($selected_year == 'all' || empty($selected_year)) && $branch !== 'all' && !empty($branch)) {
+    $find_query = "SELECT am.*, ap.* FROM alumni_student_master AS am 
+                    JOIN alumni_profile AS ap ON ap.alumni_id = am.alumni_id 
+                    WHERE am.is_registered = 1 AND branch = ?
+                    ORDER BY am.updated_at DESC";
+    $find_stmt = $conn->prepare($find_query);
+    $find_stmt->bind_param("s", $branch);
+    $find_stmt->execute();
+    $data_res = $find_stmt->get_result();
+} elseif ($selected_year !== 'all' && !empty($selected_year) && ($branch == 'all' || empty($branch))) {
+    $find_query = "SELECT am.*, ap.* FROM alumni_student_master AS am 
+                    JOIN alumni_profile AS ap ON ap.alumni_id = am.alumni_id 
+                    WHERE am.is_registered = 1 AND passout_year = ?
+                    ORDER BY am.updated_at DESC";
+    $find_stmt = $conn->prepare($find_query);
+    $find_stmt->bind_param("i", $selected_year);
+    $find_stmt->execute();
+    $data_res = $find_stmt->get_result();
+} else {
+    $find_query = "SELECT am.*, ap.* FROM alumni_student_master AS am 
+                    JOIN alumni_profile AS ap ON ap.alumni_id = am.alumni_id 
+                    WHERE am.is_registered = 1
+                    ORDER BY am.updated_at DESC
+                    ";
+    $data_res = $conn->query($find_query);
+}
 
 ?>
 <!DOCTYPE html>
@@ -19,11 +87,79 @@ $data_res = isset($conn) ? $conn->query($fetch_alumni_data) : null;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlumniConnect | Admin</title>
     <style>
+        body {
+            margin: 5px;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #e7e7e7;
+            color: #2b2f31;
+        }
+
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+            border: 1px solid #d6e2ef;
+            border-radius: 10px;
+            margin: 20px;
+            overflow: hidden;
+        }
+
+        .admin-main {
+            flex-grow: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #e7e7e7;
+        }
+
+        .admin-title {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #d6e2ef;
+            padding-bottom: 20px;
+            color: #2E75B6;
+        }
+
+        .alumni-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 20px;
+        }
+
+        .alumni-card {
+            width: calc(50% - 10px);
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #d6e2ef;
+            box-sizing: border-box;
+        }
+
+        .alumni-card p {
+            margin: 5px;
+            font-size: 16px;
+            color: #2b2f31;
+        }
+
+        .alumni-card h2 {
+            font-size: 20px;
+            margin-top: 0;
+            margin-bottom: 5px;
+            color: #1F5A94;
+        }
+
+        .alumni-card a {
+            text-decoration: none;
+            color: #2E75B6;
+        }
+
         .avatar {
             width: 80px;
             height: 80px;
-            background: #0d1117;
-            color: white;
+            background: #2E75B6;
+            color: #ffffff;
             font-size: 30px;
             font-weight: bold;
             border-radius: 50%;
@@ -33,41 +169,131 @@ $data_res = isset($conn) ? $conn->query($fetch_alumni_data) : null;
             margin: auto;
             margin-bottom: 12px;
         }
+
+        .filter-bar {
+            max-width: 900px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar label {
+            font-size: 0.9rem;
+            color: #667079;
+        }
+
+        .filter-bar select {
+            padding: 9px 14px;
+            border: 1px solid #d6e2ef;
+            border-radius: 6px;
+            background: #ffffff;
+            color: #2b2f31;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        .filter-bar button[type="submit"] {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 6px;
+            background: #2E75B6;
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .filter-bar button[type="submit"]:hover {
+            background: #1F5A94;
+        }
+
+        .empty-state {
+            width: 100%;
+            text-align: center;
+            color: #667079;
+            padding: 60px 0;
+            font-size: 0.95rem;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 860px) {
+            .alumni-card {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .admin-wrapper {
+                margin: 8px;
+                flex-direction: column;
+            }
+
+            .admin-title {
+                font-size: 20px;
+            }
+        }
     </style>
 </head>
 
-<body style="margin: 5px; padding: 0; font-family: 'Inter', sans-serif; background-color: #0d1117; color: white;">
+<body>
 
     <!-- Main container for the entire page -->
-    <div style="display: flex; height: 100vh; overflow: hidden; border: 1px solid #30363d; border-radius: 10px; margin: 20px;">
+    <div class="admin-wrapper">
 
         <!-- Sidebar Navigation -->
         <?php include "./sidebar.php" ?>
 
         <!-- Main Content Area -->
-        <div style="flex-grow: 1; padding: 20px; box-sizing: border-box; background-color: #0d1117;">
-            <h1 style="text-align: center; font-size: 24px; margin-bottom: 40px; border-bottom: 1px solid #30363d; padding-bottom: 20px;">Alumni's</h1>
+        <div class="admin-main">
+            <h1 class="admin-title">Alumni's</h1>
+            <div class="filter-bar">
+                <form method="GET" action="" style="display: flex; gap: 10px; align-items: center;">
+                    <label for="fyear">Filter by Year</label>
+                    <select id="fyear" name="fyear">
+                        <option value="all" <?= $selected_year === 'all' ? 'selected' : '' ?>>-- Show All --</option>
+                        <?php foreach ($years as $year): ?>
+                            <option value="<?= htmlspecialchars($year) ?>" <?= ((string) $selected_year === (string) $year) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($year) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <label for="branch">Filter by Branch</label>
+                    <select id="branch" name="branch">
+                        <option value="all" <?= $branch === 'all' ? 'selected' : '' ?>>-- Show All --</option>
+                        <?php foreach ($branches as $br): ?>
+                            <option value="<?= htmlspecialchars($br) ?>" <?= ((string) $branch === (string) $br) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($br) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit">Filter</button>
+                </form>
+            </div>
 
             <!-- Alumni cards container -->
-            <div style="display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 20px;">
+            <div class="alumni-cards">
                 <!-- Alumni Card 1 -->
                 <?php
-                if ($data_res):
+                if (isset($data_res) && $data_res->num_rows > 0):
                     while ($row = $data_res->fetch_assoc()):
                 ?>
-                        <div style="width: calc(50% - 10px); background-color: #161b22; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid #30363d; box-sizing: border-box;">
+                        <div class="alumni-card">
                             <div class="avatar"><?= strtoupper(substr($row['alumni_name'] ?? 'A', 0, 1)) ?></div>
-                            <h2 style="font-size: 20px; margin-top: 0; margin-bottom: 5px;"><?= htmlspecialchars($row['alumni_name']) ?></h2>
-                            <p style="margin: 5px; font-size: 16px;"><b>Passout Year </b>: <?= htmlspecialchars($row['alumni_pass_year']) ?></p>
-                            <p style="margin: 5px; font-size: 16px;"><b>Company </b>: <?= htmlspecialchars($row['alumni_company_name']) ?></p>
-                            <p style="margin: 5px; font-size: 16px;"><b>BIO </b>: <?= htmlspecialchars($row['alumni_bio']) ?></p>
-                            <p style="margin: 5px; font-size: 16px;"><b>College </b>: <?= htmlspecialchars($row['alumni_college']) ?></p>
-                            <p style="margin: 5px; font-size: 16px;"><b>LinkedIn </b>: <a href="<?= htmlspecialchars($row['alumni_linkedIn']) ?>" style="text-decoration: none; color:white;" target="_blank"> <?= htmlspecialchars($row['alumni_linkedIn']) ?></a></p>
+                            <h2><?= htmlspecialchars($row['alumni_name']) ?></h2>
+                            <p><b>Passout Year </b>: <?= htmlspecialchars($row['passout_year']) ?></p>
+                            <p><b>Company </b>: <?= htmlspecialchars($row['alumni_company']) ?></p>
+                            <p><b>Branch </b>: <?= htmlspecialchars($row['branch']) ?></p>
+                            <p><b>College </b>: <?= htmlspecialchars($row['alumni_college'] ?? "GEC MODASA") ?></p>
+                            <p><b>LinkedIn </b>: <a href="<?= htmlspecialchars($row['alumni_linkedin_link']) ?>" target="_blank"> <?= htmlspecialchars($row['alumni_linkedin_link'] ?? "") ?></a></p>
                         </div>
-                <?php endwhile;
-                endif;
-                ?>
-                <!-- You can add more alumni cards here -->
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <div class="empty-state">No announcements found.</div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

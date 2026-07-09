@@ -114,38 +114,158 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Passout Student List (mysqli version)</title>
+    <style>
+        body {
+            margin: 5px;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #2b2f31;
+        }
+
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+            border: 1px solid #d6e2ef;
+            border-radius: 10px;
+            margin: 20px;
+            overflow: hidden;
+        }
+
+        .admin-main {
+            flex-grow: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+        }
+
+        .upload-title {
+            text-align: center;
+            color: #2E75B6;
+            margin-bottom: 15px;
+        }
+
+        .upload-subtitle {
+            text-align: center;
+            color: #667079;
+            margin-bottom: 25px;
+        }
+
+        .status-msg {
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .status-msg.success {
+            color: #0a7d3e;
+            background: rgba(10, 125, 62, 0.08);
+            border: 1px solid #0a7d3e;
+        }
+
+        .status-msg.error {
+            color: #d92d20;
+            background: rgba(217, 45, 32, 0.08);
+            border: 1px solid #d92d20;
+        }
+
+        .error-log {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(217, 45, 32, 0.06);
+            border: 1px solid #d92d20;
+            border-radius: 8px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .error-log h3 {
+            margin-top: 0;
+            color: #d92d20;
+        }
+
+        .error-log ul {
+            padding-left: 20px;
+            margin: 0;
+            color: #d92d20;
+        }
+
+        .error-log li {
+            margin-bottom: 8px;
+        }
+
+        .upload-form label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2E75B6;
+            font-weight: bold;
+        }
+
+        .upload-form input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            background: #ffffff;
+            color: #2b2f31;
+            border: 1px solid #d6e2ef;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .upload-btn {
+            width: 100%;
+            padding: 12px;
+            background: #2E75B6;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .upload-btn:hover {
+            background: #1F5A94;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 600px) {
+            .admin-wrapper {
+                margin: 8px;
+                flex-direction: column;
+            }
+
+            .upload-title {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 
-<body style="margin: 5px; padding: 0; font-family: 'Inter', sans-serif; background-color: #0d1117; color: white;">
+<body>
     <!-- Main container for the entire page -->
-    <div style="display: flex; height: 100vh; overflow: hidden; border: 1px solid #30363d; border-radius: 10px; margin: 20px;">
+    <div class="admin-wrapper">
 
         <!-- Sidebar Navigation -->
         <?php include "./sidebar.php" ?>
-        <div style="flex-grow: 1; padding: 20px; box-sizing: border-box; background-color: #0d1117;">
+        <div class="admin-main">
 
-            <h2 style="text-align:center; color:#f0f6fc; margin-bottom:15px;">
+            <h2 class="upload-title">
                 Upload Passout Student Excel Sheet
             </h2>
 
-            <p style="text-align:center; color:lightcyan; margin-bottom:25px;">
+            <p class="upload-subtitle">
                 Expected columns in order:
                 <strong>Name, Email, Enrollment No, Passout Year, Branch</strong>
             </p>
 
             <?php if (isset($_GET["success"]) || isset($_GET["error"])): ?>
 
-                <p style="
-                    padding:12px;
-                    border-radius:6px;
-                    text-align:center;
-                    font-weight:bold;
-                    margin-bottom:20px;
-                    color:<?= isset($_GET['success']) ? '#3fb950' : '#ff7b72'; ?>;
-                    background:<?= isset($_GET['success']) ? 'rgba(35,134,54,0.15)' : 'rgba(248,81,73,0.10)'; ?>;
-                    border:1px solid <?= isset($_GET['success']) ? '#238636' : '#f85149'; ?>;
-                ">
+                <p class="status-msg <?= isset($_GET['success']) ? 'success' : 'error'; ?>">
                     <?= htmlspecialchars($_GET['success'] ?? $_GET['error']); ?>
                 </p>
 
@@ -153,25 +273,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
 
             <?php if (!empty($errors)): ?>
 
-                <div style="
-                    margin-bottom:20px;
-                    padding:15px;
-                    background:rgba(248,81,73,0.10);
-                    border:1px solid #f85149;
-                    border-radius:8px;
-                    max-height:220px;
-                    overflow-y:auto;
-                ">
+                <div class="error-log">
 
-                    <h3 style="margin-top:0; color:#ff7b72;">
+                    <h3>
                         Processing Logs / Issues
                     </h3>
 
-                    <ul style="padding-left:20px; margin:0; color:#ff7b72;">
+                    <ul>
 
                         <?php foreach ($errors as $error): ?>
 
-                            <li style="margin-bottom:8px;">
+                            <li>
                                 <?= htmlspecialchars($error); ?>
                             </li>
 
@@ -183,11 +295,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
 
             <?php endif; ?>
 
-            <form action="" method="POST" enctype="multipart/form-data">
+            <form action="" method="POST" enctype="multipart/form-data" class="upload-form">
 
                 <div style="margin-bottom:20px;">
 
-                    <label for="excel_file" style="display:block; margin-bottom:8px; color:#f0f6fc; font-weight:bold;">
+                    <label for="excel_file">
                         Select Excel File (.xlsx)
                     </label>
 
@@ -196,32 +308,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['excel_file'])) {
                         name="excel_file"
                         id="excel_file"
                         accept=".xlsx"
-                        required
-                        style="
-                            width:100%;
-                            padding:10px;
-                            background:#0d1117;
-                            color:white;
-                            border:1px solid #30363d;
-                            border-radius:6px;
-                            box-sizing:border-box;
-                        ">
+                        required>
 
                 </div>
 
                 <button
                     type="submit"
-                    style="
-                        width:100%;
-                        padding:12px;
-                        background:#238636;
-                        color:white;
-                        border:none;
-                        border-radius:6px;
-                        font-size:16px;
-                        font-weight:bold;
-                        cursor:pointer;
-                    ">
+                    class="upload-btn">
                     Upload & Process
                 </button>
 

@@ -23,32 +23,112 @@ if ($total_analystics_res) {
     <!-- Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
+    <style>
+        .admin-sidebar {
+            width: 200px;
+            background-color: #f4f8fc;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #d6e2ef;
+        }
+
+        .admin-sidebar h4,
+        .admin-sidebar p {
+            color: #2E75B6;
+        }
+
+        .sidebar-link {
+            background-color: #2E75B6;
+            color: #ffffff;
+            padding: 12px;
+            margin-bottom: 10px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid #1F5A94;
+        }
+
+        .sidebar-link:hover {
+            background-color: #1F5A94;
+            color: #ffffff;
+        }
+
+        .sidebar-link.logout {
+            margin-top: auto;
+        }
+
+        .sidebar-badge {
+            background-color: #ffffff;
+            color: #2E75B6;
+            padding: 1px 3px;
+            border-radius: 12px;
+            font-weight: bolder;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 860px) {
+            .admin-sidebar {
+                width: 160px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .admin-sidebar {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+                border-right: none;
+                border-bottom: 1px solid #d6e2ef;
+            }
+
+            .admin-sidebar h4,
+            .admin-sidebar p {
+                width: 100%;
+            }
+
+            .sidebar-link {
+                flex: 1 1 auto;
+                margin-bottom: 0;
+            }
+
+            .sidebar-link.logout {
+                margin-top: 0;
+            }
+        }
+    </style>
+
 </head>
 
 <body>
     <!-- Sidebar Navigation -->
-    <div style="width: 200px; background-color: #161b22; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; border-right: 1px solid #30363d;">
+    <div class="admin-sidebar">
         <h4 class="text-center">AlumniConnect</h4>
         <p class="text-center mb-5">Admin Dashboard</p>
-        <a href="./admin_dashboard.php" onclick="sidebarTag('admin-dashboard')" id="admin-dashboard" style="background-color: #21262d; color: white; padding: 12px; margin-bottom: 10px; text-align: center; text-decoration: none; border-radius: 8px; border: 1px solid #30363d;">Dashboard</a>
-        <a href="./alumni_show.php" onclick="sidebarTag('alumni-show')" id="alumni-show" style="background-color: #21262d; color: white; padding: 12px; margin-bottom: 10px; text-align: center; text-decoration: none; border-radius: 8px; border: 1px solid #30363d;">Alumni <sup style="background-color:white; color:black; padding:1px 3px; border-radius:12px; font-weight: bolder;"><?= htmlspecialchars($final_analystics['total_alumni']) ?? 0 ?></sup> </a>
-        <a href="./upload_student_excel.php" onclick="sidebarTag('student-show')" id="student-show" style="background-color: #21262d; color: white; padding: 12px; margin-bottom: 10px; text-align: center; text-decoration: none; border-radius: 8px; border: 1px solid #30363d;">Student record</a>
-        <a href="./create_events.php" onclick="sidebarTag('events')" id="events" style="background-color: #21262d; color: white; padding: 12px; margin-bottom: 10px; text-align: center; text-decoration: none; border-radius: 8px; border: 1px solid #30363d;">Events</a>
-        <a href="./create_announcement.php" onclick="sidebarTag('announcements')" id="announcements" style="background-color: #21262d; color: white; padding: 12px; margin-bottom: 10px; text-align: center; text-decoration: none; border-radius: 8px; border: 1px solid #30363d;">Annoucements</a>
-        <a href="./change_password.php" onclick="sidebarTag('change-password')" id="change-password" style="background-color: #21262d; color: white; padding: 12px; margin-bottom: 10px; text-align: center; text-decoration: none; border-radius: 8px; border: 1px solid #30363d;">Change password</a>
-        <a href="./logout.php" onclick="sidebarTag('logout')" id="logout" style="background-color: #21262d; color: white; padding: 12px; margin-bottom: 10px; text-align: center; text-decoration: none; border-radius: 8px; border: 1px solid #30363d; margin-top: auto;">Logout</a>
+        <a href="./admin_dashboard.php" onclick="sidebarTag('admin-dashboard')" id="admin-dashboard" class="sidebar-link">Dashboard</a>
+        <a href="./manage_events.php" onclick="sidebarTag('show-events')" id="show-events" class="sidebar-link">Total Events</a>
+        <a href="./manage_announcements.php" onclick="sidebarTag('show-events')" id="show-events" class="sidebar-link">Total Announcements</a>
+        <a href="./alumni_show.php" onclick="sidebarTag('alumni-show')" id="alumni-show" class="sidebar-link">Alumni <sup class="sidebar-badge"><?= htmlspecialchars($final_analystics['total_alumni']) ?? 0 ?></sup> </a>
+        <a href="./upload_student_excel.php" onclick="sidebarTag('student-show')" id="student-show" class="sidebar-link">Student record</a>
+        <a href="./create_events.php" onclick="sidebarTag('events')" id="events" class="sidebar-link">Events</a>
+        <a href="./create_announcement.php" onclick="sidebarTag('announcements')" id="announcements" class="sidebar-link">Annoucements</a>
+        <a href="./change_password.php" onclick="sidebarTag('change-password')" id="change-password" class="sidebar-link">Change password</a>
+        <a href="./logout.php" onclick="sidebarTag('logout')" id="logout" class="sidebar-link logout">Logout</a>
     </div>
 
 </body>
 <script>
     function sidebarTag(sidebar_url) {
         const sidebar_id = document.getElementById(sidebar_url)
-        sidebar_id.style.backgroundColor = "#21262d"
+        sidebar_id.style.backgroundColor = "#1F5A94"
         sidebar_id.style.color = "white"
         sidebar_id.style.padding = "12px"
         sidebar_id.style.marginBottom = "10px"
         sidebar_id.style.borderRadius = "10px"
-        sidebar_id.style.border = "2px solid white"
+        sidebar_id.style.border = "2px solid #2E75B6"
     }
 </script>
 
