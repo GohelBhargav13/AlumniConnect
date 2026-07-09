@@ -79,11 +79,11 @@ mysqli_close($conn);
     <title>Find Your Batch | GEC Modasa Alumni Portal</title>
     <style>
         :root {
-            --navy: #1b3a4b;
-            --navy-dark: #122733;
-            --teal: #2f7a68;
-            --teal-dark: #235d51;
-            --bg: #f6f7f5;
+            --navy: #2E75B6;
+            --navy-dark: #1F5A94;
+            --teal: #2E75B6;
+            --teal-dark: #1F5A94;
+            --bg: #ffffff;
             --card-bg: #ffffff;
             --text: #2b2f31;
             --muted: #667079;
@@ -127,7 +127,7 @@ mysqli_close($conn);
             text-transform: uppercase;
             letter-spacing: 1px;
             font-size: 12.5px;
-            color: #9fd6c6;
+            color: #cfe3f5;
             font-weight: 600;
             margin-bottom: 10px;
         }

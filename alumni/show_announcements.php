@@ -50,11 +50,11 @@ mysqli_close($conn);
     <title>Announcements | GEC Modasa Alumni Portal</title>
     <style>
         :root {
-            --navy: #1b3a4b;
-            --navy-dark: #122733;
-            --teal: #2f7a68;
-            --teal-dark: #235d51;
-            --bg: #f6f7f5;
+            --navy: #2E75B6;
+            --navy-dark: #1F5A94;
+            --teal: #2E75B6;
+            --teal-dark: #1F5A94;
+            --bg: #ffffff;
             --card-bg: #ffffff;
             --text: #2b2f31;
             --muted: #667079;
@@ -98,7 +98,7 @@ mysqli_close($conn);
             text-transform: uppercase;
             letter-spacing: 1px;
             font-size: 12.5px;
-            color: #9fd6c6;
+            color: #cfe3f5;
             font-weight: 600;
             margin-bottom: 14px;
         }
@@ -163,7 +163,7 @@ mysqli_close($conn);
         }
 
         .latest-meta span strong {
-            color: #9fd6c6;
+            color: #cfe3f5;
             display: block;
             font-size: 0.72rem;
             font-weight: 600;
@@ -212,6 +212,12 @@ mysqli_close($conn);
             font-size: 1.5rem;
         }
 
+        .past-header form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
         select#priorityFilter {
             padding: 9px 14px;
             border: 1px solid var(--border);
@@ -220,6 +226,22 @@ mysqli_close($conn);
             color: var(--text);
             font-size: 0.9rem;
             font-family: inherit;
+        }
+
+        .past-header button[type="submit"] {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 6px;
+            background: var(--teal);
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .past-header button[type="submit"]:hover {
+            background: var(--teal-dark);
         }
 
         .announcement-card {
@@ -288,6 +310,43 @@ mysqli_close($conn);
             color: var(--muted);
             padding: 40px 0;
             font-size: 0.95rem;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 760px) {
+            .latest-banner {
+                padding: 36px 16px 44px;
+            }
+
+            .latest-card h2 {
+                font-size: 1.12rem;
+            }
+
+            .latest-card {
+                padding: 18px 18px;
+            }
+
+            .past-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .past-header form {
+                width: 100%;
+            }
+
+            select#priorityFilter {
+                flex: 1;
+            }
+
+            .announcement-card {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .announcement-card .posted-by {
+                align-self: flex-start;
+            }
         }
     </style>
 </head>

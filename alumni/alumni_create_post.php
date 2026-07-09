@@ -10,6 +10,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (!isset($conn)) {
+    die("Database connection is not established");
+}
+
 if (!isset($_SESSION['Enroll_no_alumni'])) {
     header("Location: ../login.php");
     exit();
@@ -20,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
     if (!isset($_SESSION['alumni_id'])) {
         $_SESSION['message'] = ["success" => false, "final_msg" => "Alumni session is not set"];
         header("Location: alumni_create_post.php");
-        exit(); // ✅ Added exit after redirect
+        exit();
     }
 
     $alumni_id = (int) $_SESSION['alumni_id'];
@@ -135,7 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f2f5;
+            background-color: #ffffff;
             display: flex;
             /* Keep flex for the overall layout */
             justify-content: flex-start;
@@ -143,7 +147,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
             align-items: flex-start;
             /* Align content to start to keep sidebar at top */
             min-height: 100vh;
-            color: #333;
+            color: #2b2f31;
             box-sizing: border-box;
             height: auto;
             min-height: 100%;
@@ -157,7 +161,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
             /* Take full width of body */
             max-width: none;
             /* No max-width on the container itself */
-            background-color: #f0f2f5;
+            background-color: #ffffff;
             /* Background for the overall area */
             border-radius: 0;
             overflow: hidden;
@@ -204,9 +208,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
 
         .nav-links a:hover,
         .nav-links a.active {
-            background-color: #1d2b3a;
+            background-color: #1F5A94;
             color: #ffffff;
-            border-left: 4px solid #4fa3ff;
+            border-left: 4px solid #2E75B6;
             padding-left: 16px;
         }
 
@@ -223,7 +227,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
             padding: 20px;
             /* Padding around the centered form */
             box-sizing: border-box;
-            background-color: #f0f2f5;
+            background-color: #ffffff;
             /* Match body background */
             overflow-y: auto;
             /* Allow scrolling if content is too long */
@@ -232,7 +236,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
         }
 
         form {
-            background-color: #ffffff;
+            background-color: #f4f8fc;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
@@ -249,13 +253,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
 
         .form-header {
             margin-bottom: 20px;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #d6e2ef;
             padding-bottom: 10px;
         }
 
         .form-header h2 {
             font-size: 1.8em;
-            color: #2c3e50;
+            color: #2E75B6;
             margin: 0;
             font-weight: 600;
         }
@@ -273,20 +277,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
 
         .field-row label {
             font-size: 0.9em;
-            color: #555;
+            color: #667079;
             margin-bottom: 5px;
             font-weight: 400;
         }
 
         .field-row input[type="text"],
-        .field-row textarea {
+        .field-row textarea,
+        .field-row select {
             width: 100%;
             padding: 10px 12px;
-            border: 1px solid #ddd;
+            border: 1px solid #d6e2ef;
             border-radius: 6px;
             font-size: 0.95em;
             font-family: 'Poppins', sans-serif;
-            color: #333;
+            color: #2b2f31;
+            background-color: #ffffff;
             box-sizing: border-box;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
@@ -294,8 +300,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
         .field-row input[type="text"]:focus,
         .field-row textarea:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+            border-color: #2E75B6;
+            box-shadow: 0 0 0 2px rgba(46, 117, 182, 0.2);
         }
 
         .field-row textarea {
@@ -304,7 +310,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
         }
 
         button[type="submit"] {
-            background-color: #3498db;
+            background-color: #2E75B6;
             color: white;
             padding: 12px 20px;
             border: none;
@@ -318,7 +324,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
         }
 
         button[type="submit"]:hover {
-            background-color: #2980b9;
+            background-color: #1F5A94;
             transform: translateY(-1px);
         }
 
@@ -379,9 +385,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
 
             .sidebar .nav-links a:hover,
             .sidebar .nav-links a.active {
-                background-color: #1d2b3a;
+                background-color: #1F5A94;
                 border-left: none;
-                border-bottom-color: #4fa3ff;
+                border-bottom-color: #2E75B6;
                 padding-left: 5px;
             }
 
@@ -461,7 +467,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
                 <?php if (isset($_SESSION['message'])) { ?>
                     <p id="message" style=" color: white;
                             border: 1px solid;
-                            background-color: <?= $_SESSION['message']['success'] ? '#28a745' : '#dc3545' ?>;
+                            background-color: <?= $_SESSION['message']['success'] ? '#0a7d3e' : '#d92d20' ?>;
                             padding: 8px 10px;
                             border-radius: 6px;
                             font-size: 14px;

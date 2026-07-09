@@ -97,8 +97,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f2f5;
-            color: #333;
+            background-color: #ffffff;
+            color: #2b2f31;
             box-sizing: border-box;
             display: flex;
             /* Make body a flex container to house the dashboard */
@@ -122,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
             /* Takes up remaining space */
             padding: 40px;
             /* Padding around the content */
-            background-color: #f0f2f5;
+            background-color: #ffffff;
             /* Background for the main content area */
             overflow-y: auto;
             /* Enable scrolling for content if it overflows */
@@ -142,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
 
         .dashboard-title {
             font-size: 2em;
-            color: #2c3e50;
+            color: #2E75B6;
             margin-bottom: 10px;
             text-align: center;
             width: 100%;
@@ -150,7 +150,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
         }
 
         .profile-card {
-            background-color: #ffffff;
+            background-color: #f4f8fc;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
@@ -180,7 +180,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
-            color: #555;
+            color: #667079;
             font-size: 0.95em;
         }
 
@@ -193,11 +193,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
         .form-group textarea {
             width: 100%;
             padding: 10px 12px;
-            border: 1px solid #ddd;
+            border: 1px solid #d6e2ef;
             border-radius: 6px;
             font-size: 0.95em;
             font-family: 'Poppins', sans-serif;
-            color: #333;
+            color: #2b2f31;
+            background-color: #ffffff;
             box-sizing: border-box;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
@@ -206,8 +207,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+            border-color: #2E75B6;
+            box-shadow: 0 0 0 2px rgba(46, 117, 182, 0.2);
         }
 
         .form-group textarea {
@@ -216,7 +217,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
         }
 
         .btn-submit {
-            background-color: #3498db;
+            background-color: #2E75B6;
             color: white;
             padding: 12px 25px;
             border: none;
@@ -231,7 +232,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
         }
 
         .btn-submit:hover {
-            background-color: #2980b9;
+            background-color: #1F5A94;
             transform: translateY(-1px);
         }
 
@@ -253,16 +254,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
         }
 
         #message.success {
-            background-color: #28a745;
-            /* Darker green */
-            border-color: #218838;
+            background-color: #0a7d3e;
+            border-color: #0a7d3e;
             color: white;
         }
 
         #message.error {
-            background-color: #dc3545;
-            /* Darker red */
-            border-color: #c82333;
+            background-color: #d92d20;
+            border-color: #d92d20;
             color: white;
         }
 
@@ -350,9 +349,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
             .sidebar-menu a.active {
                 border-left-color: transparent;
                 /* Ensure no left border */
-                border-bottom-color: #3498db;
+                border-bottom-color: #2E75B6;
                 /* Apply blue to bottom border */
-                background-color: #34495e;
+                background-color: #1F5A94;
             }
 
             .content-area {
@@ -441,19 +440,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
                         $messageClass = $_SESSION['message']['success'] ? 'success' : 'error';
                         $messageText = $_SESSION['message']['mess'] ?? "";
                         ?>
-                        <p id="message" class="<?= htmlspecialchars($messageClass) ?>" style="
-                            color: white;
-                            border: 1px solid;
-                            background-color: <?= $_SESSION['message']['success'] ? '#28a745' : '#dc3545' ?>;
-                            padding: 8px 10px;
-                            border-radius: 6px;
-                            font-size: 14px;
-                            font-weight: 500;
-                            margin-bottom: 10px;
-                            display: block;
-                            transition: all 0.3s ease-in-out;
-                            text-align: center;
-                        ">
+                        <p id="message" class="<?= htmlspecialchars($messageClass) ?>">
                             <?= htmlspecialchars($messageText) ?>
                         </p>
 
@@ -495,7 +482,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
                     <div class="form-group">
                         <label for="admission_year">Admission Year</label>
                         <?php if (!isset($user_data_fetched["alumni_batch"])){ ?>
-                        <select name="admission_year" id="admission_year" style="width: 100%; padding: 12px 16px; border: 1px solid #4B5563; border-radius: 8px; outline: none; transition: all 0.2s ease-in-out; color: black;" required>
+                        <select name="admission_year" id="admission_year" required>
                                 <?php foreach ($addmission_year_range as $year): ?>
                                     <option value="<?= $year  ?>"><?= $year ?></option>
                                 <?php endforeach; ?>

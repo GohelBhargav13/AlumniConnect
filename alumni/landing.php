@@ -14,11 +14,11 @@ $alumni_id = $_SESSION["alumni_id"] ?? null;
   <title>GEC Modasa Alumni Portal</title>
   <style>
     :root {
-      --navy: #1b3a4b;
-      --navy-dark: #122733;
-      --teal: #2f7a68;
-      --teal-dark: #235d51;
-      --bg: #f6f7f5;
+      --navy: #2E75B6;
+      --navy-dark: #1F5A94;
+      --teal: #2E75B6;
+      --teal-dark: #1F5A94;
+      --bg: #ffffff;
       --card-bg: #ffffff;
       --text: #2b2f31;
       --muted: #667079;
@@ -567,7 +567,7 @@ $alumni_id = $_SESSION["alumni_id"] ?? null;
     </div>
   </section>
 
-  // footer section
+  <!-- footer section -->
   <?php include "./footer.php" ?>
 
   <script src="./scripts/script.js"></script>

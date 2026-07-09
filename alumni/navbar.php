@@ -101,8 +101,8 @@ $alumni_id = $_SESSION["alumni_id"] ?? null;
         }
 
         .brand-badge {
-            width: 40px;
-            height: 40px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background: var(--navy);
             color: #fff;
@@ -498,9 +498,11 @@ $alumni_id = $_SESSION["alumni_id"] ?? null;
     <header>
         <div class="navbar">
             <a href="#home" class="brand">
-                <span class="brand-badge">GEC</span>
+                <span class="brand-badge">
+                    <img src="../assets/gec_modasa_log.jpg" alt="gec modasa">
+                </span>
                 <span class="brand-text">
-                    <strong>GEC Modasa Alumni Portal</strong>
+                    <strong>Alumni Portal</strong>
                     <span>Government Engineering College, Modasa</span>
                 </span>
             </a>

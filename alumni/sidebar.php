@@ -28,8 +28,8 @@ $alumni_id = $_SESSION['alumni_id'];
       font-family: 'Poppins', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f0f2f5;
-      color: #333;
+      background-color: #ffffff;
+      color: #2b2f31;
       box-sizing: border-box;
       display: flex;
       /* Make body a flex container to house the dashboard */
@@ -38,15 +38,17 @@ $alumni_id = $_SESSION['alumni_id'];
 
     .sidebar {
       height: 100vh;
-      background: #2c3e50;
+      background: #2E75B6;
       padding-top: 40px;
       position: fixed;
       width: 240px;
       color: white;
+      box-sizing: border-box;
+      overflow-y: auto;
     }
 
     .sidebar a {
-      color: #ecf0f1;
+      color: #ffffff;
       display: block;
       padding: 12px 20px;
       text-decoration: none;
@@ -56,7 +58,7 @@ $alumni_id = $_SESSION['alumni_id'];
 
     .sidebar a:hover,
     .sidebar a.active {
-      background-color: #34495e;
+      background-color: #1F5A94;
     }
 
     .sidebar a i {
@@ -66,11 +68,57 @@ $alumni_id = $_SESSION['alumni_id'];
     .sidebar h4 {
       font-family: 'Poppins', sans-serif;
       font-weight: 400;
+      color: #ffffff;
+    }
+
+    .sidebar p {
+      color: #e7f0f9;
+    }
+
+    .sidebar hr {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 768px) {
+      .sidebar {
+        position: static;
+        height: auto;
+        width: 100%;
+        padding: 16px 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar h4,
+      .sidebar p,
+      .sidebar hr {
+        display: none;
+      }
+
+      .sidebar a {
+        flex: 1;
+        text-align: center;
+        padding: 10px 5px;
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .sidebar {
+        flex-direction: column;
+      }
+
+      .sidebar a {
+        width: 100%;
+        text-align: left;
+        padding: 10px 20px;
+      }
     }
   </style>
 </head>
 
-<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5;">
+<body>
   <div class="p-2 m-2">
     <?php if (!empty($errormessage)) { ?>
       <p><?= htmlspecialchars($errormessage) ?></p>

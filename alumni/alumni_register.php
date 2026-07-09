@@ -23,6 +23,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
     $confirm_password = $_POST['confirmPassword'] ?? '';
     $is_registered = 1; // Set to 1 for registered alumni
 
+    // before insert check for the some conditions on password
+    $isNumeric = preg_match('/[0-9]/', $alumni_password);
+    $isUpperCase = preg_match('/[A-Z]/', $alumni_password);
+    $isSpecialChar = preg_match('/[^a-zA-z0-9]/', $alumni_password);
+    $isLength = strlen($alumni_password) >= 8;
+
+    // check for passwords
+    if (!$isLength) {
+        header("Location: ./alumni_register.php?error=" . urlencode("password must be 8 character long"));
+        exit();
+    }
+
+    // check for the number, uppercase, specialsymbol
+    if (!$isNumeric || !$isUpperCase || !$isSpecialChar) {
+        header("Location: ./alumni_register.php?error=" . urlencode("password contains uppecase, numbers and special characters"));
+        exit();
+    }
+
     try {
         // check if enrollment already exists
         $exist_user = "SELECT * FROM alumni_student_master WHERE is_registered = ? AND email = ? AND passout_year = ?";
@@ -66,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
                     $hashed_password,
                     $alumni_email,
                     $alumni_passoutYear
-                );        
+                );
                 if ($register_new_stmt->execute()) {
                     $message = "Registration successful. You can now log in.";
                     header("Location: ../login.php?success=" . urlencode($message));
@@ -234,24 +252,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
 </head>
 
 <body>
-    <div>
-        <button class="btn btn-success"><a href="./landing.php" class="text-white" style="text-decoration: none;">Back</a></button>
-    </div>
 
     <div class="main">
         <div class="container" style="padding: 20px;">
             <h2>Alumni Registration</h2>
             <?php if (isset($_GET['error']) || isset($_GET['success']) || isset($_GET['info'])): ?>
-                <p id="message" class="msg" style="color: <?= (isset($_GET['error']) ? 'red' : (isset($_GET['success']) ? 'green' : 'blue')) ?>"><?= (isset($_GET['error']) ? htmlspecialchars($_GET['error']) : (isset($_GET['success']) ? htmlspecialchars($_GET['success']) : htmlspecialchars($_GET["info"]))) ?></p>
-                <script>
-                    const mess = document.getElementById('message');
-                    setTimeout(() => {
-                        mess.style.display = 'none'
-                    }, 2000)
-                </script>
+                <p id="msg" class="msg" style="color: <?= (isset($_GET['error']) ? 'red' : (isset($_GET['success']) ? 'green' : 'blue')) ?>"><?= (isset($_GET['error']) ? htmlspecialchars($_GET['error']) : (isset($_GET['success']) ? htmlspecialchars($_GET['success']) : htmlspecialchars($_GET["info"]))) ?></p>
             <?php endif ?>
-
-            <form action="alumni_register.php" method="POST">
+            <script>
+                const msg = document.getElementById("msg");
+                setTimeout(() => {
+                    msg.style.display = "none";
+                }, 2000)
+            </script>
+            <form action="alumni_register.php" method="POST" id="registerForm">
                 <div class="form-group" style="width: 95%;">
                     <label for="email">Email.</label>
                     <input type="email" name="email" id="email" style="width: 100%; padding: 12px 16px; border: 1px solid #4B5563; border-radius: 8px; outline: none; transition: all 0.2s ease-in-out; color: black" required>
@@ -275,6 +289,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
                 </div>
 
                 <button class="btn-primary" type="submit" name="register_click_btn">Register Now</button>
+                <p style="text-align: center; margin-top: 10px;">Do you want to <a href="../index.php">Go Back</a>?</p>
             </form>
 
             <div class="login-link">
@@ -282,6 +297,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
             </div>
         </div>
     </div>
+    <script src="./script.js"></script>
 </body>
 
 </html>
