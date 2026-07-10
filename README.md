@@ -25,7 +25,7 @@ Alumni-connect is Bridge Between Students & Alumni, Student get a new Opportunit
 - **Frontend:** HTML / CSS / JS / BootStrap
 - **Backend:** CORE PHP
 - **Database:** MySQL  
-- **Other:** PHPMailer
+- **Other:** PHPMailer, PHPSpreadsheet
 
 ---
 
@@ -54,7 +54,7 @@ MySQL -> start
 ## 👨‍💻 Author
 - Bhargav Gohel
   - Computer Engineering UnderGraduate
-  - MERN | PHP | Node.js | Python | FastApi
+  - MERN | PHP | Node.js | Python | FastApi | Flask
   - LinkedIn: [ { GET /LinkedIn/Profile } ](https://www.linkedin.com/in/bhargav-gohel-968919303/)
 
 
