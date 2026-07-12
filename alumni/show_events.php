@@ -3,6 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require '../utills/db_conn.php';
+include "./alumni_favicon.php";
 
 if (!isset($conn)) {
     die("Database connection is not established");
@@ -321,8 +322,7 @@ mysqli_close($conn);
 </head>
 
 <body>
-    <?php include "./navbar.php" ?>
-
+    <?php include "./navbar.php"; ?>
     <!-- ===== Latest Event Banner ===== -->
     <section class="latest-banner">
         <div class="container">

@@ -4,6 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require '../utills/db_conn.php';
+include "./alumni_favicon.php";
 
 if (!isset($conn)) {
     die("Database connection is not established");
@@ -49,6 +50,8 @@ mysqli_close($conn);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Announcements | GEC Modasa Alumni Portal</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
         :root {
             --navy: #2E75B6;
             --navy-dark: #1F5A94;
@@ -68,7 +71,7 @@ mysqli_close($conn);
         }
 
         body {
-            font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+            font-family: "Poppins", sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
@@ -77,7 +80,6 @@ mysqli_close($conn);
         h1,
         h2,
         h3 {
-            font-family: Georgia, "Times New Roman", serif;
             color: var(--navy);
         }
 

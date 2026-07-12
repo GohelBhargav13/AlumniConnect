@@ -13,11 +13,13 @@ $alumni_id = $_SESSION["alumni_id"] ?? null;
     <title>Footer</title>
 
     <style>
+         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
         :root {
-            --navy: #1b3a4b;
-            --navy-dark: #122733;
-            --teal: #2f7a68;
-            --teal-dark: #235d51;
+            --navy: #2E75B6;
+            --navy-dark: #2E75B6;
+            --teal: #2E75B6;
+            --teal-dark: #2E75B6;
             --bg: #f6f7f5;
             --card-bg: #ffffff;
             --text: #2b2f31;
@@ -393,7 +395,7 @@ $alumni_id = $_SESSION["alumni_id"] ?? null;
 
         .footer-grid {
             display: grid;
-            grid-template-columns: 1.4fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
             gap: 30px;
             margin-bottom: 30px;
         }
@@ -497,9 +499,12 @@ $alumni_id = $_SESSION["alumni_id"] ?? null;
     <footer>
         <div class="container">
             <div class="footer-grid">
+                <div>
+                    <img src="../assets/gec_logo-footer.png" alt="">
+                </div>
                 <div class="footer-about">
                     <h4>GEC Modasa Alumni Portal</h4>
-                    <p>An official initiative to help alumni of Government Engineering College, Modasa stay connected with their alma mater and each other.</p>
+                    <p>An official initiative to help alumni of Government Engineering College, Modasa stay connected with their Alumni and each other.</p>
                 </div>
                 <div>
                     <h4>Quick Links</h4>

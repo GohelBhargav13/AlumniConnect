@@ -1,5 +1,6 @@
 <?php
 require_once '../utills/db_conn.php';
+include "./alumni_favicon.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -121,8 +122,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 
         :root {
-            --green: #007bff;
-            --light-green: #e8f8f2;
+            --green: #2E75B6;
+            --light-green: #E9F1FA;
             --text-dark: #333;
             --text-muted: #777;
             --border: #ccc;
@@ -196,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
         form input:focus {
             outline: none;
             border-color: var(--green);
-            box-shadow: 0 0 0 2px rgba(0, 184, 107, 0.15);
+            box-shadow: 0 0 0 2px rgba(46, 117, 182, 0.15);
         }
 
         .half-width-group {
@@ -222,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register_click_btn'])
         }
 
         .btn-primary:hover {
-            background-color: #00995a;
+            background-color: #255E92;
         }
 
         .login-link {

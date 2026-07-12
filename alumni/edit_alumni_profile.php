@@ -1,5 +1,7 @@
 <?php
 require '../utills/db_conn.php';
+include("./alumni_favicon.php");
+
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 if (!isset($_SESSION['Enroll_no_alumni'])) {
@@ -470,7 +472,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
                     </div>
                     <div class="form-group">
                         <label for="phone_no">Phone Number</label>
-                        <input type="tel" id="phone_no" name="phone_no" min="10" max="10" value="<?= htmlspecialchars($user_data_fetched['alumni_phone_no'] ?? '') ?>">
+                        <input type="tel" id="phone_no" name="phone_no"  pattern="[0-9]{10}" maxlength="10" title="Please enter exactly 10 digits"  							value="<?= htmlspecialchars($user_data_fetched['alumni_phone_no'] ?? '') ?>">
                     </div>
                     <div class="form-group">
                         <label for="department">Department</label>

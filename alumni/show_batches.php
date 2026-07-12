@@ -3,6 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require '../utills/db_conn.php';
+include "./alumni_favicon.php";
 
 if (!isset($conn)) {
     die("Database connection is not established");
@@ -13,6 +14,16 @@ if (!isset($_SESSION["alumni_id"])) {
     exit();
 }
 
+// fetch the branch from the database
+$years_query = "SELECT DISTINCT passout_year FROM alumni_student_master ORDER BY passout_year DESC";
+$years_res = $conn->query($years_query);
+$batches = [];
+if ($years_res) {
+    while ($row = $years_res->fetch_assoc()) {
+        $batches[] = $row['passout_year'];
+    }
+}
+
 $sql = "SELECT m.alumni_id, m.alumni_name, m.branch, m.passout_year,
                p.alumni_company, p.alumni_designation, p.alumni_city,
                p.alumni_linkedin_link, p.alumni_phone_no, m.email
@@ -21,53 +32,77 @@ $sql = "SELECT m.alumni_id, m.alumni_name, m.branch, m.passout_year,
         WHERE m.is_registered = 1
         ORDER BY m.passout_year DESC, m.alumni_name ASC";
 
-$result = mysqli_query($conn, $sql);
+$data_res = isset($conn) ? $conn->query($sql) : null;
 
-// Read filters from the URL, validated before use.
-$filterBatch = null;
-if (!empty($_GET['batch']) && filter_var($_GET['batch'], FILTER_VALIDATE_INT)) {
-    $filterBatch = (int) $_GET['batch'];
+
+$batch_year = $_GET["batch"] ?? 'all';
+$branch = $_GET["branch"] ?? 'all';
+
+// mapping the branch with the filters
+switch ($branch) {
+    case 'CE':
+        $branch = "Computer Engineering";
+        break;
+    case 'IT':
+        $branch = "Information Technology";
+        break;
+
+    default:
+        $branch = "all";
+        break;
 }
 
-$allowedBranches = ['CE', 'IT'];
-$filterBranch = null;
-if (!empty($_GET['branch']) && in_array($_GET['branch'], $allowedBranches)) {
-    $filterBranch = $_GET['branch'];
+// full filter logic for both of the options
+if ($batch_year !== 'all' && !empty($batch_year) && $branch !== 'all' && !empty($branch)) {
+    $find_query = "SELECT m.alumni_id, m.alumni_name, m.branch, m.passout_year,
+                    p.alumni_company, p.alumni_designation, p.alumni_city,
+                    p.alumni_linkedin_link, p.alumni_phone_no, m.email
+                FROM alumni_student_master m
+                LEFT JOIN alumni_profile p ON p.alumni_id = m.alumni_id
+                WHERE m.is_registered = 1 AND m.branch = ? AND m.passout_year = ?
+                ORDER BY m.passout_year DESC, m.alumni_name ASC";
+    $find_stmt = $conn->prepare($find_query);
+    $find_stmt->bind_param("is", $batch_year, $branch);
+    $find_stmt->execute();
+    $data_res = $find_stmt->get_result();
+} elseif (($batch_year == 'all' || empty($batch_year)) && $branch !== 'all' && !empty($branch)) {
+    $find_query = "SELECT m.alumni_id, m.alumni_name, m.branch, m.passout_year,
+                    p.alumni_company, p.alumni_designation, p.alumni_city,
+                    p.alumni_linkedin_link, p.alumni_phone_no, m.email
+                FROM alumni_student_master m
+                LEFT JOIN alumni_profile p ON p.alumni_id = m.alumni_id
+                WHERE m.is_registered = 1 AND m.branch = ?
+                ORDER BY m.passout_year DESC, m.alumni_name ASC";
+    $find_stmt = $conn->prepare($find_query);
+    $find_stmt->bind_param("s", $branch);
+    $find_stmt->execute();
+    $data_res = $find_stmt->get_result();
+} elseif ($batch_year !== 'all' && !empty($batch_year) && ($branch == 'all' || empty($branch))) {
+    $find_query = "SELECT m.alumni_id, m.alumni_name, m.branch, m.passout_year,
+                    p.alumni_company, p.alumni_designation, p.alumni_city,
+                    p.alumni_linkedin_link, p.alumni_phone_no, m.email
+                FROM alumni_student_master m
+                LEFT JOIN alumni_profile p ON p.alumni_id = m.alumni_id
+                WHERE m.is_registered = 1 AND m.passout_year = ?
+                ORDER BY m.passout_year DESC, m.alumni_name ASC";
+    $find_stmt = $conn->prepare($find_query);
+    $find_stmt->bind_param("i", $batch_year);
+    $find_stmt->execute();
+    $data_res = $find_stmt->get_result();
+} else {
+    $find_query = "SELECT m.alumni_id, m.alumni_name, m.branch, m.passout_year,
+                    p.alumni_company, p.alumni_designation, p.alumni_city,
+                    p.alumni_linkedin_link, p.alumni_phone_no, m.email
+                FROM alumni_student_master m
+                LEFT JOIN alumni_profile p ON p.alumni_id = m.alumni_id
+                WHERE m.is_registered = 1
+                ORDER BY m.passout_year DESC, m.alumni_name ASC
+                    ";
+    $data_res = $conn->query($find_query);
 }
 
-$students = [];
-$batches = [];
-
-while ($row = mysqli_fetch_assoc($result)) {
-
-    // mapping the student branch
-    switch ($row["branch"]) {
-        case 'Computer Engineering':
-            $row["branch"] = "CE";
-            break;
-        case 'Information Technology':
-            $row["branch"] = "IT";
-            break;
-        default:
-            break;
-    }
-
-    if (!in_array($row['passout_year'], $batches)) {
-        $batches[] = $row['passout_year'];
-    }
-
-    // Apply both filters together — a row is included only if it matches
-    // every filter that is currently set.
-    $matchesBatch  = ($filterBatch === null)  || ((int) $row['passout_year'] === $filterBatch);
-    $matchesBranch = ($filterBranch === null) || ($row['branch'] === $filterBranch);
-
-    if ($matchesBatch && $matchesBranch) {
-        $students[] = $row;
-    }
-}
-
+$students = $data_res->fetch_all(MYSQLI_ASSOC);
 rsort($batches); // most recent batch first in the dropdown
-
 mysqli_close($conn);
 ?>
 <!DOCTYPE html>
@@ -78,6 +113,8 @@ mysqli_close($conn);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Find Your Batch | GEC Modasa Alumni Portal</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
         :root {
             --navy: #2E75B6;
             --navy-dark: #1F5A94;
@@ -97,7 +134,7 @@ mysqli_close($conn);
         }
 
         body {
-            font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+            font-family: "Poppins", sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
@@ -172,6 +209,22 @@ mysqli_close($conn);
             color: var(--text);
             font-size: 0.9rem;
             font-family: inherit;
+        }
+
+        .filter-bar button[type="submit"] {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 6px;
+            background: #2E75B6;
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .filter-bar button[type="submit"]:hover {
+            background: #1F5A94;
         }
 
         .filter-bar .result-count {
@@ -293,10 +346,10 @@ mysqli_close($conn);
             <form method="GET" action="">
                 <div>
                     <label for="batch">Batch</label>
-                    <select id="batch" name="batch" onchange="this.form.submit()">
-                        <option value="">All Batches</option>
+                    <select id="batch" name="batch">
+                        <option value="all">All Batches</option>
                         <?php foreach ($batches as $year): ?>
-                            <option value="<?= htmlspecialchars($year) ?>" <?= ($filterBatch === (int) $year) ? 'selected' : '' ?>>
+                            <option value="<?= htmlspecialchars($year) ?>" <?= ($branch === (int) $year) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($year) ?>
                             </option>
                         <?php endforeach; ?>
@@ -305,13 +358,13 @@ mysqli_close($conn);
 
                 <div>
                     <label for="branch">Department</label>
-                    <select id="branch" name="branch" onchange="this.form.submit()">
-                        <option value="">All Departments</option>
-                        <option value="CE" <?= $filterBranch === 'CE' ? 'selected' : '' ?>>CE</option>
-                        <option value="IT" <?= $filterBranch === 'IT' ? 'selected' : '' ?>>IT</option>
+                    <select id="branch" name="branch">
+                        <option value="all">All Departments</option>
+                        <option value="CE" <?= $branch === 'CE' ? 'selected' : '' ?>>CE</option>
+                        <option value="IT" <?= $branch === 'IT' ? 'selected' : '' ?>>IT</option>
                     </select>
                 </div>
-
+                <button type="submit">Filter</button>
                 <div class="result-count"><?= count($students) ?> alumni found</div>
             </form>
         </div>
@@ -325,7 +378,7 @@ mysqli_close($conn);
                 <div class="cards-grid">
                     <?php foreach ($students as $s): ?>
                         <div class="student-card">
-                            <div class="avatar-circle"><?= strtoupper(substr($s['alumni_name'], 0, 1)) ?></div>
+
 
                             <h3><?= htmlspecialchars($s['alumni_name']) ?></h3>
                             <div class="batch-branch">Batch <?= htmlspecialchars($s['passout_year']) ?> &middot; <?= htmlspecialchars($s['branch']) ?></div>
@@ -349,7 +402,7 @@ mysqli_close($conn);
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <div class="empty-state">No alumni found for the selected filters.</div>
+                <div class="empty-state">No alumni found.</div>
             <?php endif; ?>
 
         </div>

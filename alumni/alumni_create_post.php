@@ -4,6 +4,8 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require_once '../utills/db_conn.php';
+include("./alumni_favicon.php");
+
 require '../vendor/autoload.php'; //  Moved to the top
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -458,75 +460,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_post'])) {
 
 <body>
     <?php include './sidebar.php' ?>
-    <div class="container">
-        <div class="main-content">
-            <form action="./alumni_create_post.php" method="POST">
-                <div class="form-header">
-                    <h2>Alumni Post</h2>
-                </div>
-                <?php if (isset($_SESSION['message'])) { ?>
-                    <p id="message" style=" color: white;
-                            border: 1px solid;
-                            background-color: <?= $_SESSION['message']['success'] ? '#0a7d3e' : '#d92d20' ?>;
-                            padding: 8px 10px;
-                            border-radius: 6px;
-                            font-size: 14px;
-                            font-weight: 500;
-                            margin-bottom: 10px;
-                            display: block;
-                            transition: all 0.3s ease-in-out;
-                            text-align: center;"><?= htmlspecialchars($_SESSION['message']['final_msg'] ?? '') ?></p>
-                <?php } ?>
-                <script>
-                    const message = document.getElementById("message");
-                    setTimeout(() => {
-                        message.style.display = 'none';
-                        message.style.backgroundColor = '';
-                    }, 2 * 1000)
-                </script>
-                <?php unset($_SESSION['message']) ?>
-                <div class="form-fields">
-                    <div class="field-row">
-                        <label for="post-title">Title</label>
-                        <input type="text" id="post-title" name="title" placeholder="e.g., Software Engineer Opening" required>
-                    </div>
-
-                    <div class="field-row">
-                        <label for="post-skills">Skills</label>
-                        <input type="text" id="post-skills" name="required_skills" placeholder="e.g., Python, UI/UX" required>
-                    </div>
-                    <div class="field-row">
-                        <label for="post-location">Location</label>
-                        <input type="text" id="post-location" name="location" placeholder="e.g., San Francisco, Remote" required>
-                    </div>
-                    <div class="field-row">
-                        <label for="post-location">Reference Link</label>
-                        <input type="text" id="post-location" name="ref_link" placeholder="e.g., San Francisco, Remote" required>
-                    </div>
-                    <div class="field-row">
-                        <label for="post-desc">Description</label>
-                        <textarea id="post-desc" name="description" placeholder="Detailed description." rows="4" required></textarea>
-                    </div>
-                    <div class="field-row">
-                        <label for="post-desc">Type</label>
-                        <select name="typeofjob" id="typeofjob">
-                            <option value="">SELECT TYPE</option>
-                            <option value="Internship">Internship</option>
-                            <option value="Job">Job</option>
-                            <option value="Part-time">Part-time</option>
-                        </select>
-                    </div>
-
-                    
-                    <div class="field-row">
-                        <label for="post-roadmap">Roadmap (Optional)</label>
-                        <textarea id="post-roadmap" name="roadmap" placeholder="Outline steps or a plan." rows="2"></textarea>
-                    </div>
-                    <button type="submit" name="create_post">Create Post</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <p style="width:100%; text-align:center;">This feature is under Implementation.</p>
 </body>
 
 </html>

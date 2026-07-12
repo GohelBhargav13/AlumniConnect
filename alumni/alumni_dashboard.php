@@ -1,5 +1,7 @@
 <?php
 require '../utills/db_conn.php';
+include("./alumni_favicon.php");
+
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }

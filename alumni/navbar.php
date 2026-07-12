@@ -14,10 +14,10 @@ $alumni_id = $_SESSION["alumni_id"] ?? null;
     <title>Navbar</title>
     <style>
         :root {
-            --navy: #1b3a4b;
-            --navy-dark: #122733;
-            --teal: #2f7a68;
-            --teal-dark: #235d51;
+            --navy: #2E75B6;
+            --navy-dark: #2E75B6;
+            --teal: #2E75B6;
+            --teal-dark: #2E75B6;
             --bg: #f6f7f5;
             --card-bg: #ffffff;
             --text: #2b2f31;
