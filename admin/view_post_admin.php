@@ -7,6 +7,10 @@ if (!isset($_SESSION['admin_id'])) {
     exit();
 }
 
+if (!isset($conn)) {
+    die("Database connection is not established");
+}
+
 // Fetch all posts
 $fetch_all_post = "SELECT p.*, am.alumni_name,am.alumni_email,am.alumni_id 
     FROM postmaster as p 

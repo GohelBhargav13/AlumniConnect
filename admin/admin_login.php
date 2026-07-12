@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 include '../utills/db_conn.php';
+include("./admin_favicon.php");
 
 if (!isset($conn)) {
     die("Database connection not established.");
@@ -59,15 +60,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <title>AlumniConnect Admin Login</title>
+    <link rel="icon" type="image/png" href="../assets/gec_favicon.png">
+    <title>Alumni Portal | GEC Modasa</title>
 </head>
 
 <body style="font-family: 'Inter', sans-serif; background-color: #e7e7e7; color: #2b2f31; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0;">
 
     <div style="width: 100%; max-width: 448px;">
-        <div style="background-color: white; padding: 32px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); border: 1px solid #d6e2ef;">
-            <p id="message" style="color: <?php echo isset($_GET["error"]) ? '#d92d20' : '#0a7d3e'; ?>; text-align: center; margin-bottom: 16px;">
+        <div style="background-color: #fff; padding: 32px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); border: 1px solid #d6e2ef;">
+           <p id="message" style="color: <?php echo isset($_GET["error"]) ? '#d92d20' : '#0a7d3e'; ?>; text-align: center; margin-bottom: 16px;">
                 <?php echo isset($_GET["error"]) ? htmlspecialchars($_GET["error"]) : (isset($_GET["success"]) ? htmlspecialchars($_GET["success"]) : ''); ?>
             </p>
             <!-- Script for message remove automatically -->
@@ -88,9 +89,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 <div style="margin-bottom: 24px;">
                     <label for="password" style="display: block; font-size: 14px; font-weight: 500; color: #667079; margin-bottom: 8px;">Password</label>
-                    <input type="password" id="password" onmouseover="changeStyleInput('password')" onmouseleave="resetStyleInput('password')" name="password" required style="width: 100%; padding: 12px 10px; background-color: #ffffff; border: 1px solid #d6e2ef; border-radius: 8px; outline: none; transition: all 0.2s ease-in-out; color: #2b2f31; box-sizing: border-box;">
+                    <input type="password" minlength="8" id="password" onmouseover="changeStyleInput('password')" onmouseleave="resetStyleInput('password')" name="password" required style="width: 100%; padding: 12px 10px; background-color: #ffffff; border: 1px solid #d6e2ef; border-radius: 8px; outline: none; transition: all 0.2s ease-in-out; color: #2b2f31; box-sizing: border-box;">
                 </div>
-                <a href="./admin_forget_password.php" style="display: flex; justify-content: end; margin-bottom: 8px;">Forget password</a>
+                <a href="./admin_forgot_password.php" style="display: flex; justify-content: end; margin-bottom: 8px; text-decoration:none;">Forgot password ?</a>
 
                 <button type="submit" name="login_btn" id="login_btn" onmousemove="changeStyleBtn('login_btn')" style="width: 100%; background-color: #2E75B6; color: #FFFFFF; font-weight: 700; padding: 12px 12px; border-radius: 8px; border: none; cursor: pointer; transition: background-color 0.2s ease-in-out; box-sizing: border-box;">
                     Login

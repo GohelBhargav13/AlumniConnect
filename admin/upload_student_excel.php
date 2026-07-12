@@ -1,5 +1,6 @@
 <?php
 include "../utills/db_conn.php";
+include("./admin_favicon.php");
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

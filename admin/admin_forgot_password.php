@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 include '../utills/db_conn.php';
+include("./admin_favicon.php");
 
 if (!isset($conn)) {
     die("Database connection not established.");
@@ -15,13 +16,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (empty($admin_email) || empty($new_password) || empty($confirm_password)) {
             $error_message = "All fields are required.";
-            header("Location: ./admin_forget_password.php?error=" . urlencode($error_message));
+            header("Location: ./admin_forgot_password.php?error=" . urlencode($error_message));
             exit();
         }
 
         if ($new_password !== $confirm_password) {
             $error_message = "Passwords do not match.";
-            header("Location: ./admin_forget_password.php?error=" . urlencode($error_message));
+            header("Location: ./admin_forgot_password.php?error=" . urlencode($error_message));
             exit();
         }
 
@@ -33,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (!$hasUpperCase || !$hasNumber || !$hasSpecialChar || !$hasMinLength) {
             $error_message = "Password must be at least 8 characters and include an uppercase letter, a number, and a special symbol.";
-            header("Location: ./admin_forget_password.php?error=" . urlencode($error_message));
+            header("Location: ./admin_forgot_password.php?error=" . urlencode($error_message));
             exit();
         }
 
@@ -60,12 +61,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 exit();
             } else {
                 $error_message = "Something went wrong. Please try again.";
-                header("Location: ./admin_forget_password.php?error=" . urlencode($error_message));
+                header("Location: ./admin_forgot_password.php?error=" . urlencode($error_message));
                 exit();
             }
         } else {
             $error_message = "No admin account found with that email.";
-            header("Location: ./admin_forget_password.php?error=" . urlencode($error_message));
+            header("Location: ./admin_forgot_password.php?error=" . urlencode($error_message));
             exit();
         }
     }
@@ -84,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body style="font-family: 'Inter', sans-serif; background-color: #e7e7e7; color: #2b2f31; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0;">
 
     <div style="width: 100%; max-width: 448px;">
-        <div style="background-color: #cdd9e4; padding: 32px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); border: 1px solid #d6e2ef;">
+        <div style="background-color: white; padding: 32px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); border: 1px solid #d6e2ef;">
             <p id="message" style="color: <?php echo isset($_GET["error"]) ? '#d92d20' : '#0a7d3e'; ?>; text-align: center; margin-bottom: 16px;">
                 <?php echo isset($_GET["error"]) ? htmlspecialchars($_GET["error"]) : (isset($_GET["success"]) ? htmlspecialchars($_GET["success"]) : ''); ?>
             </p>

@@ -44,7 +44,7 @@ $branch = $_GET["branch"] ?? 'all';
 // full filter logic for both of the options
 if ($selected_year !== 'all' && !empty($selected_year) && $branch !== 'all' && !empty($branch)) {
     $find_query = "SELECT am.*, ap.* FROM alumni_student_master AS am 
-                    JOIN alumni_profile AS ap ON ap.alumni_id = am.alumni_id 
+                    LEFT JOIN alumni_profile AS ap ON ap.alumni_id = am.alumni_id 
                     WHERE am.is_registered = 1 AND passout_year = ? AND TRIM(branch) = ?
                     ORDER BY am.updated_at DESC";
     $find_stmt = $conn->prepare($find_query);
@@ -53,7 +53,7 @@ if ($selected_year !== 'all' && !empty($selected_year) && $branch !== 'all' && !
     $data_res = $find_stmt->get_result();
 } elseif (($selected_year == 'all' || empty($selected_year)) && $branch !== 'all' && !empty($branch)) {
     $find_query = "SELECT am.*, ap.* FROM alumni_student_master AS am 
-                    JOIN alumni_profile AS ap ON ap.alumni_id = am.alumni_id 
+                    LEFT JOIN alumni_profile AS ap ON ap.alumni_id = am.alumni_id 
                     WHERE am.is_registered = 1 AND branch = ?
                     ORDER BY am.updated_at DESC";
     $find_stmt = $conn->prepare($find_query);
@@ -62,7 +62,7 @@ if ($selected_year !== 'all' && !empty($selected_year) && $branch !== 'all' && !
     $data_res = $find_stmt->get_result();
 } elseif ($selected_year !== 'all' && !empty($selected_year) && ($branch == 'all' || empty($branch))) {
     $find_query = "SELECT am.*, ap.* FROM alumni_student_master AS am 
-                    JOIN alumni_profile AS ap ON ap.alumni_id = am.alumni_id 
+                    LEFT JOIN alumni_profile AS ap ON ap.alumni_id = am.alumni_id 
                     WHERE am.is_registered = 1 AND passout_year = ?
                     ORDER BY am.updated_at DESC";
     $find_stmt = $conn->prepare($find_query);
@@ -71,7 +71,7 @@ if ($selected_year !== 'all' && !empty($selected_year) && $branch !== 'all' && !
     $data_res = $find_stmt->get_result();
 } else {
     $find_query = "SELECT am.*, ap.* FROM alumni_student_master AS am 
-                    JOIN alumni_profile AS ap ON ap.alumni_id = am.alumni_id 
+                    LEFT JOIN alumni_profile AS ap ON ap.alumni_id = am.alumni_id 
                     WHERE am.is_registered = 1
                     ORDER BY am.updated_at DESC
                     ";
@@ -87,10 +87,12 @@ if ($selected_year !== 'all' && !empty($selected_year) && $branch !== 'all' && !
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlumniConnect | Admin</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
         body {
             margin: 5px;
             padding: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: "Poppins", sans-serif;
             background-color: #e7e7e7;
             color: #2b2f31;
         }
@@ -283,16 +285,22 @@ if ($selected_year !== 'all' && !empty($selected_year) && $branch !== 'all' && !
                 ?>
                         <div class="alumni-card">
                             <div class="avatar"><?= strtoupper(substr($row['alumni_name'] ?? 'A', 0, 1)) ?></div>
-                            <h2><?= htmlspecialchars($row['alumni_name']) ?></h2>
-                            <p><b>Passout Year </b>: <?= htmlspecialchars($row['passout_year']) ?></p>
-                            <p><b>Company </b>: <?= htmlspecialchars($row['alumni_company']) ?></p>
-                            <p><b>Branch </b>: <?= htmlspecialchars($row['branch']) ?></p>
+                            <h2><?= htmlspecialchars($row['alumni_name'] ?? "NULL") ?></h2>
+                            <p><b>Passout Year </b>: <?= htmlspecialchars($row['passout_year'] ?? "NULL") ?></p>
+                            <p><b>Company </b>: <?= htmlspecialchars($row['alumni_company'] ?? "NULL") ?></p>
+                            <p><b>Branch </b>: <?= htmlspecialchars($row['branch'] ?? "NULL") ?></p>
                             <p><b>College </b>: <?= htmlspecialchars($row['alumni_college'] ?? "GEC MODASA") ?></p>
-                            <p><b>LinkedIn </b>: <a href="<?= htmlspecialchars($row['alumni_linkedin_link']) ?>" target="_blank"> <?= htmlspecialchars($row['alumni_linkedin_link'] ?? "") ?></a></p>
+                            <p><b>LinkedIn </b>: 
+                            <?php if (!empty($row['alumni_linkedin_link'])): ?>
+                                <a href="<?= htmlspecialchars($row['alumni_linkedin_link']) ?>" target="_blank">Profile</a>
+                            <?php else: ?>
+                                NULL
+                            <?php endif; ?>
+                            </p>
                         </div>
                     <?php endwhile; ?>
                 <?php else: ?>
-                    <div class="empty-state">No announcements found.</div>
+                    <div class="empty-state">No Alumni found.</div>
                 <?php endif; ?>
             </div>
         </div>

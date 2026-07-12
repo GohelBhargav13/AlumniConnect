@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 include '../utills/db_conn.php';
+include("./admin_favicon.php");
 
 if (!isset($conn)) {
     die("Database connection not established.");

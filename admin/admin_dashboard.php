@@ -7,6 +7,7 @@ if (!isset($_SESSION['admin_id'])) {
 }
 
 require '../utills/db_conn.php';
+include("./admin_favicon.php");
 if (!isset($conn)) {
     die("Database connection not established.");
 }
@@ -30,7 +31,6 @@ if ($total_analystics_res) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AlumniConnect | Admin Panel</title>
-    <link rel="icon" type="image/x-icon" href="../uploads/website_images/favicon.png">
     <style>
         body {
             margin: 0;
@@ -133,7 +133,7 @@ if ($total_analystics_res) {
     <!-- Main container for the entire admin panel -->
     <div class="admin-wrapper">
 
-        <?php include "./sidebar.php" ?>
+        <?php include("./sidebar.php"); ?>
 
         <!-- Main Content Area -->
         <div class="admin-main">

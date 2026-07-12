@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 include '../utills/db_conn.php';
+include("./admin_favicon.php");
 
 if (!isset($conn)) {
     die("Database connection not established.");
@@ -291,7 +292,7 @@ if ($selected_year !== 'all' && !empty($selected_year)) {
                     <?= htmlspecialchars(isset($_GET['success']) ? $_GET['success'] : (isset($_GET["error"]) ?  $_GET['error'] : $_GET['info'])) ?>
                 </p>
             <?php endif; ?>
-            <script>    
+            <script>
                 const message = document.getElementById("message");
                 setTimeout(() => {
                     message.style.display = "none";

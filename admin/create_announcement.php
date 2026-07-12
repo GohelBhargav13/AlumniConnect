@@ -3,6 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require '../utills/db_conn.php'; // gives us $conn
+include("./admin_favicon.php");
 
 if (!isset($_SESSION['admin_id'])) {
     die("Access denied. Please login as admin.");
@@ -267,7 +268,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <?php if (isset($current_page) && $current_page == "edit"): ?>
                         <div class="form-card">
-                            <h1>Create Announcement</h1>
+                            <h1>Update Announcement</h1>
 
                             <form id="announcementForm" method="post" action="">
 
@@ -306,7 +307,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
 
                                 <button type="submit" name="create_announcement_btn" class="submit-btn">
-                                    <?= isset($anno_id) ? "Update Event" : ""   ?>
+                                    <?= isset($anno_id) ? "Update Announcement" : ""   ?>
                                 </button>
                             </form>
 
