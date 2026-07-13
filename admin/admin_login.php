@@ -60,11 +60,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="../assets/gec_favicon.png">
     <title>Alumni Portal | GEC Modasa</title>
 </head>
 
-<body style="font-family: 'Inter', sans-serif; background-color: #e7e7e7; color: #2b2f31; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0;">
+<body style=" font-family: 'Poppins', sans-serif;background-color: #e7e7e7; color: #2b2f31; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0;">
 
     <div style="width: 100%; max-width: 448px;">
         <div style="background-color: #fff; padding: 32px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); border: 1px solid #d6e2ef;">

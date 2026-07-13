@@ -18,14 +18,18 @@ if ($total_analystics_res) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alumni Portal | GEC Modasa | Admin App</title>
+     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 	<link rel="icon" type="image/png" href="../assets/gec_favicon.png">
     <style>
+        body{
+             font-family: 'Poppins', sans-serif;
+        }
         .admin-sidebar {
-            width: 200px;
+            width: 250px;
             background-color: #f4f8fc;
             padding: 20px;
             box-sizing: border-box;

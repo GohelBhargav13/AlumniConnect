@@ -53,7 +53,6 @@ if ($total_analystics_res) {
             flex-grow: 1;
             padding: 20px;
             box-sizing: border-box;
-            background-color: #e7e7e7;
         }
 
         .admin-title {

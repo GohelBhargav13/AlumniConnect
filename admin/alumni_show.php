@@ -85,6 +85,7 @@ if ($selected_year !== 'all' && !empty($selected_year) && $branch !== 'all' && !
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <title>AlumniConnect | Admin</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
@@ -292,7 +293,7 @@ if ($selected_year !== 'all' && !empty($selected_year) && $branch !== 'all' && !
                             <p><b>College </b>: <?= htmlspecialchars($row['alumni_college'] ?? "GEC MODASA") ?></p>
                             <p><b>LinkedIn </b>: 
                             <?php if (!empty($row['alumni_linkedin_link'])): ?>
-                                <a href="<?= htmlspecialchars($row['alumni_linkedin_link']) ?>" target="_blank">Profile</a>
+                                <a href="<?= htmlspecialchars($row['alumni_linkedin_link']) ?>" target="_blank"><i class="fa-solid fa-link"></i>Profile</a>
                             <?php else: ?>
                                 NULL
                             <?php endif; ?>
