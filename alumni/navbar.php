@@ -11,6 +11,7 @@ $alumni_id = $_SESSION["alumni_id"] ?? null;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <title>Navbar</title>
     <style>
         :root {
@@ -32,7 +33,7 @@ $alumni_id = $_SESSION["alumni_id"] ?? null;
         }
 
         body {
-            font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;

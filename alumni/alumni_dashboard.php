@@ -356,7 +356,7 @@ try {
               <div class="card p-3 h-100">
                 <h6 class="text-primary">GitHub</h6>
                 <?php if (!empty($user_data_fetched['alumni_github_link'])): ?>
-                  <a href="<?= htmlspecialchars($user_data_fetched['alumni_github_link']) ?>" target="_blank"><?= htmlspecialchars($user_data_fetched['alumni_github_link']) ?></a>
+                  <a href="<?= htmlspecialchars($user_data_fetched['alumni_github_link']) ?>" target="_blank"><i class="fa-solid fa-link"></i>Github Link</a>
                 <?php else: ?>
                   <p class="text-muted">#NoGitHubLink</p>
                 <?php endif; ?>
@@ -369,7 +369,7 @@ try {
               <div class="card p-3 h-100">
                 <h6 class="text-info" style="margin-top: 8px;">LinkedIn</h6>
                 <?php if (!empty($user_data_fetched['alumni_linkedin_link'])): ?>
-                  <a href="<?= htmlspecialchars($user_data_fetched['alumni_linkedin_link']) ?>" target="_blank" style="margin-top: 12px;"><?= htmlspecialchars($user_data_fetched['alumni_linkedin_link']) ?></a>
+                  <a href="<?= htmlspecialchars($user_data_fetched['alumni_linkedin_link']) ?>" target="_blank" style="margin-top: 12px;"><i class="fa-solid fa-link"></i>Linkedin Link</a>
                 <?php else: ?>
                   <p class="text-muted">#NoLinkedInLink</p>
                 <?php endif; ?>

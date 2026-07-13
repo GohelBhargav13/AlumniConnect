@@ -34,7 +34,7 @@ $alumni_id = $_SESSION["alumni_id"] ?? null;
         }
 
         body {
-            font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+             font-family: 'Poppins', sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
