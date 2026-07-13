@@ -40,15 +40,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['click_btn'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-
+	<link rel="icon" href="./assets/gec_favicon.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
         :root {
-            --primary-blue: #007bff;
-            --text-color: #333;
-            --light-gray: #f0f2f5;
-            --border-color: #ddd;
+            --navy: #2E75B6;
+            --navy-dark: #255E92;
+            --teal: #2E75B6;
+            --teal-dark: #255E92;
+            --text-color: #2b2f31;
+            --light-gray: #f6f7f5;
+            --border-color: #e0e3df;
         }
 
         body {
@@ -120,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['click_btn'])) {
         .logo span {
             font-weight: 600;
             font-size: 1.5rem;
-            color: var(--text-color);
+            color: var(--navy);
         }
 
         h2 {
@@ -159,7 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['click_btn'])) {
 
         .form-group input:focus,
         .form-group select:focus {
-            border-color: var(--primary-blue);
+            border-color: var(--teal);
         }
 
         .form-group select {
@@ -195,11 +198,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['click_btn'])) {
 
         .remember-me input[type="checkbox"] {
             margin-right: 8px;
-            accent-color: var(--primary-blue);
+            accent-color: var(--teal);
         }
 
         .forgot-password {
-            color: var(--primary-blue);
+            color: var(--teal-dark);
             text-decoration: none;
             font-weight: 500;
         }
@@ -211,7 +214,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['click_btn'])) {
         .btn-primary {
             width: 100%;
             padding: 14px;
-            background-color: var(--primary-blue);
+            background-color: var(--teal);
             color: #fff;
             border: none;
             border-radius: 8px;
@@ -223,7 +226,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['click_btn'])) {
         }
 
         .btn-primary:hover {
-            background-color: #0056b3;
+            background-color: var(--teal-dark);
         }
 
         .social-login-separator {
@@ -285,7 +288,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['click_btn'])) {
         }
 
         .signup-link a {
-            color: var(--primary-blue);
+            color: var(--teal-dark);
             text-decoration: none;
             font-weight: 600;
         }
@@ -347,10 +350,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['click_btn'])) {
 </head>
 
 <body>
-    <div>
-        <button class="btn btn-success"><a href="./alumni/landing.php" class="text-white" style="text-decoration: none;">Back</a></button>
-    </div>
-
     <div class="main">
         <div class="container">
             <div class="login-section">
@@ -389,7 +388,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['click_btn'])) {
                         </div>
                         <div class="form-group password-group">
                             <label for="password">Password</label>
-                            <input type="password" id="password" name="password" placeholder="Enter password" maxlength="8">
+                            <input type="password" id="password" name="password" placeholder="Enter password" minlength="8">
                             <p id="strength_password"></p>
                         </div>
 
@@ -398,10 +397,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['click_btn'])) {
                                 <input type="checkbox" id="remember">
                                 <label for="remember">Remember me</label>
                             </div>
-                            <a href="#" class="forgot-password">Forgot password?</a>
+                            <a href="./alumni/alumni_forgot_password.php" class="forgot-password">Forgot password?</a>
                         </div>
 
                         <button type="submit" class="btn-primary" id="click_btn" name="click_btn" style="margin-bottom: 13px;">Sign In</button>
+                        <p style="text-align: center;">Do you want to <a href="./index.php">Go Back</a>?</p>
                     </form>
 
                     <div class="signup-link">
@@ -411,7 +411,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['click_btn'])) {
             </div>
         </div>
     </div>
-
     <script>
         const message = document.getElementById("message");
         const email = document.getElementById("email");
