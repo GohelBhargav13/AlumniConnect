@@ -488,9 +488,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
                                 <?php foreach ($addmission_year_range as $year): ?>
                                     <option value="<?= $year  ?>"><?= $year ?></option>
                                 <?php endforeach; ?>
+                        </select>
                             <?php } else{ ?>
-                                <input type="text" value="<?= $user_data_fetched["alumni_batch"] ?>" disabled>
-                            <?php } ?>
+                                <select name="admission_year" id="admission_year" required>
+                                <option value="<?= $user_data_fetched["alumni_batch"]  ?>"><?= $user_data_fetched["alumni_batch"] ?></option>
+                                <?php foreach ($addmission_year_range as $year): ?>
+                                    <option value="<?= $year  ?>"><?= $year ?></option>
+                                <?php endforeach; ?>
+                            <?php } ?>  
                         </select>
                     </div>
                     <div class="form-group">
