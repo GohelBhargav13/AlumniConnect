@@ -22,9 +22,10 @@ if (!$alumni_id_edit) {
 
 // 1. Fetch User Data
 $user_data_fetched = [];
-$stmt = $conn->prepare("SELECT am.*, ap.* FROM alumni_student_master AS am 
+$sql_query = "SELECT am.*, ap.* FROM alumni_student_master AS am 
                         LEFT JOIN alumni_profile AS ap ON am.alumni_id = ap.alumni_id 
-                        WHERE am.alumni_id = ? AND (am.email = ? OR am.enrollment_no = ?)");
+                        WHERE am.alumni_id = ? AND (am.email = ? OR am.enrollment_no = ?)";
+$stmt = $conn->prepare($sql_query);
 $stmt->bind_param("iss", $alumni_id_edit, $_SESSION['alumni_email'], $_SESSION['Enroll_no_alumni']);
 $stmt->execute();
 $user_data_fetched = $stmt->get_result()->fetch_assoc();
@@ -490,7 +491,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_profile_btn'])) {
                                 <?php endforeach; ?>
                         </select>
                             <?php } else{ ?>
-                                <select name="admission_year" id="admission_year" required>
+                            <select name="admission_year" id="admission_year" required>
                                 <option value="<?= $user_data_fetched["alumni_batch"]  ?>"><?= $user_data_fetched["alumni_batch"] ?></option>
                                 <?php foreach ($addmission_year_range as $year): ?>
                                     <option value="<?= $year  ?>"><?= $year ?></option>
