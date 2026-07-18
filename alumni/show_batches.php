@@ -62,7 +62,7 @@ if ($batch_year !== 'all' && !empty($batch_year) && $branch !== 'all' && !empty(
                 WHERE m.is_registered = 1 AND m.branch = ? AND m.passout_year = ?
                 ORDER BY m.passout_year DESC, m.alumni_name ASC";
     $find_stmt = $conn->prepare($find_query);
-    $find_stmt->bind_param("is", $batch_year, $branch);
+    $find_stmt->bind_param("ss", $branch, $batch_year);
     $find_stmt->execute();
     $data_res = $find_stmt->get_result();
 } elseif (($batch_year == 'all' || empty($batch_year)) && $branch !== 'all' && !empty($branch)) {
