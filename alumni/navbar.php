@@ -511,7 +511,7 @@ $alumni_id = $_SESSION["alumni_id"] ?? null;
             <nav class="main-nav" id="mainNav">
                 <a href="./landing.php">Home</a>
                 <a href="./show_batches.php">Batches</a>
-                <a href="#opportunities">Opportunities</a>
+                <a href="./show_community.php">Community</a>
                 <a href="./show_events.php">Events</a>
                 <a href="./show_announcements.php">Announcements</a>
             </nav>

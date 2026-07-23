@@ -509,10 +509,10 @@ $alumni_id = $_SESSION["alumni_id"] ?? null;
                 <div>
                     <h4>Quick Links</h4>
                     <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#directory">Batches</a></li>
-                        <li><a href="#opportunities">Opportunities</a></li>
-                        <li><a href="#events">Events</a></li>
+                        <li><a href="./landing.php">Home</a></li>
+                        <li><a href="./show_batches.php">Batches</a></li>
+                        <li><a href="./show_community.php">Community</a></li>
+                        <li><a href="./show_events.php">Events</a></li>
                     </ul>
                 </div>
                 <div>

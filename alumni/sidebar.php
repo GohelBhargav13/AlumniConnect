@@ -131,7 +131,8 @@ $alumni_id = $_SESSION['alumni_id'];
     <hr class="text-white">
     <a href="./landing.php"><i class="fas fa-home"></i>Home</a>
     <a href="./alumni_dashboard.php"><i class="fa-solid fa-circle-info"></i> Dashboard</a>
-    <a href="./alumni_create_post.php"><i class="fas fa-briefcase"></i> Create Post</a>
+    <a href="./alumni_community_post.php"><i class="fas fa-briefcase"></i> Community Post</a>
+    <a href="./alumni_post_view.php"><i class="fa-solid fa-paste"></i> Posts</a>
     <a href="./edit_alumni_profile.php?edit=<?= htmlspecialchars($alumni_id) ?>"><i class="fas fa-user-edit"></i> Edit Profile</a>
     <a href="./change_password.php"><i class="fa-solid fa-lock"></i> Change password</a>
   </div>
