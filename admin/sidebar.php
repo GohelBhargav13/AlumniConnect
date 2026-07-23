@@ -2,8 +2,12 @@
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 //fetch analystics of the users
-$sql_analystic = "SELECT COUNT(alumni_id) AS total_alumni FROM alumni_student_master 
-                  where is_registered = 1";
+$sql_analystic = "SELECT
+                        (SELECT COUNT(alumni_id) FROM alumni_student_master where is_registered = 1) AS total_alumni,
+                        (SELECT COUNT(post_id) FROM community_posts WHERE status = 'pending') AS total_post,
+                        (SELECT COUNT(post_id) FROM community_posts WHERE status != 'pending') AS 
+                        not_pen_post
+                  ";
 
 $total_analystics_res = isset($conn) ? $conn->query($sql_analystic) : null;
 if ($total_analystics_res) {
@@ -116,6 +120,8 @@ if ($total_analystics_res) {
         <a href="./manage_events.php" onclick="sidebarTag('show-events')" id="show-events" class="sidebar-link">Total Events</a>
         <a href="./manage_announcements.php" onclick="sidebarTag('show-events')" id="show-events" class="sidebar-link">Total Announcements</a>
         <a href="./alumni_show.php" onclick="sidebarTag('alumni-show')" id="alumni-show" class="sidebar-link">Alumni <sup class="sidebar-badge"><?= htmlspecialchars($final_analystics['total_alumni']) ?? 0 ?></sup> </a>
+        <a href="./manage_community_post.php" onclick="sidebarTag('alumni-show')" id="alumni-show" class="sidebar-link">Community post req <sup class="sidebar-badge"><?= htmlspecialchars($final_analystics['total_post']) ?? 0 ?></sup> </a>
+        <a href="./show_community_post.php" onclick="sidebarTag('alumni-show')" id="alumni-show" class="sidebar-link">Community post <sup class="sidebar-badge"><?= htmlspecialchars($final_analystics['not_pen_post']) ?? 0 ?></sup> </a>
         <a href="./upload_student_excel.php" onclick="sidebarTag('student-show')" id="student-show" class="sidebar-link">Student record</a>
         <a href="./create_events.php" onclick="sidebarTag('events')" id="events" class="sidebar-link">Events</a>
         <a href="./create_announcement.php" onclick="sidebarTag('announcements')" id="announcements" class="sidebar-link">Annoucements</a>

@@ -1,0 +1,478 @@
+<?php
+require '../utills/db_conn.php';
+include("./admin_favicon.php");
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Make sure someone is actually logged in before fetching their posts.
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+if (!isset($conn)) {
+    die("Database connection is not established");
+}
+
+// the post types
+$post_types = ["General", "Achivement", "New Job", "Internship", "Higher Studies", "Startup"];
+$post_status = ["pending", "accepted", "rejected"];
+
+// fetch the year from the table
+$post_years = [];
+$year_sql = "SELECT DISTINCT YEAR(created_at) AS post_year
+             FROM community_posts
+             ORDER BY post_year DESC";
+$exec_query = mysqli_query($conn, $year_sql);
+while ($row = mysqli_fetch_assoc($exec_query)) {
+    $post_years[] = $row['post_year'];
+}
+
+// update status to the accepted
+if (isset($_GET['post_id']) && $_GET["fn"] == "acc") {
+    $post_id = (int) $_GET["post_id"];
+    $status = 'accepted';
+
+    $sql = "UPDATE community_posts SET status = ? WHERE post_id = ? ";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $status, $post_id);
+
+    if ($stmt->execute()) {
+        $message = "Post accepted successfully";
+        header("Location: ./manage_community_post.php?success=" . urlencode($message));
+        exit();
+    }
+
+    $error = "Post not accepted";
+    header("Location: ./manage_community_post.php?error=" . urlencode($error));
+    exit();
+}
+
+// update status to the rejected
+if (isset($_GET['post_id']) && $_GET["fn"] == "rej") {
+    $post_id = (int) $_GET["post_id"];
+    $status = 'rejected';
+
+    $sql = "UPDATE community_posts SET status = ? WHERE post_id = ? ";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $status, $post_id);
+
+    if ($stmt->execute()) {
+        $message = "Post rejected successfully";
+        header("Location: manage_community_post.php?success=" . urlencode($message));
+        exit();
+    }
+
+    $error = "Post not rejected";
+    header("Location: manage_community_post.php?error=" . urlencode($error));
+    exit();
+}
+// fetching the all posts
+    $find_query = "SELECT * FROM community_posts cp
+                    JOIN alumni_student_master sm ON cp.alumni_id = sm.alumni_id
+                    WHERE cp.status = 'pending' ORDER BY cp.created_at DESC
+                    ";
+    $data_res = $conn->query($find_query);
+    $myPosts = $data_res->fetch_all(MYSQLI_ASSOC);
+
+// declare the css for the status
+$STATUS_STYLE = [
+    "pending" => "bg-info text-dark",
+    "accepted" => "bg-success",
+    "rejected" => "bg-danger"
+];
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Community Posts</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+   
+     body {
+            margin: 5px;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+            background-color: #e7e7e7;
+            color: #2b2f31;
+        }
+        .dashboard-container {
+           display: flex;
+            min-height: 100vh;
+            border: 1px solid #d6e2ef;
+            border-radius: 10px;
+            margin: 20px;
+            overflow: hidden;
+
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 40px;
+            background-color: #f4f8fc;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .status-msg {
+            max-width: 700px;
+            margin: 0 auto 20px;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status-msg.success {
+            color: #0a7d3e;
+            background: rgba(10, 125, 62, 0.08);
+            border: 1px solid #0a7d3e;
+        }
+
+        .status-msg.error {
+            color: #d92d20;
+            background: rgba(217, 45, 32, 0.08);
+            border: 1px solid #d92d20;
+        }
+
+        /* A wrapper to keep the cards and header from stretching too wide */
+        .content-wrapper {
+            width: 100%;
+            max-width: 1050px;
+            /* Adjust this to match exact visual width you need */
+        }
+
+        /* ===========================
+                Heading
+        =========================== */
+        .page-title {
+            font-size: 2rem;
+            color: #2E75B6;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #667079;
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* ===========================
+                Filter Section
+        =========================== */
+        .filter-container {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 25px 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e1e8ed;
+            margin-bottom: 35px;
+            width: 100%;
+        }
+
+        .filter-container form {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #667079;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d6e2ef;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            background: #ffffff;
+            color: #2b2f31;
+            transition: 0.3s;
+        }
+
+        .filter-group select:focus {
+            border-color: #2E75B6;
+            box-shadow: 0 0 0 2px rgba(46, 117, 182, 0.15);
+        }
+
+        .filter-container button {
+            background: #2E75B6;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 35px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: 0.3s;
+            height: 45px;
+        }
+
+        .filter-container button:hover {
+            background: #1F5A94;
+        }
+
+        /* ===========================
+                Cards Grid
+        =========================== */
+        .post-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            width: 100%;
+        }
+
+        /* ===========================
+                Card Style
+        =========================== */
+        .post-card {
+            background: #ffffff;
+            border: 1px solid #e1e8ed;
+            border-radius: 10px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        /* ===========================
+                Card Header
+        =========================== */
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            background: #80b7f2;
+            color: #2E75B6;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .post-date {
+            color: #8894a0;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* ===========================
+                Card Content
+        =========================== */
+        .post-card h2 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: #2b2f31;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .post-card p {
+            color: #667079;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 25px;
+            display: -webkit-box;
+            line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ===========================
+                Card Actions
+        =========================== */
+        .post-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        .accept-btn,
+        .edit-btn,
+        .delete-btn {
+            text-decoration: none;
+            padding: 8px 22px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.3s;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .edit-btn {
+            background: #2E75B6;
+            color: #ffffff;
+            border: 1px solid #2E75B6;
+        }
+        .accept-btn{
+            background: #ffffff;
+            color: green;
+            border: 1px solid green;
+        }
+
+        .edit-btn:hover {
+            background: #1F5A94;
+            border-color: #1F5A94;
+        }
+
+        .delete-btn {
+            background: #ffffff;
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+
+        .accept-btn:hover {
+            background: green;
+            color: #ffffff;
+        }
+
+        .delete-btn:hover {
+            background: #dc3545;
+            color: #ffffff;
+        }
+
+        /* ===========================
+                Responsive Design
+        =========================== */
+        @media (max-width: 992px) {
+            .post-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .content-area {
+                padding: 20px;
+                align-items: center;
+            }
+
+            .filter-container form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .filter-container button {
+                width: 100%;
+            }
+
+            .post-footer {
+                flex-direction: row;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+
+        <!-- Sidebar Direct Include (Matches your working code) -->
+        <?php include "sidebar.php"; ?>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Added Wrapper for constrained, correct alignment -->
+            <div class="content-wrapper">
+
+            <?php if (isset($_GET["success"]) || isset($_GET["error"])): ?>
+                <p id="message" class="status-msg <?= isset($_GET['success']) ? 'success' : 'error'; ?>">
+                    <?= htmlspecialchars(isset($_GET['success']) ? $_GET['success'] : $_GET['error']) ?>
+                </p>
+            <?php endif; ?>
+
+            <!-- Script for the remove the message from the display -->
+            <script>
+                const message = document.getElementById("message");
+                setTimeout(() => {
+                    message.style.display = "none";
+                }, 2000)
+            </script>
+                <h1 class="page-title">My Community Posts</h1>
+                <p class="page-subtitle">
+                    View, edit and manage your community posts.
+                </p>
+
+                <!-- Cards Container -->
+                <div class="post-container">
+
+                    <!-- Card 1 -->
+                    <?php if (mysqli_num_rows($data_res) > 0):  ?>
+                        <?php foreach ($myPosts as $pdetails): ?>
+                            <div class="post-card">
+                                <div class="post-header">
+                                    <div style="display: flex; gap: 10px    ;">
+                                        <span class="badge"><?= htmlspecialchars($pdetails["post_type"]) ?></span>
+                                        <span class="badge <?= $STATUS_STYLE[$pdetails["status"]] ?>"><?= htmlspecialchars($pdetails["status"]) ?></span>
+                                    </div>
+                                    <span class="post-date"><?= htmlspecialchars($pdetails["created_at"]) ?></span>
+                                </div>
+                                <h2><?= htmlspecialchars($pdetails["post_title"]) ?></h2>
+                                <p>
+                                    <?= htmlspecialchars($pdetails["post_content"]) ?>
+                                </p>
+                                <p class="badge bg-light text-dark" style="width: 300px;"> ~ By <?= htmlspecialchars($pdetails["alumni_name"]) ?>, Batch : <?= htmlspecialchars($pdetails["passout_year"]) ?> </p>
+                                <form action="alumni_post_view.php" method="get">
+                                    <div class="post-footer">
+                                          <a href="manage_community_post.php?post_id=<?= htmlspecialchars($pdetails["post_id"]) ?>&fn=<?= htmlspecialchars("acc") ?>" class="accept-btn">Accept</a>
+                                        <a href="manage_community_post.php?post_id=<?= htmlspecialchars($pdetails["post_id"]) ?>&fn=<?= htmlspecialchars("rej") ?>" class="delete-btn">Reject</a>
+                                    </div>
+                                </form>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p>No posts</p>
+                    <?php
+                    endif;
+                    ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
