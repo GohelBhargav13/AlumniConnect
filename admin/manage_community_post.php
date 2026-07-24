@@ -431,9 +431,9 @@ $STATUS_STYLE = [
                     message.style.display = "none";
                 }, 2000)
             </script>
-                <h1 class="page-title">My Community Posts</h1>
+                <h1 class="page-title">Manage Community Posts</h1>
                 <p class="page-subtitle">
-                    View, edit and manage your community posts.
+                    Accept, Reject the community posts.
                 </p>
 
                 <!-- Cards Container -->

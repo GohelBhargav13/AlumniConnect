@@ -72,36 +72,134 @@ if (isset($_GET['post_id']) && $_GET["fn"] == "acc") {
 // filter of the posts
 $post_category = $_GET["category"] ?? 'all';
 $year = $_GET["year"] ?? 'all';
+$status = $_GET["status"] ?? 'all';
 
-if ($post_category !== 'all' && !empty($post_category) && $year !== 'all' && !empty($year)) {
+// Category + Year + Status
+if ($post_category !== 'all' && !empty($post_category) &&
+    $year !== 'all' && !empty($year) &&
+    $status !== 'all' && !empty($status)) {
+
     $find_query = "SELECT * FROM community_posts cp
                     JOIN alumni_student_master sm ON cp.alumni_id = sm.alumni_id
-                    WHERE cp.post_type = ? AND YEAR(cp.created_at) = ? AND cp.status != 'pending' ORDER BY cp.created_at DESC";
+                    WHERE cp.post_type = ?
+                    AND YEAR(cp.created_at) = ?
+                    AND cp.status = ?
+                    ORDER BY cp.created_at DESC";
+
+    $find_stmt = $conn->prepare($find_query);
+    $find_stmt->bind_param("sss", $post_category, $year, $status);
+    $find_stmt->execute();
+    $data_res = $find_stmt->get_result();
+}
+
+// Category + Year
+elseif ($post_category !== 'all' && !empty($post_category) &&
+        $year !== 'all' && !empty($year) &&
+        ($status == 'all' || empty($status))) {
+
+    $find_query = "SELECT * FROM community_posts cp
+                    JOIN alumni_student_master sm ON cp.alumni_id = sm.alumni_id
+                    WHERE cp.post_type = ?
+                    AND YEAR(cp.created_at) = ?
+                    AND cp.status != 'pending'
+                    ORDER BY cp.created_at DESC";
+
     $find_stmt = $conn->prepare($find_query);
     $find_stmt->bind_param("ss", $post_category, $year);
     $find_stmt->execute();
     $data_res = $find_stmt->get_result();
-} elseif (($post_category == 'all' || empty($post_category)) && $year !== 'all' && !empty($year)) {
+}
+
+// Category + Status
+elseif ($post_category !== 'all' && !empty($post_category) &&
+        ($year == 'all' || empty($year)) &&
+        $status !== 'all' && !empty($status)) {
+
     $find_query = "SELECT * FROM community_posts cp
                     JOIN alumni_student_master sm ON cp.alumni_id = sm.alumni_id
-                    WHERE YEAR(cp.created_at) = ? AND cp.status != 'pending' ORDER BY cp.created_at DESC";
+                    WHERE cp.post_type = ?
+                    AND cp.status = ?
+                    ORDER BY cp.created_at DESC";
+
     $find_stmt = $conn->prepare($find_query);
-    $find_stmt->bind_param("s", $year);
+    $find_stmt->bind_param("ss", $post_category, $status);
     $find_stmt->execute();
     $data_res = $find_stmt->get_result();
-} elseif ($post_category !== 'all' && !empty($post_category) && ($year == 'all' || empty($year))) {
+}
+
+// Year + Status
+elseif (($post_category == 'all' || empty($post_category)) &&
+        $year !== 'all' && !empty($year) &&
+        $status !== 'all' && !empty($status)) {
+
     $find_query = "SELECT * FROM community_posts cp
                     JOIN alumni_student_master sm ON cp.alumni_id = sm.alumni_id
-                    WHERE cp.post_type = ? AND cp.status != 'pending' ORDER BY cp.created_at DESC";
+                    WHERE YEAR(cp.created_at) = ?
+                    AND cp.status = ?
+                    ORDER BY cp.created_at DESC";
+
+    $find_stmt = $conn->prepare($find_query);
+    $find_stmt->bind_param("ss", $year, $status);
+    $find_stmt->execute();
+    $data_res = $find_stmt->get_result();
+}
+
+// Only Category
+elseif ($post_category !== 'all' && !empty($post_category) &&
+        ($year == 'all' || empty($year)) &&
+        ($status == 'all' || empty($status))) {
+
+    $find_query = "SELECT * FROM community_posts cp
+                    JOIN alumni_student_master sm ON cp.alumni_id = sm.alumni_id
+                    WHERE cp.post_type = ?
+                    AND cp.status != 'pending'
+                    ORDER BY cp.created_at DESC";
+
     $find_stmt = $conn->prepare($find_query);
     $find_stmt->bind_param("s", $post_category);
     $find_stmt->execute();
     $data_res = $find_stmt->get_result();
-} else {
+}
+
+// Only Year
+elseif (($post_category == 'all' || empty($post_category)) &&
+        $year !== 'all' && !empty($year) &&
+        ($status == 'all' || empty($status))) {
+
     $find_query = "SELECT * FROM community_posts cp
                     JOIN alumni_student_master sm ON cp.alumni_id = sm.alumni_id
-                    WHERE cp.status != 'pending' ORDER BY cp.created_at DESC
-                    ";
+                    WHERE YEAR(cp.created_at) = ?
+                    AND cp.status != 'pending'
+                    ORDER BY cp.created_at DESC";
+
+    $find_stmt = $conn->prepare($find_query);
+    $find_stmt->bind_param("s", $year);
+    $find_stmt->execute();
+    $data_res = $find_stmt->get_result();
+}
+
+// Only Status
+elseif (($post_category == 'all' || empty($post_category)) &&
+        ($year == 'all' || empty($year)) &&
+        $status !== 'all' && !empty($status)) {
+
+    $find_query = "SELECT * FROM community_posts cp
+                    JOIN alumni_student_master sm ON cp.alumni_id = sm.alumni_id
+                    WHERE cp.status = ?
+                    ORDER BY cp.created_at DESC";
+
+    $find_stmt = $conn->prepare($find_query);
+    $find_stmt->bind_param("s", $status);
+    $find_stmt->execute();
+    $data_res = $find_stmt->get_result();
+}
+else {
+
+    $find_query = "SELECT * FROM community_posts cp
+                    JOIN alumni_student_master sm ON cp.alumni_id = sm.alumni_id
+                    WHERE cp.status != 'pending'
+                    ORDER BY cp.created_at DESC";
+
     $data_res = $conn->query($find_query);
 }
 $myPosts = $data_res->fetch_all(MYSQLI_ASSOC);
