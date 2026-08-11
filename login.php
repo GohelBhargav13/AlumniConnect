@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['click_btn'])) {
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
-
+ 
     if ($user = $result->fetch_assoc()) {
         if (password_verify($password, $user['password_hash'])) {
 
@@ -22,6 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['click_btn'])) {
             $_SESSION['Enroll_no_alumni'] = $user['enrollment_No'];
             $_SESSION['email'] = $email;
             $_SESSION["alumni_passout_year"] = $user["passout_year"];
+            $_SESSION["login_activity_time"] = time(); // timestamp for the session activity
             header("Location: ./alumni/landing.php");
             exit();
         }
